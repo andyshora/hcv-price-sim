@@ -1,4 +1,10 @@
 {
   "maxX": 140000,
-  "maxY": 330000
+  "maxY": 330000,
+  "segments": [
+    "Liver transplant",
+    "Hepatocellular carcinoma",
+    "Late fibrotic stage (F4)",
+    "Early fibrotic stage (F0-3)"
+  ]
 }

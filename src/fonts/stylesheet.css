@@ -1,7 +1,11 @@
 @font-face {
-  font-family: "halis_rextralight";
-  src: url("halisr-extralight-webfont.woff2") format("woff2"),
-    url("halisr-extralight-webfont.woff") format("woff");
+  font-family: 'halis_rextralight';
+  src: url('halisr-extralight-webfont.woff2') format('woff2'),
+    url('halisr-extralight-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+}
+
+* {
+  font-family: 'halis_rextralight';
 }

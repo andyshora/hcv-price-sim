@@ -29,9 +29,8 @@ const heightMultiplier = 4.4
 const widthMultiplier = 8
 
 const HighlightedRegion = styled.div`
-  background: rgba(70, 164, 224, 0.67);
   border-top: ${props =>
-    props.highlightValues.y > 0 ? '2px dashed white' : 'none'};
+    props.highlightValues.y > 0 ? '1px dashed white' : 'none'};
   width: ${props => props.highlightValues.x * props.width}px;
   height: ${props => props.highlightValues.y * props.height}px;
   position: absolute;
@@ -39,17 +38,17 @@ const HighlightedRegion = styled.div`
   left: 80px;
 `
 
-const XHighlightLabel = styled.label`
+const XHighlightLabel = styled.div`
   position: absolute;
-  right: -5rem;
-  top: 3rem;
+  right: -6.5rem;
+  top: 0rem;
 `
 
-const YHighlightLabel = styled.label`
+const YHighlightLabel = styled.div`
   position: absolute;
 
   right: 1rem;
-  top: -3rem;
+  top: -5.5rem;
 `
 
 const myData = [
@@ -58,6 +57,21 @@ const myData = [
   { x: 2, x0: 4, y: 15, y0: 0 },
 ]
 
+function getHighlightedArea(data, { maxY }) {
+  const res = data
+    .filter(d => d.Yval / 1000 >= maxY)
+    .map(d => ({
+      x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+      y: d.Yval / 1000,
+    }))
+
+  return res
+}
+
+function getSquareHighlightedArea(data, { maxX, maxY }) {
+  return data.length ? [{ x: 0, y: maxY }, { x: _.last(data).x, y: maxY }] : []
+}
+
 function getFormattedData(data) {
   return data.map(d => ({
     x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
@@ -65,11 +79,23 @@ function getFormattedData(data) {
   }))
 }
 
+function getSegmentData({ data, segment }) {
+  const res = data
+    .filter(d => d['Macro grouping'] === segment)
+    .map(d => ({
+      x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+      y: d.Yval / 1000,
+    }))
+
+  return res
+}
+
 function xTickFormat(val) {
   return `${val}k`
 }
 
 export default function SimGraph({
+  view = 'segments',
   bounds,
   highlightValues = { x: 0, y: 0 },
   width = 800,
@@ -78,7 +104,21 @@ export default function SimGraph({
   highlightLabels = { x: null, y: null },
   patientData = [],
 }) {
-  const formattedData = getFormattedData(patientData)
+  function onNearestXY(value, { event, innerX, innerY, index }) {
+    // console.log('onNearestXY', value)
+  }
+
+  const highlightedAreaData =
+    view === 'price'
+      ? getHighlightedArea(patientData, { maxY: highlightValues.y })
+      : []
+  const highlightedSquareAreaData =
+    view === 'price'
+      ? getSquareHighlightedArea(highlightedAreaData, {
+          maxX: highlightValues.x,
+          maxY: highlightValues.y,
+        })
+      : []
 
   return (
     <ChartWrap>
@@ -101,37 +141,75 @@ export default function SimGraph({
           tickFormat={xTickFormat}
         />
 
-        <AreaSeries
-          data={formattedData}
-          curve="curveBasis"
-          color={theme.palette.primary.light}
-          style={{ stroke: 'none', fillOpacity: 1 }}
-        />
+        {view === 'segments' && (
+          <DiscreteColorLegend
+            style={{ fontSize: '1.2rem' }}
+            items={bounds.segments.map((s, i) => ({
+              title: s,
+              color: colorScales.temperature(i / 3).css(),
+              strokeWidth: 20,
+            }))}
+          />
+        )}
+
+        {view === 'segments' ? (
+          bounds.segments.map((s, i) => (
+            <AreaSeries
+              key={s}
+              data={getSegmentData({
+                data: patientData,
+                segment: bounds.segments[i],
+              })}
+              curve="curveBasis"
+              color={colorScales.temperature(i / 3).css()}
+              style={{ stroke: 'none', fillOpacity: 1 }}
+            />
+          ))
+        ) : (
+          <AreaSeries
+            data={getFormattedData(patientData)}
+            curve="curveBasis"
+            color={'rgba(111, 111, 111)'}
+            style={{ stroke: 'none', fillOpacity: 1 }}
+            // onNearestXY={onNearestXY}
+          />
+        )}
+
+        {view === 'price' && (
+          <AreaSeries
+            data={highlightedAreaData}
+            curve="curveBasis"
+            color={theme.palette.series[4]}
+            style={{ stroke: 'none', fillOpacity: 1 }}
+          />
+        )}
+        {view === 'price' && (
+          <AreaSeries
+            data={highlightedSquareAreaData}
+            curve="curveBasis"
+            color={theme.palette.series[2]}
+            style={{ stroke: 'none', fillOpacity: 1 }}
+          />
+        )}
       </XYPlot>
 
-      <HighlightedRegion
-        highlightValues={{
-          x: (highlightValues.x * 1000) / bounds.maxX,
-          y: (highlightValues.y * 1000) / bounds.maxY,
-        }}
-        width={width - (margin.left + margin.right)}
-        height={height - (margin.top + margin.bottom)}
-      >
-        {!!highlightLabels.x && (
-          <XHighlightLabel>
-            <Typography variant="h3" component="h3">
-              {highlightLabels.x}
-            </Typography>
-          </XHighlightLabel>
-        )}
-        {!!highlightLabels.y && (
-          <YHighlightLabel>
-            <Typography variant="h3" component="h3">
-              {highlightLabels.y}
-            </Typography>
-          </YHighlightLabel>
-        )}
-      </HighlightedRegion>
+      {view !== 'segments' && (
+        <HighlightedRegion
+          highlightValues={{
+            x: (highlightValues.x * 1000) / bounds.maxX,
+            y: (highlightValues.y * 1000) / bounds.maxY,
+          }}
+          width={width - (margin.left + margin.right)}
+          height={height - (margin.top + margin.bottom)}
+        >
+          {!!highlightLabels.x && (
+            <XHighlightLabel>{highlightLabels.x}</XHighlightLabel>
+          )}
+          {!!highlightLabels.y && (
+            <YHighlightLabel>{highlightLabels.y}</YHighlightLabel>
+          )}
+        </HighlightedRegion>
+      )}
     </ChartWrap>
   )
 }

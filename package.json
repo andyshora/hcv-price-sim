@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@material-ui/core": "latest",
+    "@material-ui/icons": "^4.2.1",
+    "@material-ui/lab": "^4.0.0-alpha.24",
     "chroma-js": "^2.0.4",
     "clsx": "latest",
     "react": "latest",

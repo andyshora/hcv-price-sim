@@ -63,6 +63,7 @@ function generateVizTheme({ base, themeName }) {
     .rv-xy-plot {
       color: ${base.fgScale(0.76).css()};
       position: relative;
+      font-family: "halis_rextralight";
     }
     
     .rv-xy-plot canvas {
@@ -537,7 +538,7 @@ function generateUITheme({ base, themeName, type }) {
         dark: colorScales.secondary(0).css(),
         light: colorScales.secondary(1).css(),
       },
-      series: ['#32c77f', '#f9d129', '#6c9bdc', '#fd4343'],
+      series: ['#32c77f', '#f9d129', '#6c9bdc', '#fd4343', '#fce0ff'],
       seriesQ: chroma.scale('PuRd').colors(3),
     },
     typography,

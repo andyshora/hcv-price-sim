@@ -6,6 +6,7 @@ import { createGlobalStyle } from 'styled-components'
 
 import App from './App'
 import theme, { reactVizTheme } from './theme'
+import './fonts/stylesheet.css'
 
 const GlobalVizStyles = createGlobalStyle`${reactVizTheme.globalCSS}`
 
