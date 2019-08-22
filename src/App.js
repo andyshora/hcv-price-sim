@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import styled from 'styled-components'
 import ContainerDimensions from 'react-container-dimensions'
+import _ from 'lodash'
 
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
@@ -17,6 +18,7 @@ import CropIcon from '@material-ui/icons/Crop'
 import CostBreakdown from './components/cost-breakdown'
 import CuredMeter from './components/cured-meter'
 import SimGraph from './components/sim-graph'
+import { VerticalSlider, HorizontalSlider } from './components/sliders'
 
 import theme from './theme'
 
@@ -74,140 +76,47 @@ const BreakdownWrap = styled.div`
 
 const ViewNav = styled.nav`
   position: relative;
-  z-index: 10;
-`
-
-const VerticalThumbWrap = styled.span`
-  > span {
-    position: absolute;
-    height: 50px;
-    width: 2000px;
-    z-index: 10;
-    left: 0;
-    bottom: -7px;
-    cursor: row-resize;
-
-    &:hover {
-      background: linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0) 11px,
-        ${theme.palette.primary.light} 11px,
-        #ffffff57 13px,
-        rgba(0, 0, 0, 0) 13px
-      );
-      mix-blend-mode: color;
-    }
-  }
-`
-
-const HorizontalThumbWrap = styled.span`
-  > span {
-    position: absolute;
-    height: 2000px;
-    width: 50px;
-    z-index: 10;
-    left: -7px;
-    bottom: 0;
-    cursor: col-resize;
-
-    &:hover {
-      background: linear-gradient(
-        90deg,
-        rgba(0, 0, 0, 0) 11px,
-        ${theme.palette.primary.light} 11px,
-        #ffffff57 13px,
-        rgba(0, 0, 0, 0) 13px
-      );
-      mix-blend-mode: color;
-    }
-  }
+  z-index: 20;
 `
 
 const LineLabel = styled.label`
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+
   > label {
     font-size: 1.2rem;
     text-transform: uppercase;
-    margin: 0;
+    margin: 0 5px;
     text-align: center;
+    white-space: nowrap;
   }
   > div {
     font-size: 3rem;
     margin: 0;
     text-align: center;
+    &::before {
+      content: '${props => props.prefix || ''}';
+      opacity: 0.2;
+      position: relative;
+      left: -18px;
+    }
   }
 `
 
 const graphMargin = { top: 80, left: 80, right: 80, bottom: 80 }
 
-function VerticalThumbComponent(props) {
-  return (
-    <VerticalThumbWrap {...props}>
-      <span />
-    </VerticalThumbWrap>
-  )
-}
+function getHighlightedArea(data, { maxY }) {
+  const res = data
+    .filter(d => d.Yval / 1000 >= maxY)
+    .map(d => ({
+      x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+      y: d.Yval / 1000,
+    }))
 
-function HorizontalThumbComponent(props) {
-  return (
-    <HorizontalThumbWrap {...props}>
-      <span />
-    </HorizontalThumbWrap>
-  )
-}
-
-function VerticalSlider({
-  onChange,
-  height = 300,
-  defaultValue = 1,
-  enabled = false,
-}) {
-  return (
-    <Slider
-      orientation="vertical"
-      valueLabelFormat={v => `$${v}`}
-      valueLabelDisplay="auto"
-      onChange={onChange}
-      min={0}
-      max={bounds.maxY / 1000}
-      step={1}
-      defaultValue={defaultValue}
-      ThumbComponent={VerticalThumbComponent}
-      style={{
-        margin: 'auto',
-        height: `${height}px`,
-        transition: 'opacity 1s',
-        opacity: +enabled,
-      }}
-    />
-  )
-}
-
-function HorizontalSlider({
-  onChange,
-  width = 300,
-  defaultValue = 1,
-  enabled = false,
-}) {
-  return (
-    <Slider
-      orientation="horizontal"
-      valueLabelFormat={v => `$${v}`}
-      valueLabelDisplay="auto"
-      onChange={onChange}
-      min={0}
-      max={bounds.maxX / 1000}
-      step={1}
-      defaultValue={defaultValue}
-      ThumbComponent={HorizontalThumbComponent}
-      style={{
-        margin: 'auto',
-        width: `${width}px`,
-        transition: 'opacity 1s',
-        opacity: +enabled,
-      }}
-    />
-  )
+  return res
 }
 
 export default function App() {
@@ -217,9 +126,18 @@ export default function App() {
   const [view, setView] = React.useState('price')
   const [formats, setFormats] = React.useState(() => ['bold'])
 
+  const highlightedPriceAreaData =
+    view !== 'segments' ? getHighlightedArea(patientData, { maxY: yVal }) : []
+
   const handleViewChange = (event, newView) => {
+    if (newView === 'price+vol') {
+      setXVal(~~_.last(highlightedPriceAreaData).x)
+    } else if (newView === 'price') {
+      setXVal(bounds.maxX / 1000)
+    }
     setView(newView)
   }
+
   return (
     <Container maxWidth="lg">
       <GridWrap>
@@ -256,6 +174,7 @@ export default function App() {
           <ContainerDimensions>
             {({ width, height }) => (
               <VerticalSlider
+                bounds={bounds}
                 height={height - (graphMargin.top + graphMargin.bottom)}
                 onChange={(e, val) => {
                   setYVal(val)
@@ -268,16 +187,19 @@ export default function App() {
         </VerticalControls>
         <HorizontalControls>
           <ContainerDimensions>
-            {({ width, height }) => (
-              <HorizontalSlider
-                width={width - (graphMargin.left + graphMargin.right)}
-                onChange={(e, val) => {
-                  setXVal(val)
-                }}
-                defaultValue={xVal}
-                enabled={view === 'price+vol'}
-              />
-            )}
+            {({ width, height }) =>
+              view === 'price+vol' && (
+                <HorizontalSlider
+                  bounds={bounds}
+                  width={width - (graphMargin.left + graphMargin.right)}
+                  onChange={(e, val) => {
+                    setXVal(val)
+                  }}
+                  defaultValue={xVal}
+                  enabled={view === 'price+vol'}
+                />
+              )
+            }
           </ContainerDimensions>
         </HorizontalControls>
         <GraphWrap>
@@ -288,6 +210,7 @@ export default function App() {
                 bounds={bounds}
                 patientData={patientData}
                 highlightValues={{ x: xVal, y: yVal }}
+                highlightedPriceAreaData={highlightedPriceAreaData}
                 height={height}
                 width={width}
                 margin={graphMargin}
@@ -300,7 +223,7 @@ export default function App() {
                   ) : null,
                   x:
                     view === 'price+vol' ? (
-                      <LineLabel>
+                      <LineLabel prefix={'/'}>
                         <div>{xVal}k</div>
                         <label>patients</label>
                       </LineLabel>

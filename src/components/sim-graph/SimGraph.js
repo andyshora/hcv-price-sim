@@ -40,13 +40,12 @@ const HighlightedRegion = styled.div`
 
 const XHighlightLabel = styled.div`
   position: absolute;
-  right: -6.5rem;
-  top: 0rem;
+  right: -13.5rem;
+  top: -5.5rem;
 `
 
 const YHighlightLabel = styled.div`
   position: absolute;
-
   right: 1rem;
   top: -5.5rem;
 `
@@ -98,6 +97,7 @@ export default function SimGraph({
   view = 'segments',
   bounds,
   highlightValues = { x: 0, y: 0 },
+  highlightedPriceAreaData = [],
   width = 800,
   height = 600,
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
@@ -108,13 +108,9 @@ export default function SimGraph({
     // console.log('onNearestXY', value)
   }
 
-  const highlightedAreaData =
-    view === 'price'
-      ? getHighlightedArea(patientData, { maxY: highlightValues.y })
-      : []
   const highlightedSquareAreaData =
-    view === 'price'
-      ? getSquareHighlightedArea(highlightedAreaData, {
+    view !== 'segments'
+      ? getSquareHighlightedArea(highlightedPriceAreaData, {
           maxX: highlightValues.x,
           maxY: highlightValues.y,
         })
@@ -175,15 +171,15 @@ export default function SimGraph({
           />
         )}
 
-        {view === 'price' && (
+        {view !== 'segments' && (
           <AreaSeries
-            data={highlightedAreaData}
+            data={highlightedPriceAreaData}
             curve="curveBasis"
             color={theme.palette.series[4]}
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         )}
-        {view === 'price' && (
+        {view !== 'segments' && (
           <AreaSeries
             data={highlightedSquareAreaData}
             curve="curveBasis"
