@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
-
+import _ from 'lodash'
 import {
   XYPlot,
   FlexibleWidthXYPlot,
@@ -15,6 +15,7 @@ import {
   DiscreteColorLegend,
   GradientDefs,
   CustomSVGSeries,
+  VerticalRectSeries,
 } from 'react-vis'
 
 import theme, { colorScales, reactVizTheme } from '../../theme'
@@ -29,88 +30,106 @@ const widthMultiplier = 8
 
 const HighlightedRegion = styled.div`
   background: rgba(70, 164, 224, 0.67);
-  border-top: 2px dashed white;
-  width: ${props => props.highlightDimensions.x * props.width}px;
-  height: ${props => props.highlightDimensions.y * props.height}px;
+  border-top: ${props =>
+    props.highlightValues.y > 0 ? '2px dashed white' : 'none'};
+  width: ${props => props.highlightValues.x * props.width}px;
+  height: ${props => props.highlightValues.y * props.height}px;
   position: absolute;
   bottom: 80px;
   left: 80px;
-
-  > label {
-    position: absolute;
-    right: 1rem;
-    top: -3rem;
-  }
 `
 
-const data = [
-  { x: 0, y: 100 },
-  { x: 1, y: 30 },
-  { x: 2, y: 10 },
-  { x: 3, y: 5 },
+const XHighlightLabel = styled.label`
+  position: absolute;
+  right: -5rem;
+  top: 3rem;
+`
+
+const YHighlightLabel = styled.label`
+  position: absolute;
+
+  right: 1rem;
+  top: -3rem;
+`
+
+const myData = [
+  { x: 0, x0: 1, y: 10, y0: 0 },
+  { x: 1, x0: 2, y: 5, y0: 0 },
+  { x: 2, x0: 4, y: 15, y0: 0 },
 ]
 
+function getFormattedData(data) {
+  return data.map(d => ({
+    x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+    y: d.Yval / 1000,
+  }))
+}
+
+function xTickFormat(val) {
+  return `${val}k`
+}
+
 export default function SimGraph({
-  highlightDimensions = { x: 0, y: 0 },
+  bounds,
+  highlightValues = { x: 0, y: 0 },
   width = 800,
   height = 600,
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
-  highlightLabel = '',
+  highlightLabels = { x: null, y: null },
+  patientData = [],
 }) {
+  const formattedData = getFormattedData(patientData)
+
   return (
     <ChartWrap>
-      <XYPlot width={width} height={height} yDomain={[0, 100]} margin={margin}>
-        <HorizontalGridLines />
-        <VerticalGridLines />
-
-        <YAxis title="Direct Cost Per Patient" />
-        <XAxis title="Price ($)" />
-
-        <DiscreteColorLegend
-          items={[
-            {
-              title: 'Asset A',
-              color: 'url(#stripes)',
-              strokeWidth: 10,
-            },
-          ]}
+      <XYPlot
+        width={width}
+        height={height}
+        yDomain={[0, bounds.maxY / 1000]}
+        xDomain={[0, bounds.maxX / 1000]}
+        margin={margin}
+      >
+        <YAxis
+          title="Direct Cost Per Patient"
+          {...reactVizTheme.YAxis}
+          tickFormat={xTickFormat}
         />
+        <XAxis
+          title="Number of Patients"
+          {...reactVizTheme.XAxis}
+          tickTotal={5}
+          tickFormat={xTickFormat}
+        />
+
         <AreaSeries
-          data={data}
+          data={formattedData}
           curve="curveBasis"
-          color="url(#stripes)"
+          color={theme.palette.primary.light}
           style={{ stroke: 'none', fillOpacity: 1 }}
         />
-        <GradientDefs>
-          {reactVizTheme.SVG.patterns.createStripePattern({
-            fill: theme.palette.series[0],
-            id: 'stripes',
-          })}
-          <linearGradient id="OptimisedMeanGrad" x1="0" x2="1" y1="0" y2="0">
-            <stop
-              offset="0%"
-              stopColor={theme.palette.primary.light}
-              stopOpacity={0}
-            />
-            <stop
-              offset="100%"
-              stopColor={theme.palette.primary.light}
-              stopOpacity={0.1}
-            />
-          </linearGradient>
-        </GradientDefs>
       </XYPlot>
 
       <HighlightedRegion
-        highlightDimensions={highlightDimensions}
+        highlightValues={{
+          x: (highlightValues.x * 1000) / bounds.maxX,
+          y: (highlightValues.y * 1000) / bounds.maxY,
+        }}
         width={width - (margin.left + margin.right)}
         height={height - (margin.top + margin.bottom)}
-        highlightLabel={highlightLabel}
       >
-        {!!highlightLabel && (
-          <Typography variant="h3" component="label">
-            {highlightLabel}
-          </Typography>
+        {!!highlightLabels.x && (
+          <XHighlightLabel>
+            <Typography variant="h3" component="h3">
+              {highlightLabels.x}
+            </Typography>
+          </XHighlightLabel>
+        )}
+        {!!highlightLabels.y && (
+          <YHighlightLabel>
+            <Typography variant="h3" component="h3">
+              {highlightLabels.y}
+            </Typography>
+          </YHighlightLabel>
         )}
       </HighlightedRegion>
     </ChartWrap>

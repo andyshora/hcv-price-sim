@@ -1,0 +1,17 @@
+Each row represents a specific subset of patients with a particular form of the disease.	
+	
+Field	Description
+Index	Data index
+Xwidth	Specifies the number of patients per bar, or the width of each bar
+Xcumsum	Specifies the x position from which to draw each bar. This data point is the lower right vertex of the bar.
+Yval	Specifies the height of each bar (or costs for each patient group)
+Xcumsumleft	Specifies the x position from which to draw each bar. This data point is the lower left vertex of the bar
+Macro grouping	This grouping specifies the Red-light red-orange-yellow grouping. <likely not needed for the app we've discussed, equivalent to group F4 in tableau>
+Stage subgrouped	Sub-grouping used to build the macro grouping
+	
+	
+Extra notes	
+-Area for a given patient segment (or bar) is defined as: Xwidth * Yval	
+-Area for a range of patients is defined as: for range: sum(Xwidth*Yval)	
+-Top of blue "treated" is defined as the price parameter on the Yaxis, the width is defined by where that y value intersects with the data	
+-Yellow additional cured bar is defined at the top by the y value of the price, and the width is defined by the slider. In the tableau, the slider clicks are locked to only extend to points that completely include any given patient segment (or bar)	

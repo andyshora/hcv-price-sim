@@ -13,6 +13,10 @@ import CostBreakdown from './components/cost-breakdown'
 import CuredMeter from './components/cured-meter'
 import SimGraph from './components/sim-graph'
 
+// data
+import patientData from './data/data.json'
+import bounds from './data/bounds.json'
+
 // function VerticalThumbComponent() {
 //   return <ThumbWrap />
 // }
@@ -61,8 +65,8 @@ function VerticalSlider({ onChange, height = 300, defaultValue = 1 }) {
       valueLabelDisplay="auto"
       onChange={onChange}
       min={0}
-      max={1}
-      step={0.01}
+      max={bounds.maxY / 1000}
+      step={1}
       defaultValue={defaultValue}
       style={{ margin: 'auto', height: `${height}px` }}
     />
@@ -77,8 +81,8 @@ function HorizontalSlider({ onChange, width = 300, defaultValue = 1 }) {
       valueLabelDisplay="auto"
       onChange={onChange}
       min={0}
-      max={1}
-      step={0.01}
+      max={bounds.maxX / 1000}
+      step={1}
       defaultValue={defaultValue}
       style={{ margin: 'auto', width: `${width}px` }}
     />
@@ -86,8 +90,8 @@ function HorizontalSlider({ onChange, width = 300, defaultValue = 1 }) {
 }
 
 export default function App() {
-  const [xPerc, setXPerc] = useState(1)
-  const [yPerc, setYPerc] = useState(0)
+  const [xVal, setXVal] = useState(bounds.maxX / 1000)
+  const [yVal, setYVal] = useState(0)
   return (
     <Container maxWidth="lg">
       <GridWrap>
@@ -96,7 +100,7 @@ export default function App() {
             HCV Price Simulator
           </Typography>
           <p>
-            x: {xPerc}%, y: {yPerc}%
+            x: {xVal}, y: {yVal}
           </p>
         </Header>
         <VerticalControls>
@@ -105,9 +109,9 @@ export default function App() {
               <VerticalSlider
                 height={height - (graphMargin.top + graphMargin.bottom)}
                 onChange={(e, val) => {
-                  setYPerc(val)
+                  setYVal(val)
                 }}
-                defaultValue={yPerc}
+                defaultValue={yVal}
               />
             )}
           </ContainerDimensions>
@@ -118,9 +122,9 @@ export default function App() {
               <HorizontalSlider
                 width={width - (graphMargin.left + graphMargin.right)}
                 onChange={(e, val) => {
-                  setXPerc(val)
+                  setXVal(val)
                 }}
-                defaultValue={xPerc}
+                defaultValue={xVal}
               />
             )}
           </ContainerDimensions>
@@ -129,11 +133,16 @@ export default function App() {
           <ContainerDimensions>
             {({ width, height }) => (
               <SimGraph
-                highlightDimensions={{ x: xPerc, y: yPerc }}
+                bounds={bounds}
+                patientData={patientData}
+                highlightValues={{ x: xVal, y: yVal }}
                 height={height}
                 width={width}
                 margin={graphMargin}
-                highlightLabel={!!yPerc ? `$${yPerc}` : null}
+                highlightLabels={{
+                  y: !!yVal ? `$${yVal}k` : null,
+                  x: xVal !== bounds.maxX / 1000 ? `${xVal}k` : null,
+                }}
               />
             )}
           </ContainerDimensions>
