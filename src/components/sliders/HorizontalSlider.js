@@ -44,11 +44,11 @@ export default function HorizontalSlider({
   return (
     <Slider
       orientation="horizontal"
-      valueLabelFormat={v => `$${v}`}
+      valueLabelFormat={v => `${v}`}
       valueLabelDisplay="auto"
       onChange={onChange}
       min={0}
-      max={bounds.maxX / 1000}
+      max={100}
       step={1}
       defaultValue={defaultValue}
       ThumbComponent={HorizontalThumbComponent}

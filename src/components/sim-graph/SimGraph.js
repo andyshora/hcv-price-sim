@@ -29,9 +29,11 @@ const heightMultiplier = 4.4
 const widthMultiplier = 8
 
 const HighlightedRegion = styled.div`
+  background: ${props =>
+    props.dimensions === 1 ? 'none' : 'rgba(255, 255, 255, 0.05)'};
   border-top: ${props =>
     props.highlightValues.y > 0 ? '1px dashed white' : 'none'};
-  width: ${props => props.highlightValues.x * props.width}px;
+  width: ${props => props.offset + props.highlightValues.x * props.width}px;
   height: ${props => props.highlightValues.y * props.height}px;
   position: absolute;
   bottom: 80px;
@@ -67,7 +69,7 @@ function getHighlightedArea(data, { maxY }) {
   return res
 }
 
-function getSquareHighlightedArea(data, { maxX, maxY }) {
+function getSquareHighlightedArea(data, { maxY }) {
   return data.length ? [{ x: 0, y: maxY }, { x: _.last(data).x, y: maxY }] : []
 }
 
@@ -109,13 +111,18 @@ export default function SimGraph({
     // console.log('onNearestXY', value)
   }
 
+  console.log('highlightValues', highlightValues.x)
+
   const highlightedSquareAreaData =
     view !== 'segments'
       ? getSquareHighlightedArea(highlightedPriceAreaData, {
-          maxX: highlightValues.x,
           maxY: highlightValues.y,
         })
       : []
+
+  const xDivider = _.last(highlightedPriceAreaData).xVal
+  const secondHighlightOffset =
+    (xDivider / bounds.maxX) * (width - (margin.left + margin.right))
 
   return (
     <ChartWrap>
@@ -192,11 +199,13 @@ export default function SimGraph({
 
       {view !== 'segments' && (
         <HighlightedRegion
+          offset={secondHighlightOffset}
+          dimensions={view === 'price' ? 1 : 2}
           highlightValues={{
-            x: (highlightValues.x * 1000) / bounds.maxX,
+            x: highlightValues.x / 100,
             y: (highlightValues.y * 1000) / bounds.maxY,
           }}
-          width={width - (margin.left + margin.right)}
+          width={width - (margin.left + margin.right) - secondHighlightOffset}
           height={height - (margin.top + margin.bottom)}
         >
           {!!highlightLabels.x && (

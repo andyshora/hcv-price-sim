@@ -76,6 +76,7 @@ function getHighlightedArea(data, { maxY }) {
   const res = data
     .filter(d => d.Yval / 1000 >= maxY)
     .map(d => ({
+      xVal: d.Xcumsumleft + d.Xwidth / 2,
       x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
       y: d.Yval / 1000,
     }))
@@ -84,7 +85,7 @@ function getHighlightedArea(data, { maxY }) {
 }
 
 export default function App() {
-  const [xVal, setXVal] = useState(bounds.maxX / 1000)
+  const [xVal, setXVal] = useState(15)
   const [yVal, setYVal] = useState(20)
   const [breakdown, setBreakdown] = useState(null)
 
@@ -112,10 +113,16 @@ export default function App() {
     view !== 'segments' ? getHighlightedArea(patientData, { maxY: yVal }) : []
 
   const handleViewChange = (event, newView) => {
-    if (newView === 'price+vol') {
-      setXVal(~~_.last(highlightedPriceAreaData).x)
+    if (
+      newView === 'price+vol' &&
+      highlightedPriceAreaData &&
+      highlightedPriceAreaData.length
+    ) {
+      // setXVal(~~_.last(highlightedPriceAreaData).x * 100 / bounds.maxX)
+      // when switching to price+vol view, set to +10% to show a peek of the new area
+      setXVal(15)
     } else if (newView === 'price') {
-      setXVal(bounds.maxX / 1000)
+      setXVal(0)
     }
     setView(newView)
   }
@@ -207,7 +214,7 @@ export default function App() {
                   x:
                     view === 'price+vol' ? (
                       <LineLabel prefix={'/'}>
-                        <div>{xVal}k</div>
+                        <div>+{xVal}%</div>
                         <label>patients</label>
                       </LineLabel>
                     ) : null,
