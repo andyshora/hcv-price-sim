@@ -103,6 +103,7 @@ export default function SimGraph({
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
   highlightLabels = { x: null, y: null },
   patientData = [],
+  areaColors,
 }) {
   function onNearestXY(value, { event, innerX, innerY, index }) {
     // console.log('onNearestXY', value)
@@ -165,7 +166,7 @@ export default function SimGraph({
           <AreaSeries
             data={getFormattedData(patientData)}
             curve="curveBasis"
-            color={'rgba(111, 111, 111)'}
+            color={areaColors[1]}
             style={{ stroke: 'none', fillOpacity: 1 }}
             // onNearestXY={onNearestXY}
           />
@@ -175,7 +176,7 @@ export default function SimGraph({
           <AreaSeries
             data={highlightedPriceAreaData}
             curve="curveBasis"
-            color={theme.palette.series[4]}
+            color={areaColors[0]}
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         )}
@@ -183,7 +184,7 @@ export default function SimGraph({
           <AreaSeries
             data={highlightedSquareAreaData}
             curve="curveBasis"
-            color={theme.palette.series[2]}
+            color={areaColors[2]}
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         )}

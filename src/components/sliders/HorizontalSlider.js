@@ -26,7 +26,7 @@ const HorizontalThumbWrap = styled.span`
   }
 `
 
-export default function HorizontalThumbComponent(props) {
+function HorizontalThumbComponent(props) {
   return (
     <HorizontalThumbWrap {...props}>
       <span />
@@ -34,7 +34,7 @@ export default function HorizontalThumbComponent(props) {
   )
 }
 
-function HorizontalSlider({
+export default function HorizontalSlider({
   bounds,
   onChange,
   width = 300,

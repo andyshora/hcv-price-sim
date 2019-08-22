@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import styled from 'styled-components'
 import ContainerDimensions from 'react-container-dimensions'
 import _ from 'lodash'
 
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
-import Box from '@material-ui/core/Box'
-import Paper from '@material-ui/core/Paper'
-import Slider from '@material-ui/core/Slider'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import ViewColumnIcon from '@material-ui/icons/ViewColumn'
@@ -22,89 +18,57 @@ import { VerticalSlider, HorizontalSlider } from './components/sliders'
 
 import theme from './theme'
 
+import {
+  GridWrap,
+  Header,
+  VerticalControls,
+  HorizontalControls,
+  GraphWrap,
+  BreakdownWrap,
+  ViewNav,
+  LineLabel,
+} from './App.styles'
+
 // data
 import patientData from './data/data.json'
 import bounds from './data/bounds.json'
 
-// function VerticalThumbComponent() {
-//   return <ThumbWrap />
-// }
+function getArea({ Xwidth, Yval }) {
+  return Xwidth * Yval
+}
 
-const GridWrap = styled.div`
-  width: 100%;
-  display: grid;
-  position: relative;
-  margin: 50px auto 0;
-  grid-template-areas:
-    't t'
-    'v c'
-    '. h';
-  grid-template-rows: 120px 1fr 50px;
-  grid-template-columns: 50px 1fr;
-`
-const Header = styled.div`
-  grid-area: t;
-`
-const VerticalControls = styled.div`
-  grid-area: v;
-  display: flex;
-  flex-align: center;
-  justify-content: center;
-`
-const HorizontalControls = styled.div`
-  grid-area: h;
-  display: flex;
-  flex-direction: column;
-  flex-align: center;
-  justify-content: center;
-`
+function getTotalArea(data) {
+  return data
+    .filter(d => d.Xwidth > 0)
+    .map(getArea)
+    .reduce((sum, v) => sum + v)
+}
 
-const GraphWrap = styled.div`
-  grid-area: c;
-  width: 100%;
-  min-height: 600px;
-`
+function toSf(val, num = 2) {
+  return ~~(val * Math.pow(10, num)) / Math.pow(10, num)
+}
 
-const BreakdownWrap = styled.div`
-  width: 50%;
-  height: 400px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  opacity: 0.5;
-`
+function calculateBreakdown({ bounds, data, x, y, totalArea }) {
+  // get everything in the blue rect
 
-const ViewNav = styled.nav`
-  position: relative;
-  z-index: 20;
-`
+  const filteredData = data.filter(d => d.Xwidth > 0 && d.Yval < y)
 
-const LineLabel = styled.label`
-  text-align: center;
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+  const untreatedArea = filteredData.map(getArea).reduce((sum, v) => sum + v, 0)
 
-  > label {
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    margin: 0 5px;
-    text-align: center;
-    white-space: nowrap;
-  }
-  > div {
-    font-size: 3rem;
-    margin: 0;
-    text-align: center;
-    &::before {
-      content: '${props => props.prefix || ''}';
-      opacity: 0.2;
-      position: relative;
-      left: -18px;
-    }
-  }
-`
+  // blue rectangle - we have top left position, and it's a filled rectangle
+  const curedArea =
+    filteredData && filteredData.length
+      ? filteredData[0].Yval * filteredData[0].Xcumsum
+      : 0
+
+  // todo - ensure we calc mid point
+
+  const untreatedRatio = untreatedArea / totalArea
+  const curedRatio = curedArea / totalArea
+  const savingsRatio = 1 - (untreatedRatio + curedRatio)
+
+  return [toSf(savingsRatio, 3), toSf(untreatedRatio, 3), toSf(curedRatio, 3)]
+}
 
 const graphMargin = { top: 80, left: 80, right: 80, bottom: 80 }
 
@@ -122,9 +86,27 @@ function getHighlightedArea(data, { maxY }) {
 export default function App() {
   const [xVal, setXVal] = useState(bounds.maxX / 1000)
   const [yVal, setYVal] = useState(20)
+  const [breakdown, setBreakdown] = useState(null)
 
-  const [view, setView] = React.useState('price')
+  const [view, setView] = React.useState('price+vol')
   const [formats, setFormats] = React.useState(() => ['bold'])
+  const areaColors = [
+    theme.palette.series[4],
+    'rgba(111, 111, 111)',
+    theme.palette.series[2],
+  ]
+
+  const totalArea = getTotalArea(patientData)
+
+  useEffect(() => {
+    const newBreakdown = calculateBreakdown({
+      data: patientData,
+      bounds,
+      y: yVal * 1000,
+      totalArea,
+    })
+    setBreakdown(newBreakdown)
+  }, [xVal, yVal])
 
   const highlightedPriceAreaData =
     view !== 'segments' ? getHighlightedArea(patientData, { maxY: yVal }) : []
@@ -206,6 +188,7 @@ export default function App() {
           <ContainerDimensions>
             {({ width, height }) => (
               <SimGraph
+                areaColors={areaColors}
                 view={view}
                 bounds={bounds}
                 patientData={patientData}
@@ -233,9 +216,12 @@ export default function App() {
             )}
           </ContainerDimensions>
         </GraphWrap>
-        <BreakdownWrap>
-          <CuredMeter value={50} />
-        </BreakdownWrap>
+        {view !== 'segments' && breakdown && (
+          <BreakdownWrap>
+            <CostBreakdown items={breakdown} areaColors={areaColors} />
+            {/* <CuredMeter value={50} /> */}
+          </BreakdownWrap>
+        )}
       </GridWrap>
     </Container>
   )
