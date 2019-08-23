@@ -82,10 +82,6 @@ function calculateBreakdown2({
   const curedFract = breakdown1[2]
   const untreatedFract = breakdown1[1]
 
-  const existingCuredTotal = _.sumBy(
-    data.filter(d => d.Xcumsumleft >= additionalRegionBounds.x0),
-    'Xwidth'
-  )
   const existingUntreatedArea = data
     .filter(d => d.Xcumsumleft >= additionalRegionBounds.x0)
     .map(getArea)
@@ -99,13 +95,24 @@ function calculateBreakdown2({
     .map(getArea)
     .reduce((sum, v) => sum + v, 0)
 
-  // console.log('existingUntreatedArea', existingUntreatedArea)
+  const additionalCuredArea =
+    (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y
+  const previouslyCuredArea = additionalRegionBounds.x0 * y
+
+  console.log(
+    'additionalCuredArea',
+    (100 * additionalCuredArea) / previouslyCuredArea
+  )
   // console.log('newlyCuredArea', newlyCuredArea)
   const newlyCuredFract =
     untreatedFract * (newlyCuredArea / existingUntreatedArea)
-  console.log(untreatedFract - newlyCuredFract, newlyCuredFract)
 
-  return [0, untreatedFract - newlyCuredFract, newlyCuredFract, curedFract]
+  return [
+    newlyCuredFract * 3 /*temp*/,
+    untreatedFract - newlyCuredFract,
+    newlyCuredFract,
+    curedFract,
+  ]
 }
 
 function calculatePie1({ x = 0, data }) {
@@ -138,12 +145,9 @@ export default function App() {
 
   const [view, setView] = React.useState('price+vol')
   const [formats, setFormats] = React.useState(() => ['bold'])
-  const areaColors = [
-    theme.palette.series[4],
-    'rgba(111, 111, 111)',
-    theme.palette.series[2],
-    theme.palette.series[5],
-  ]
+
+  const areaColors = ['#fce0ff', 'rgba(111, 111, 111)', '#6c9bdc']
+  const areaColors2 = ['#f9d129', 'rgba(111, 111, 111)', '#30C1D7', '#6c9bdc']
 
   const totalArea = getTotalArea(patientData)
 
@@ -315,14 +319,21 @@ export default function App() {
           </ContainerDimensions>
         </GraphWrap>
         <BreakdownWrap>
+          {view !== 'segments' && (
+            <Typography variant="h4" component="h4" gutterBottom>
+              In Development &rarr;
+            </Typography>
+          )}
           {view !== 'segments' && breakdown1 && (
             <>
               <CostBreakdown items={breakdown1} areaColors={areaColors} />
-              {pie1 && pie1.length && <CuredMeter values={pie1} />}
+              {pie1 && pie1.length && (
+                <CuredMeter values={pie1} areaColors={areaColors} />
+              )}
             </>
           )}
           {view === 'price+vol' && breakdown2 && (
-            <CostBreakdown items={breakdown2} areaColors={areaColors} />
+            <CostBreakdown items={breakdown2} areaColors={areaColors2} />
           )}
         </BreakdownWrap>
       </GridWrap>
