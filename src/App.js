@@ -95,7 +95,7 @@ export default function App() {
     theme.palette.series[4],
     'rgba(111, 111, 111)',
     theme.palette.series[2],
-    theme.palette.series[1],
+    theme.palette.series[5],
   ]
 
   const totalArea = getTotalArea(patientData)
@@ -112,6 +112,10 @@ export default function App() {
 
   const highlightedPriceAreaData =
     view !== 'segments' ? getHighlightedArea(patientData, { maxY: yVal }) : []
+  const xPercOffset =
+    view !== 'segments'
+      ? _.last(highlightedPriceAreaData).xVal / bounds.maxX
+      : 0
 
   const handleViewChange = (event, newView) => {
     if (
@@ -181,7 +185,11 @@ export default function App() {
               view === 'price+vol' && (
                 <HorizontalSlider
                   bounds={bounds}
-                  width={width - (graphMargin.left + graphMargin.right)}
+                  width={
+                    (width - (graphMargin.left + graphMargin.right)) *
+                    (1 - xPercOffset)
+                  }
+                  margin={`0 ${graphMargin.right}px 0 0`}
                   onChange={(e, val) => {
                     setXVal(val)
                   }}

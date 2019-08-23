@@ -38,6 +38,7 @@ export default function HorizontalSlider({
   bounds,
   onChange,
   width = 300,
+  margin = '0',
   defaultValue = 1,
   enabled = false,
 }) {
@@ -53,7 +54,7 @@ export default function HorizontalSlider({
       defaultValue={defaultValue}
       ThumbComponent={HorizontalThumbComponent}
       style={{
-        margin: 'auto',
+        margin: `${margin}px`,
         width: `${width}px`,
         transition: 'opacity 1s',
         opacity: +enabled,

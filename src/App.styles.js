@@ -24,9 +24,9 @@ export const VerticalControls = styled.div`
 export const HorizontalControls = styled.div`
   grid-area: h;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-align: center;
-  justify-content: center;
+  justify-content: flex-end;
 `
 
 export const GraphWrap = styled.div`

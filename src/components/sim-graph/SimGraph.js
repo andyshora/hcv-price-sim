@@ -41,27 +41,12 @@ const HighlightedPriceRegion = styled(HighlightedRegion)`
 `
 
 const AdditionalCureRegion = styled(HighlightedRegion)`
-  background: rgba(255, 255, 25, 0.3);
   width: ${props => props.width}px;
   margin-left: ${props => props.offset}px;
+
+  background: rgba(255, 136, 25, 0.6);
+  mix-blend-mode: saturation;
 `
-
-const myData = [
-  { x: 0, x0: 1, y: 10, y0: 0 },
-  { x: 1, x0: 2, y: 5, y0: 0 },
-  { x: 2, x0: 4, y: 15, y0: 0 },
-]
-
-function getHighlightedArea(data, { maxY }) {
-  const res = data
-    .filter(d => d.Yval / 1000 >= maxY)
-    .map(d => ({
-      x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
-      y: d.Yval / 1000,
-    }))
-
-  return res
-}
 
 function getSquareHighlightedArea(data, { maxY }) {
   return data.length ? [{ x: 0, y: maxY }, { x: _.last(data).x, y: maxY }] : []
@@ -114,9 +99,9 @@ export default function SimGraph({
   patientData = [],
   areaColors,
 }) {
-  function onNearestXY(value, { event, innerX, innerY, index }) {
-    // console.log('onNearestXY', value)
-  }
+  // function onNearestXY(value, { event, innerX, innerY, index }) {
+  //   console.log('onNearestXY', value)
+  // }
 
   const highlightedSquareAreaData =
     view !== 'segments'
@@ -128,7 +113,8 @@ export default function SimGraph({
   const chartAreaWidth = width - (margin.left + margin.right)
   const chartAreaHeight = height - (margin.top + margin.bottom)
 
-  const xDivider = _.last(highlightedPriceAreaData).xVal
+  const xDivider =
+    view !== 'segments' ? _.last(highlightedPriceAreaData).xVal : 0
   const curedRegionOffset = (xDivider / bounds.maxX) * chartAreaWidth
 
   const additionalCureAreaData =
