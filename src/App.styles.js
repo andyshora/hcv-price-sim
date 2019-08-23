@@ -48,14 +48,14 @@ export const ViewNav = styled.nav`
   z-index: 20;
 `
 
-export const LineLabel = styled.label`
+export const LineLabel = styled.div`
 text-align: center;
 display: flex;
 flex-direction: row;
 align-items: baseline;
 text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
 
-> label {
+> span {
   font-size: 1.2rem;
   text-transform: uppercase;
   margin: 0 5px;

@@ -113,7 +113,9 @@ export default function App() {
   const highlightedPriceAreaData =
     view !== 'segments' ? getHighlightedArea(patientData, { maxY: yVal }) : []
   const xPercOffset =
-    view !== 'segments'
+    view !== 'segments' &&
+    highlightedPriceAreaData &&
+    highlightedPriceAreaData.length
       ? _.last(highlightedPriceAreaData).xVal / bounds.maxX
       : 0
 
@@ -216,15 +218,16 @@ export default function App() {
                 highlightLabels={{
                   y: !!yVal ? (
                     <LineLabel>
-                      <label>drug price</label>
+                      <span>drug price</span>
                       <div>${yVal}k</div>
                     </LineLabel>
                   ) : null,
                   x:
                     view === 'price+vol' ? (
-                      <LineLabel prefix={'/'}>
-                        <div>+{xVal}%</div>
-                        <label>patients</label>
+                      <LineLabel>
+                        <span>cure</span>
+                        <div>{xVal}%</div>
+                        <span>of remaining patients</span>
                       </LineLabel>
                     ) : null,
                 }}

@@ -47,9 +47,9 @@ export default function VerticalSlider({
       valueLabelFormat={v => `$${v}`}
       valueLabelDisplay="auto"
       onChange={onChange}
-      min={0}
+      min={0.5}
       max={bounds.maxY / 1000}
-      step={1}
+      step={0.5}
       defaultValue={defaultValue}
       ThumbComponent={VerticalThumbComponent}
       style={{

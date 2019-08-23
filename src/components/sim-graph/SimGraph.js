@@ -44,7 +44,7 @@ const AdditionalCureRegion = styled(HighlightedRegion)`
   width: ${props => props.width}px;
   margin-left: ${props => props.offset}px;
 
-  background: rgba(255, 136, 25, 0.6);
+  background: rgba(255, 25, 25, 0.6);
   mix-blend-mode: saturation;
 `
 
@@ -114,7 +114,11 @@ export default function SimGraph({
   const chartAreaHeight = height - (margin.top + margin.bottom)
 
   const xDivider =
-    view !== 'segments' ? _.last(highlightedPriceAreaData).xVal : 0
+    view !== 'segments' &&
+    highlightedPriceAreaData &&
+    highlightedPriceAreaData.length
+      ? _.last(highlightedPriceAreaData).xVal
+      : 0
   const curedRegionOffset = (xDivider / bounds.maxX) * chartAreaWidth
 
   const additionalCureAreaData =
@@ -220,7 +224,11 @@ export default function SimGraph({
           width={chartAreaWidth}
           height={chartAreaHeight}
         >
-          <HighlightLegend values={highlightValues} labels={highlightLabels} />
+          <HighlightLegend
+            values={highlightValues}
+            labels={highlightLabels}
+            colors={[areaColors[2], areaColors[3]]}
+          />
         </HighlightedPriceRegion>
       )}
       {view === 'price+vol' && (

@@ -2,27 +2,37 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import theme, { colorScales, reactVizTheme } from '../../theme'
 
-const XHighlightLabel = styled.div`
-  position: absolute;
-  right: -13.5rem;
-  top: -5.5rem;
-`
+const yValSwitchThreshold = 150
 
-const YHighlightLabel = styled.div`
+const HighlightLabel = styled.div`
   position: absolute;
   right: 1rem;
-  top: -5.5rem;
-  background: rgba(0, 0, 0, 0.4);
+  margin-top: ${props => (props.yVal > yValSwitchThreshold ? '11rem' : '0')};
 `
 
-export default function HighlightLegend({ labels, values }) {
+const XHighlightLabel = styled(HighlightLabel)`
+  top: -10.5rem;
+
+  > div {
+    color: ${props => props.color || 'inherit'};
+  }
+`
+
+const YHighlightLabel = styled(HighlightLabel)`
+  position: absolute;
+  top: -5.5rem;
+`
+
+export default function HighlightLegend({ colors, labels, values }) {
   return (
     <>
       {!!labels.x && (
-        <XHighlightLabel xVal={values.x}>{labels.x}</XHighlightLabel>
+        <XHighlightLabel yVal={values.y} color={colors[1]}>
+          {labels.x}
+        </XHighlightLabel>
       )}
       {!!labels.y && (
-        <YHighlightLabel xVal={values.x}>{labels.y}</YHighlightLabel>
+        <YHighlightLabel yVal={values.y}>{labels.y}</YHighlightLabel>
       )}
     </>
   )
