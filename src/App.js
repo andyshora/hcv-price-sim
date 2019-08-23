@@ -143,7 +143,7 @@ export default function App() {
   const [breakdown1, setBreakdown1] = useState(null)
   const [breakdown2, setBreakdown2] = useState(null)
 
-  const [view, setView] = React.useState('price+vol')
+  const [view, setView] = React.useState('segments')
   const [formats, setFormats] = React.useState(() => ['bold'])
 
   const areaColors = ['#fce0ff', 'rgba(111, 111, 111)', '#6c9bdc']
