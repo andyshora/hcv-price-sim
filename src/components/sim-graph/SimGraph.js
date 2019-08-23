@@ -19,37 +19,31 @@ import {
 } from 'react-vis'
 
 import theme, { colorScales, reactVizTheme } from '../../theme'
+import HighlightLegend from '../highlight-legend'
 
 const ChartWrap = styled.div`
   position: relative;
 `
 
-// todo - derive these
-const heightMultiplier = 4.4
-const widthMultiplier = 8
-
 const HighlightedRegion = styled.div`
-  background: ${props =>
-    props.dimensions === 1 ? 'none' : 'rgba(255, 255, 255, 0.05)'};
-  border-top: ${props =>
-    props.highlightValues.y > 0 ? '1px dashed white' : 'none'};
-  width: ${props => props.offset + props.highlightValues.x * props.width}px;
   height: ${props => props.highlightValues.y * props.height}px;
   position: absolute;
   bottom: 80px;
   left: 80px;
 `
 
-const XHighlightLabel = styled.div`
-  position: absolute;
-  right: -13.5rem;
-  top: -5.5rem;
+const HighlightedPriceRegion = styled(HighlightedRegion)`
+  background: ${props =>
+    props.dimensions === 1 ? 'none' : 'rgba(255, 255, 255, 0.05)'};
+  border-top: ${props =>
+    props.highlightValues.y > 0 ? '1px dashed white' : 'none'};
+  width: ${props => props.width}px;
 `
 
-const YHighlightLabel = styled.div`
-  position: absolute;
-  right: 1rem;
-  top: -5.5rem;
+const AdditionalCureRegion = styled(HighlightedRegion)`
+  background: rgba(255, 255, 25, 0.3);
+  width: ${props => props.width}px;
+  margin-left: ${props => props.offset}px;
 `
 
 const myData = [
@@ -91,6 +85,19 @@ function getSegmentData({ data, segment }) {
   return res
 }
 
+function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
+  const fract = maxX / 100
+  const absMaxX = minX + (bounds.maxX - minX) * fract
+  const res = data
+    .filter(d => d.Xcumsum > minX && d.Xcumsumleft <= absMaxX)
+    .map(d => ({
+      x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+      y: d.Yval / 1000,
+    }))
+
+  return res
+}
+
 function xTickFormat(val) {
   return `${val}k`
 }
@@ -111,8 +118,6 @@ export default function SimGraph({
     // console.log('onNearestXY', value)
   }
 
-  console.log('highlightValues', highlightValues.x)
-
   const highlightedSquareAreaData =
     view !== 'segments'
       ? getSquareHighlightedArea(highlightedPriceAreaData, {
@@ -120,9 +125,22 @@ export default function SimGraph({
         })
       : []
 
+  const chartAreaWidth = width - (margin.left + margin.right)
+  const chartAreaHeight = height - (margin.top + margin.bottom)
+
   const xDivider = _.last(highlightedPriceAreaData).xVal
-  const secondHighlightOffset =
-    (xDivider / bounds.maxX) * (width - (margin.left + margin.right))
+  const curedRegionOffset = (xDivider / bounds.maxX) * chartAreaWidth
+
+  const additionalCureAreaData =
+    view === 'price+vol'
+      ? getAdditionalCureAreaData(patientData, {
+          minX: xDivider,
+          maxX: highlightValues.x,
+          bounds,
+        })
+      : []
+
+  // console.log('highlightValues.x', highlightValues.x)
 
   return (
     <ChartWrap>
@@ -195,26 +213,43 @@ export default function SimGraph({
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         )}
+        {view === 'price+vol' && (
+          <AreaSeries
+            data={additionalCureAreaData}
+            curve="curveBasis"
+            color={areaColors[3]}
+            style={{ stroke: 'none', fillOpacity: 1 }}
+          />
+        )}
       </XYPlot>
 
       {view !== 'segments' && (
-        <HighlightedRegion
-          offset={secondHighlightOffset}
+        <HighlightedPriceRegion
+          offset={curedRegionOffset}
           dimensions={view === 'price' ? 1 : 2}
           highlightValues={{
             x: highlightValues.x / 100,
             y: (highlightValues.y * 1000) / bounds.maxY,
           }}
-          width={width - (margin.left + margin.right) - secondHighlightOffset}
-          height={height - (margin.top + margin.bottom)}
+          width={chartAreaWidth}
+          height={chartAreaHeight}
         >
-          {!!highlightLabels.x && (
-            <XHighlightLabel>{highlightLabels.x}</XHighlightLabel>
-          )}
-          {!!highlightLabels.y && (
-            <YHighlightLabel>{highlightLabels.y}</YHighlightLabel>
-          )}
-        </HighlightedRegion>
+          <HighlightLegend values={highlightValues} labels={highlightLabels} />
+        </HighlightedPriceRegion>
+      )}
+      {view === 'price+vol' && (
+        <AdditionalCureRegion
+          offset={curedRegionOffset}
+          dimensions={view === 'price' ? 1 : 2}
+          highlightValues={{
+            x: highlightValues.x / 100,
+            y: (highlightValues.y * 1000) / bounds.maxY,
+          }}
+          width={
+            (chartAreaWidth - curedRegionOffset) * highlightValues.x * 0.01
+          }
+          height={chartAreaHeight}
+        />
       )}
     </ChartWrap>
   )

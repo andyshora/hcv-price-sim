@@ -95,6 +95,7 @@ export default function App() {
     theme.palette.series[4],
     'rgba(111, 111, 111)',
     theme.palette.series[2],
+    theme.palette.series[1],
   ]
 
   const totalArea = getTotalArea(patientData)
