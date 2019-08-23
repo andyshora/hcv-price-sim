@@ -3,6 +3,10 @@ import theme, { reactVizTheme } from '../../theme'
 import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 
+const BreakdownWrap = styled.div`
+  padding: 1rem;
+`
+
 const ValueLabel = styled.text`
   font-size: ${props => (props.val < 0.12 ? 2 * (props.val / 0.12) : 2)}rem;
   fill: black;
@@ -23,7 +27,7 @@ export default function CostBreakdown({
     cumH += h
   }
   return (
-    <div>
+    <BreakdownWrap>
       <svg height={height} width={width}>
         <g>
           {positions.map((p, i) => (
@@ -39,12 +43,17 @@ export default function CostBreakdown({
         </g>
         <g>
           {positions.map((p, i) => (
-            <ValueLabel x={width - 80} y={p.y + p.h / 2 + 10} val={items[i]}>
+            <ValueLabel
+              key={i}
+              x={width - 80}
+              y={p.y + p.h / 2 + 10}
+              val={items[i]}
+            >
               <tspan>{(items[i] * 100).toFixed(0)}%</tspan>
             </ValueLabel>
           ))}
         </g>
       </svg>
-    </div>
+    </BreakdownWrap>
   )
 }

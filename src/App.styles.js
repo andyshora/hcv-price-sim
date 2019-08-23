@@ -37,10 +37,14 @@ export const GraphWrap = styled.div`
 
 export const BreakdownWrap = styled.div`
   width: 50%;
-  height: 400px;
+  height: 300px;
   position: absolute;
   right: 0;
   top: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
 `
 
 export const ViewNav = styled.nav`

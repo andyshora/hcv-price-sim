@@ -48,7 +48,7 @@ function toSf(val, num = 2) {
   return ~~(val * Math.pow(10, num)) / Math.pow(10, num)
 }
 
-function calculateBreakdown({ bounds, data, x, y, totalArea }) {
+function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
   // get everything in the blue rect
 
   const filteredData = data.filter(d => d.Xwidth > 0 && d.Yval < y)
@@ -63,11 +63,27 @@ function calculateBreakdown({ bounds, data, x, y, totalArea }) {
 
   // todo - ensure we calc mid point
 
-  const untreatedRatio = untreatedArea / totalArea
-  const curedRatio = curedArea / totalArea
+  const untreatedRatio = toSf(untreatedArea / totalArea, 3)
+  const curedRatio = toSf(curedArea / totalArea, 3)
   const savingsRatio = 1 - (untreatedRatio + curedRatio)
 
-  return [toSf(savingsRatio, 3), toSf(untreatedRatio, 3), toSf(curedRatio, 3)]
+  return [savingsRatio, untreatedRatio, curedRatio]
+}
+
+function calculateBreakdown2({ bounds, data, x, y, totalArea, breakdown1 }) {
+  const curedPerc = breakdown1[2]
+  const untreatedRatio = breakdown1[1]
+
+  return [0.8, untreatedRatio / 2, untreatedRatio / 2, curedPerc]
+}
+
+function calculatePie1({ x = 0, data }) {
+  console.log('calculatePie1', x, data.length)
+  const sum1 = _.sumBy(data.filter(d => d.Xcumsumleft <= x), 'Xwidth')
+  const sum2 = _.sumBy(data.filter(d => d.Xcumsumleft > x), 'Xwidth')
+  const total = sum1 + sum2
+  const seg1 = toSf((100 * sum1) / total, 1)
+  return [seg1]
 }
 
 const graphMargin = { top: 80, left: 80, right: 80, bottom: 80 }
@@ -87,7 +103,8 @@ function getHighlightedArea(data, { maxY }) {
 export default function App() {
   const [xVal, setXVal] = useState(15)
   const [yVal, setYVal] = useState(20)
-  const [breakdown, setBreakdown] = useState(null)
+  const [breakdown1, setBreakdown1] = useState(null)
+  const [breakdown2, setBreakdown2] = useState(null)
 
   const [view, setView] = React.useState('price+vol')
   const [formats, setFormats] = React.useState(() => ['bold'])
@@ -101,14 +118,26 @@ export default function App() {
   const totalArea = getTotalArea(patientData)
 
   useEffect(() => {
-    const newBreakdown = calculateBreakdown({
+    const newBreakdown1 = calculateBreakdown1({
       data: patientData,
       bounds,
       y: yVal * 1000,
       totalArea,
     })
-    setBreakdown(newBreakdown)
-  }, [xVal, yVal])
+    setBreakdown1(newBreakdown1)
+
+    if (view === 'price+vol') {
+      const newBreakdown2 = calculateBreakdown2({
+        data: patientData,
+        bounds,
+        y: yVal * 1000,
+        totalArea,
+        breakdown1: newBreakdown1,
+      })
+      console.log('newBreakdown2', newBreakdown2)
+      setBreakdown2(newBreakdown2)
+    }
+  }, [xVal, yVal, view])
 
   const highlightedPriceAreaData =
     view !== 'segments' ? getHighlightedArea(patientData, { maxY: yVal }) : []
@@ -118,6 +147,18 @@ export default function App() {
     highlightedPriceAreaData.length
       ? _.last(highlightedPriceAreaData).xVal / bounds.maxX
       : 0
+
+  let pie1 = null
+  if (
+    view !== 'segments' &&
+    highlightedPriceAreaData &&
+    highlightedPriceAreaData.length
+  ) {
+    pie1 = calculatePie1({
+      x: _.last(highlightedPriceAreaData).xVal,
+      data: patientData,
+    })
+  }
 
   const handleViewChange = (event, newView) => {
     if (
@@ -235,12 +276,17 @@ export default function App() {
             )}
           </ContainerDimensions>
         </GraphWrap>
-        {view !== 'segments' && breakdown && (
-          <BreakdownWrap>
-            <CostBreakdown items={breakdown} areaColors={areaColors} />
-            {/* <CuredMeter value={50} /> */}
-          </BreakdownWrap>
-        )}
+        <BreakdownWrap>
+          {view !== 'segments' && breakdown1 && (
+            <>
+              <CostBreakdown items={breakdown1} areaColors={areaColors} />
+              {pie1 && pie1.length && <CuredMeter values={pie1} />}
+            </>
+          )}
+          {view === 'price+vol' && breakdown2 && (
+            <CostBreakdown items={breakdown2} areaColors={areaColors} />
+          )}
+        </BreakdownWrap>
       </GridWrap>
     </Container>
   )
