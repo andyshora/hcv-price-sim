@@ -70,15 +70,45 @@ function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
   return [savingsRatio, untreatedRatio, curedRatio]
 }
 
-function calculateBreakdown2({ bounds, data, x, y, totalArea, breakdown1 }) {
-  const curedPerc = breakdown1[2]
-  const untreatedRatio = breakdown1[1]
+function calculateBreakdown2({
+  additionalRegionBounds,
+  bounds,
+  data,
+  x,
+  y,
+  totalArea,
+  breakdown1,
+}) {
+  const curedFract = breakdown1[2]
+  const untreatedFract = breakdown1[1]
 
-  return [0.8, untreatedRatio / 2, untreatedRatio / 2, curedPerc]
+  const existingCuredTotal = _.sumBy(
+    data.filter(d => d.Xcumsumleft >= additionalRegionBounds.x0),
+    'Xwidth'
+  )
+  const existingUntreatedArea = data
+    .filter(d => d.Xcumsumleft >= additionalRegionBounds.x0)
+    .map(getArea)
+    .reduce((sum, v) => sum + v, 0)
+  const newlyCuredArea = data
+    .filter(
+      d =>
+        d.Xcumsumleft >= additionalRegionBounds.x0 &&
+        d.Xcumsumleft <= additionalRegionBounds.x1
+    )
+    .map(getArea)
+    .reduce((sum, v) => sum + v, 0)
+
+  // console.log('existingUntreatedArea', existingUntreatedArea)
+  // console.log('newlyCuredArea', newlyCuredArea)
+  const newlyCuredFract =
+    untreatedFract * (newlyCuredArea / existingUntreatedArea)
+  console.log(untreatedFract - newlyCuredFract, newlyCuredFract)
+
+  return [0, untreatedFract - newlyCuredFract, newlyCuredFract, curedFract]
 }
 
 function calculatePie1({ x = 0, data }) {
-  console.log('calculatePie1', x, data.length)
   const sum1 = _.sumBy(data.filter(d => d.Xcumsumleft <= x), 'Xwidth')
   const sum2 = _.sumBy(data.filter(d => d.Xcumsumleft > x), 'Xwidth')
   const total = sum1 + sum2
@@ -127,14 +157,22 @@ export default function App() {
     setBreakdown1(newBreakdown1)
 
     if (view === 'price+vol') {
+      const x0 =
+        highlightedPriceAreaData && highlightedPriceAreaData.length
+          ? _.last(highlightedPriceAreaData).xVal
+          : 0
+      const x1 = x0 + xVal * 0.01 * (bounds.maxX - x0)
+
       const newBreakdown2 = calculateBreakdown2({
+        additionalRegionBounds: { x0, x1 },
         data: patientData,
         bounds,
+        x: xVal,
         y: yVal * 1000,
         totalArea,
         breakdown1: newBreakdown1,
       })
-      console.log('newBreakdown2', newBreakdown2)
+      // console.log('newBreakdown2', newBreakdown2)
       setBreakdown2(newBreakdown2)
     }
   }, [xVal, yVal, view])
