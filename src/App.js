@@ -144,12 +144,12 @@ function getHighlightedArea(data, { maxY }) {
 }
 
 export default function App() {
-  const [xVal, setXVal] = useState(15)
+  const [xVal, setXVal] = useState(0)
   const [yVal, setYVal] = useState(20)
   const [breakdown1, setBreakdown1] = useState(null)
   const [breakdown2, setBreakdown2] = useState(null)
 
-  const [view, setView] = React.useState('segments')
+  const [view, setView] = React.useState('price')
   const [formats, setFormats] = React.useState(() => ['bold'])
 
   const areaColors = [
@@ -179,7 +179,7 @@ export default function App() {
     })
     setBreakdown1(newBreakdown1)
 
-    if (view === 'price+vol') {
+    if (view !== 'segments' && xVal) {
       const x0 =
         highlightedPriceAreaData && highlightedPriceAreaData.length
           ? _.last(highlightedPriceAreaData).xVal
@@ -217,23 +217,15 @@ export default function App() {
   ) {
     pie1 = calculatePie1({
       x: _.last(highlightedPriceAreaData).xVal,
-      x2: view === 'price+vol' ? xVal : 0,
+      x2: xVal || 0,
       data: patientData,
     })
   }
 
   const handleViewChange = (event, newView) => {
-    if (
-      newView === 'price+vol' &&
-      highlightedPriceAreaData &&
-      highlightedPriceAreaData.length
-    ) {
-      // setXVal(~~_.last(highlightedPriceAreaData).x * 100 / bounds.maxX)
-      // when switching to price+vol view, set to +10% to show a peek of the new area
-      setXVal(15)
-    } else if (newView === 'price') {
-      setXVal(0)
-    }
+    // if (newView === 'price') {
+    //   setXVal(0)
+    // }
     setView(newView)
   }
 
@@ -262,10 +254,6 @@ export default function App() {
                 <VerticalAlignCenterIcon />
                 Price
               </ToggleButton>
-              <ToggleButton value="price+vol">
-                <CropIcon />
-                Price + Vol
-              </ToggleButton>
             </ToggleButtonGroup>
           </ViewNav>
         </Header>
@@ -287,7 +275,7 @@ export default function App() {
         <HorizontalControls>
           <ContainerDimensions>
             {({ width, height }) =>
-              view === 'price+vol' && (
+              view !== 'segments' && (
                 <HorizontalSlider
                   bounds={bounds}
                   width={
@@ -299,7 +287,6 @@ export default function App() {
                     setXVal(val)
                   }}
                   defaultValue={xVal}
-                  enabled={view === 'price+vol'}
                 />
               )
             }
@@ -331,13 +318,15 @@ export default function App() {
               colors={breakdownColors}
             />
           )}
-          {view === 'price+vol' && breakdown2 && (
+          {view !== 'segments' && xVal && breakdown2 ? (
             <CostBreakdown
               offsetForComplete={250}
               height={500}
               items={breakdown2}
               colors={breakdownColors2}
             />
+          ) : (
+            ''
           )}
           {view !== 'segments' && pie1 && pie1.length && (
             <RadialProgress

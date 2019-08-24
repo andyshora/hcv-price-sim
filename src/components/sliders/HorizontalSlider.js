@@ -40,7 +40,7 @@ export default function HorizontalSlider({
   width = 300,
   margin = '0',
   defaultValue = 1,
-  enabled = false,
+  enabled = true,
 }) {
   return (
     <Slider
