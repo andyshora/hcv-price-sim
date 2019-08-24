@@ -40,7 +40,6 @@ export default function CuredMeter({ values = [] }) {
       <XYPlot width={100} height={100}>
         {seriesData.length && (
           <ArcSeries
-            animation
             radiusType={'literal'}
             data={seriesData}
             colorType={'literal'}

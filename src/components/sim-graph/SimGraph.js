@@ -44,7 +44,7 @@ const AdditionalCureRegion = styled(HighlightedRegion)`
   width: ${props => props.width}px;
   margin-left: ${props => props.offset}px;
 
-  background: rgba(255, 25, 25, 0.6);
+  background: rgba(249, 219, 47, 0.6);
   mix-blend-mode: saturation;
 `
 

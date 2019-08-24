@@ -15,6 +15,7 @@ import CostBreakdown from './components/cost-breakdown'
 import CuredMeter from './components/cured-meter'
 import SimGraph from './components/sim-graph'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
+import RadialProgress from './components/radial-progress'
 
 import theme from './theme'
 
@@ -153,7 +154,12 @@ export default function App() {
   const [view, setView] = React.useState('segments')
   const [formats, setFormats] = React.useState(() => ['bold'])
 
-  const areaColors = ['#fce0ff', 'rgba(111, 111, 111)', '#6c9bdc']
+  const areaColors = [
+    '#fce0ff',
+    'rgba(111, 111, 111)',
+    '#6c9bdc',
+    'rgb(51, 229, 255)',
+  ]
   const areaColors2 = ['#f9d129', 'rgba(111, 111, 111)', '#30C1D7', '#6c9bdc']
 
   const totalArea = getTotalArea(patientData)
@@ -336,7 +342,16 @@ export default function App() {
             <>
               <CostBreakdown items={breakdown1} areaColors={areaColors} />
               {pie1 && pie1.length && (
-                <CuredMeter values={pie1} areaColors={areaColors} />
+                <RadialProgress
+                  values={pie1}
+                  max={100}
+                  width={200}
+                  height={200}
+                  suffix={'%'}
+                  title="Cured"
+                  colors={[areaColors[2], areaColors[3]]}
+                  label={_.sum(pie1).toFixed(0)}
+                />
               )}
             </>
           )}
