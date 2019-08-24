@@ -66,7 +66,10 @@ function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
   const curedRatio = toSf(curedArea / totalArea, 3)
   const savingsRatio = 1 - (untreatedRatio + curedRatio)
 
-  return [curedRatio, untreatedRatio, savingsRatio]
+  return {
+    ratios: [curedRatio, untreatedRatio, savingsRatio],
+    areas: [curedArea, untreatedArea, totalArea - (curedArea + untreatedArea)],
+  }
 }
 
 function calculateBreakdown2({
@@ -78,13 +81,12 @@ function calculateBreakdown2({
   totalArea,
   breakdown1,
 }) {
-  const curedFract = breakdown1[0]
-  const untreatedFract = breakdown1[1]
+  const curedFract = breakdown1.areas[0]
+  const untreatedFract = breakdown1.areas[1]
 
-  const existingUntreatedArea = data
-    .filter(d => d.Xcumsumleft >= additionalRegionBounds.x0)
-    .map(getArea)
-    .reduce((sum, v) => sum + v, 0)
+  const existingUntreatedArea = breakdown1.areas[1]
+  const existingSavingsArea = breakdown1.areas[2]
+
   const newlyCuredArea = data
     .filter(
       d =>
@@ -94,9 +96,12 @@ function calculateBreakdown2({
     .map(getArea)
     .reduce((sum, v) => sum + v, 0)
 
-  const additionalCuredArea =
+  const additionalCostsArea =
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y
   const previouslyCuredArea = additionalRegionBounds.x0 * y
+
+  const additionalCostsFract =
+    (additionalCostsArea - newlyCuredArea) / existingSavingsArea
 
   // console.log(
   //   'additionalCuredArea',
@@ -105,13 +110,16 @@ function calculateBreakdown2({
   // console.log('newlyCuredArea', newlyCuredArea)
   const newlyCuredFract =
     untreatedFract * (newlyCuredArea / existingUntreatedArea)
-
-  return [
-    curedFract,
+  const areas = [
+    breakdown1.areas[0],
     newlyCuredFract,
     untreatedFract - newlyCuredFract,
-    newlyCuredFract * 3 /*temp*/,
+    additionalCostsArea, // todo - incorrect
   ]
+  return {
+    areas,
+    ratios: areas.map(a => a / totalArea),
+  }
 }
 
 function calculatePie1({ x = 0, x2 = 0, data }) {
@@ -177,7 +185,7 @@ export default function App() {
       y: yVal * 1000,
       totalArea,
     })
-    setBreakdown1(newBreakdown1)
+    setBreakdown1(newBreakdown1.ratios)
 
     if (view !== 'segments' && xVal) {
       const x0 =
@@ -195,8 +203,7 @@ export default function App() {
         totalArea,
         breakdown1: newBreakdown1,
       })
-      // console.log('newBreakdown2', newBreakdown2)
-      setBreakdown2(newBreakdown2)
+      setBreakdown2(newBreakdown2.ratios)
     }
   }, [xVal, yVal, view])
 

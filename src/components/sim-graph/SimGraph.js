@@ -121,7 +121,7 @@ export default function SimGraph({
   const curedRegionOffset = (xDivider / bounds.maxX) * chartAreaWidth
 
   const additionalCureAreaData =
-    view === 'price+vol'
+    view !== 'segments'
       ? getAdditionalCureAreaData(patientData, {
           minX: xDivider,
           maxX: highlightValues.x,
@@ -202,7 +202,7 @@ export default function SimGraph({
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         )}
-        {view === 'price+vol' && (
+        {view !== 'segments' && (
           <AreaSeries
             data={additionalCureAreaData}
             curve="curveBasis"
@@ -224,7 +224,7 @@ export default function SimGraph({
           height={chartAreaHeight}
         />
       )}
-      {view === 'price+vol' && (
+      {view !== 'segments' && (
         <AdditionalCureRegion
           offset={curedRegionOffset}
           dimensions={view === 'price' ? 1 : 2}
