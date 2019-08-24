@@ -99,10 +99,10 @@ function calculateBreakdown2({
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y
   const previouslyCuredArea = additionalRegionBounds.x0 * y
 
-  console.log(
-    'additionalCuredArea',
-    (100 * additionalCuredArea) / previouslyCuredArea
-  )
+  // console.log(
+  //   'additionalCuredArea',
+  //   (100 * additionalCuredArea) / previouslyCuredArea
+  // )
   // console.log('newlyCuredArea', newlyCuredArea)
   const newlyCuredFract =
     untreatedFract * (newlyCuredArea / existingUntreatedArea)
@@ -115,12 +115,19 @@ function calculateBreakdown2({
   ]
 }
 
-function calculatePie1({ x = 0, data }) {
+function calculatePie1({ x = 0, x2 = 0, data }) {
   const sum1 = _.sumBy(data.filter(d => d.Xcumsumleft <= x), 'Xwidth')
   const sum2 = _.sumBy(data.filter(d => d.Xcumsumleft > x), 'Xwidth')
   const total = sum1 + sum2
   const seg1 = toSf((100 * sum1) / total, 1)
-  return [seg1]
+
+  const slicesArr = [seg1]
+
+  if (x2) {
+    slicesArr.push(toSf(x2 * 0.01 * (100 - seg1), 1))
+  }
+
+  return slicesArr
 }
 
 const graphMargin = { top: 80, left: 80, right: 80, bottom: 80 }
@@ -198,6 +205,7 @@ export default function App() {
   ) {
     pie1 = calculatePie1({
       x: _.last(highlightedPriceAreaData).xVal,
+      x2: view === 'price+vol' ? xVal : 0,
       data: patientData,
     })
   }
