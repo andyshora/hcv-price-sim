@@ -37,7 +37,7 @@ export const GraphWrap = styled.div`
 
 export const BreakdownWrap = styled.div`
   width: 50%;
-  height: 300px;
+  height: 500px;
   position: absolute;
   right: 0;
   top: 0;

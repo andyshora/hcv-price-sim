@@ -95,7 +95,6 @@ export default function SimGraph({
   width = 800,
   height = 600,
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
-  highlightLabels = { x: null, y: null },
   patientData = [],
   areaColors,
 }) {
@@ -223,13 +222,7 @@ export default function SimGraph({
           }}
           width={chartAreaWidth}
           height={chartAreaHeight}
-        >
-          <HighlightLegend
-            values={highlightValues}
-            labels={highlightLabels}
-            colors={[areaColors[2], areaColors[3]]}
-          />
-        </HighlightedPriceRegion>
+        />
       )}
       {view === 'price+vol' && (
         <AdditionalCureRegion

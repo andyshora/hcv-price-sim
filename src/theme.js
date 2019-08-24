@@ -91,7 +91,7 @@ function generateVizTheme({ base, themeName }) {
     
     .rv-xy-plot__axis__tick__text {
       fill: ${base.fgScale(0.42).css()};
-      font-size: 11px;
+      font-size: 18px;
     }
     
     .rv-xy-plot__axis__title text {

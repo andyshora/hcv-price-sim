@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import ContainerDimensions from 'react-container-dimensions'
 import _ from 'lodash'
 
@@ -12,7 +11,6 @@ import VerticalAlignCenterIcon from '@material-ui/icons/VerticalAlignCenter'
 import CropIcon from '@material-ui/icons/Crop'
 
 import CostBreakdown from './components/cost-breakdown'
-import CuredMeter from './components/cured-meter'
 import SimGraph from './components/sim-graph'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
 import RadialProgress from './components/radial-progress'
@@ -68,7 +66,7 @@ function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
   const curedRatio = toSf(curedArea / totalArea, 3)
   const savingsRatio = 1 - (untreatedRatio + curedRatio)
 
-  return [savingsRatio, untreatedRatio, curedRatio]
+  return [curedRatio, untreatedRatio, savingsRatio]
 }
 
 function calculateBreakdown2({
@@ -80,7 +78,7 @@ function calculateBreakdown2({
   totalArea,
   breakdown1,
 }) {
-  const curedFract = breakdown1[2]
+  const curedFract = breakdown1[0]
   const untreatedFract = breakdown1[1]
 
   const existingUntreatedArea = data
@@ -109,10 +107,10 @@ function calculateBreakdown2({
     untreatedFract * (newlyCuredArea / existingUntreatedArea)
 
   return [
-    newlyCuredFract * 3 /*temp*/,
-    untreatedFract - newlyCuredFract,
-    newlyCuredFract,
     curedFract,
+    newlyCuredFract,
+    untreatedFract - newlyCuredFract,
+    newlyCuredFract * 3 /*temp*/,
   ]
 }
 
@@ -161,6 +159,14 @@ export default function App() {
     'rgb(51, 229, 255)',
   ]
   const areaColors2 = ['#f9d129', 'rgba(111, 111, 111)', '#30C1D7', '#6c9bdc']
+
+  const breakdownColors = ['#6c9bdc', 'rgba(111, 111, 111)', '#fce0ff']
+  const breakdownColors2 = [
+    '#6c9bdc',
+    '#30C1D7',
+    'rgba(111, 111, 111)',
+    '#f9d129',
+  ]
 
   const totalArea = getTotalArea(patientData)
 
@@ -312,51 +318,38 @@ export default function App() {
                 height={height}
                 width={width}
                 margin={graphMargin}
-                highlightLabels={{
-                  y: !!yVal ? (
-                    <LineLabel>
-                      <span>drug price</span>
-                      <div>${yVal}k</div>
-                    </LineLabel>
-                  ) : null,
-                  x:
-                    view === 'price+vol' ? (
-                      <LineLabel>
-                        <span>cure</span>
-                        <div>{xVal}%</div>
-                        <span>of remaining patients</span>
-                      </LineLabel>
-                    ) : null,
-                }}
               />
             )}
           </ContainerDimensions>
         </GraphWrap>
         <BreakdownWrap>
-          {view !== 'segments' && (
-            <Typography variant="h4" component="h4" gutterBottom>
-              In Development &rarr;
-            </Typography>
-          )}
           {view !== 'segments' && breakdown1 && (
-            <>
-              <CostBreakdown items={breakdown1} areaColors={areaColors} />
-              {pie1 && pie1.length && (
-                <RadialProgress
-                  values={pie1}
-                  max={100}
-                  width={200}
-                  height={200}
-                  suffix={'%'}
-                  title="Cured"
-                  colors={[areaColors[2], areaColors[3]]}
-                  label={_.sum(pie1).toFixed(0)}
-                />
-              )}
-            </>
+            <CostBreakdown
+              offsetForComplete={250}
+              height={500}
+              items={breakdown1}
+              colors={breakdownColors}
+            />
           )}
           {view === 'price+vol' && breakdown2 && (
-            <CostBreakdown items={breakdown2} areaColors={areaColors2} />
+            <CostBreakdown
+              offsetForComplete={250}
+              height={500}
+              items={breakdown2}
+              colors={breakdownColors2}
+            />
+          )}
+          {view !== 'segments' && pie1 && pie1.length && (
+            <RadialProgress
+              values={pie1}
+              max={100}
+              width={200}
+              height={200}
+              suffix={'%'}
+              title="Patients Cured"
+              colors={[areaColors[2], areaColors[3]]}
+              label={_.sum(pie1).toFixed(0)}
+            />
           )}
         </BreakdownWrap>
       </GridWrap>

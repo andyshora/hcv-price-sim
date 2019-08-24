@@ -8,23 +8,24 @@ const BreakdownWrap = styled.div`
 `
 
 const ValueLabel = styled.text`
-  font-size: ${props => (props.val < 0.12 ? 2 * (props.val / 0.12) : 2)}rem;
-  fill: black;
-  opacity: ${props => (props.val < 0.05 ? 0 : 1)};
+  font-size: ${props => (props.val < 0.12 ? 2 * (props.val / 0.2) : 2)}rem;
+  fill: white;
 `
 
 export default function CostBreakdown({
-  areaColors,
+  colors,
   items,
   height = 200,
   width = 180,
+  offsetForComplete = 0,
 }) {
   let positions = []
-  let cumH = 0
+  let yOffset = height
+  let adjustedHeight = height - offsetForComplete
   for (let i = 0; i < items.length; i++) {
-    const h = height * items[i]
-    positions.push({ h, y: cumH })
-    cumH += h
+    const h = adjustedHeight * items[i]
+    positions.push({ h, y: yOffset - h })
+    yOffset -= h
   }
   return (
     <BreakdownWrap>
@@ -33,11 +34,11 @@ export default function CostBreakdown({
           {positions.map((p, i) => (
             <rect
               key={i}
-              width={width}
+              width={width / 2}
               height={p.h}
               x={0}
               y={p.y}
-              fill={areaColors[i]}
+              fill={colors[i]}
             />
           ))}
         </g>

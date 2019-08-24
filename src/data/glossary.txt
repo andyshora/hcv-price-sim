@@ -8,7 +8,16 @@ Yval	Specifies the height of each bar (or costs for each patient group)
 Xcumsumleft	Specifies the x position from which to draw each bar. This data point is the lower left vertex of the bar
 Macro grouping	This grouping specifies the Red-light red-orange-yellow grouping. <likely not needed for the app we've discussed, equivalent to group F4 in tableau>
 Stage subgrouped	Sub-grouping used to build the macro grouping
-	
+
+
+
+Breakdown: 
+
+0: SUM([above price - drug rev])/sum([Patient cost])
+1: SUM([below price left])/sum([Patient cost])
+2: 
+
+
 	
 Extra notes	
 -Area for a given patient segment (or bar) is defined as: Xwidth * Yval	
