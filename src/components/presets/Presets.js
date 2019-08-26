@@ -65,7 +65,6 @@ export default function InsetList({ items, onItemSelected }) {
             onClick={(e, i) => {
               handleItemSelected(item)
             }}
-            component="p"
             dense={true}
           >
             {i < icons.length && (

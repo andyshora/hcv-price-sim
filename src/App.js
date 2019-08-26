@@ -43,6 +43,11 @@ const presets = [
     x: 50,
     y: 30,
   },
+  {
+    label: '',
+    x: 70,
+    y: 32,
+  },
 ]
 
 function getArea({ Xwidth, Yval }) {
@@ -82,9 +87,6 @@ function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
   const savingsArea = totalArea - (curedArea + untreatedArea)
   // todo verify this area is the same as long calc
   // (yVal - y) * range Xwidths
-  console.log('savingsArea', savingsArea)
-
-  console.log('savingsRatio', savingsRatio)
 
   return {
     ratios: [curedRatio, untreatedRatio, savingsRatio],
@@ -101,12 +103,11 @@ function calculateBreakdown2({
   totalArea,
   breakdown1,
 }) {
-  const curedFract = breakdown1.areas[0]
-  const untreatedFract = breakdown1.areas[1]
+  const untreatedArea = breakdown1.areas[1]
 
   const existingUntreatedArea = breakdown1.areas[1]
-  const existingSavingsArea = breakdown1.areas[2]
 
+  // todo - check this
   const newlyCuredArea = data
     .filter(
       d =>
@@ -117,29 +118,15 @@ function calculateBreakdown2({
     .reduce((sum, v) => sum + v, 0)
 
   const additionalCostsArea =
-    (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y
-  const previouslyCuredArea = additionalRegionBounds.x0 * y
+    (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y - newlyCuredArea
 
-  console.log('totalArea', totalArea)
-  console.log('additionalCostsArea', additionalCostsArea)
-  console.log('newlyCuredArea', newlyCuredArea)
-  console.warn(additionalCostsArea - newlyCuredArea)
-
-  const additionalCostsFract =
-    (additionalCostsArea - newlyCuredArea) / existingSavingsArea
-
-  // console.log(
-  //   'additionalCuredArea',
-  //   (100 * additionalCuredArea) / previouslyCuredArea
-  // )
-  // console.log('newlyCuredArea', newlyCuredArea)
-  const newlyCuredFract =
-    untreatedFract * (newlyCuredArea / existingUntreatedArea)
+  // const newlyCuredArea =
+  //   untreatedArea * (newlyCuredArea / existingUntreatedArea)
   const areas = [
     breakdown1.areas[0],
-    newlyCuredFract,
-    untreatedFract - newlyCuredFract,
-    additionalCostsArea, // todo - incorrect
+    newlyCuredArea,
+    untreatedArea - newlyCuredArea,
+    additionalCostsArea,
   ]
   return {
     areas,
