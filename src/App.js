@@ -22,6 +22,7 @@ import theme from './theme'
 
 import {
   GridWrap,
+  PresetsWrap,
   Header,
   VerticalControls,
   HorizontalControls,
@@ -291,7 +292,7 @@ export default function App() {
             </Typography>
             <p>
               Explore how drug pricing affects the number of patients we are
-              able to treat. xVal: {xVal}%, yVal: ${yVal}k
+              able to treat. x: +{xVal}%, y: ${yVal}k
             </p>
             <ViewNav>
               <ToggleButtonGroup
@@ -310,9 +311,6 @@ export default function App() {
               </ToggleButtonGroup>
             </ViewNav>
           </div>
-          {view !== 'segments' && (
-            <Presets items={presets} onItemSelected={handlePresetSelected} />
-          )}
         </Header>
         <VerticalControls>
           <ContainerDimensions>
@@ -407,6 +405,11 @@ export default function App() {
           )}
         </BreakdownWrap>
       </GridWrap>
+      {view !== 'segments' && (
+        <PresetsWrap>
+          <Presets items={presets} onItemSelected={handlePresetSelected} />
+        </PresetsWrap>
+      )}
     </Container>
   )
 }

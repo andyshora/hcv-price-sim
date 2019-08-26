@@ -12,10 +12,15 @@ export const GridWrap = styled.div`
   grid-template-rows: 120px 1fr 50px;
   grid-template-columns: 50px 1fr;
 `
+export const PresetsWrap = styled.div`
+  position: fixed;
+  right: 0;
+  bottom: 0;
+`
 export const Header = styled.div`
   grid-area: t;
   display: grid;
-  grid-template-columns: 1fr 240px;
+  grid-template-columns: 1fr;
 `
 export const VerticalControls = styled.div`
   grid-area: v;

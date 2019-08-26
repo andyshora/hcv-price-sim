@@ -25,6 +25,13 @@ const ChartWrap = styled.div`
   position: relative;
 `
 
+const YAxisLabel = styled.p`
+  position: absolute;
+  top: 40px;
+  left: -10px;
+  color: white;
+`
+
 const HighlightedRegion = styled.div`
   height: ${props => props.highlightValues.y * props.height}px;
   position: absolute;
@@ -144,6 +151,11 @@ export default function SimGraph({
           title="Direct Cost Per Patient"
           {...reactVizTheme.YAxis}
           tickFormat={xTickFormat}
+          style={{
+            title: {
+              display: 'none',
+            },
+          }}
         />
         <XAxis
           title="Number of Patients"
@@ -210,6 +222,11 @@ export default function SimGraph({
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         )}
+        <YAxisLabel>
+          Direct Cost
+          <br />
+          Per Patient
+        </YAxisLabel>
       </XYPlot>
 
       {view !== 'segments' && (
