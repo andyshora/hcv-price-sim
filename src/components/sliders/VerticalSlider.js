@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Slider from '@material-ui/core/Slider'
 import theme from '../../theme'
+import { makeStyles, createStyles } from '@material-ui/styles'
 
 const VerticalThumbWrap = styled.span`
   > span {
@@ -17,7 +18,7 @@ const VerticalThumbWrap = styled.span`
       background: linear-gradient(
         0deg,
         rgba(0, 0, 0, 0) 11px,
-        ${theme.palette.primary.light} 11px,
+        rgb(255, 255, 255) 11px,
         #ffffff57 13px,
         rgba(0, 0, 0, 0) 13px
       );
@@ -34,6 +35,21 @@ function VerticalThumbComponent(props) {
   )
 }
 
+const useStyles = makeStyles(theme =>
+  createStyles({
+    root: {},
+    rail: {
+      opacity: 0,
+    },
+    track: {
+      opacity: 0,
+    },
+    thumb: {
+      backgroundColor: 'white',
+    },
+  })
+)
+
 export default function VerticalSlider({
   bounds,
   onChange,
@@ -42,9 +58,12 @@ export default function VerticalSlider({
   enabled = false,
   max = 100,
   margin = '0',
+  value = defaultValue,
 }) {
+  const classes = useStyles()
   return (
     <Slider
+      classes={classes}
       orientation="vertical"
       valueLabelFormat={v => `$${v}`}
       valueLabelDisplay="auto"
@@ -54,6 +73,7 @@ export default function VerticalSlider({
       step={0.5}
       defaultValue={defaultValue}
       ThumbComponent={VerticalThumbComponent}
+      value={value}
       style={{
         height: `${height}px`,
         margin,

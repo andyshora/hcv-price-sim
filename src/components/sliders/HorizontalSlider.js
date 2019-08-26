@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import Slider from '@material-ui/core/Slider'
+import { makeStyles, createStyles } from '@material-ui/styles'
+
 import theme from '../../theme'
 
 const HorizontalThumbWrap = styled.span`
@@ -9,7 +11,7 @@ const HorizontalThumbWrap = styled.span`
     height: 2000px;
     width: 50px;
     z-index: 10;
-    left: -7px;
+    left: -6px;
     bottom: 0;
     cursor: col-resize;
 
@@ -17,11 +19,10 @@ const HorizontalThumbWrap = styled.span`
       background: linear-gradient(
         90deg,
         rgba(0, 0, 0, 0) 11px,
-        ${theme.palette.primary.light} 11px,
-        #ffffff57 13px,
-        rgba(0, 0, 0, 0) 13px
+        rgb(255, 255, 255) 11px,
+        #ffffff57 14px,
+        rgba(0, 0, 0, 0) 14px
       );
-      mix-blend-mode: color;
     }
   }
 `
@@ -34,6 +35,22 @@ function HorizontalThumbComponent(props) {
   )
 }
 
+const useStyles = makeStyles(theme =>
+  createStyles({
+    root: {},
+    rail: {
+      opacity: 0,
+    },
+    track: {
+      opacity: 0,
+    },
+    thumb: {
+      backgroundColor: 'white',
+      borderRadius: '50%',
+    },
+  })
+)
+
 export default function HorizontalSlider({
   bounds,
   onChange,
@@ -41,15 +58,19 @@ export default function HorizontalSlider({
   margin = '0',
   defaultValue = 1,
   enabled = true,
+  value = defaultValue,
 }) {
+  const classes = useStyles()
   return (
     <Slider
+      classes={classes}
       orientation="horizontal"
       valueLabelFormat={v => `${v}`}
       valueLabelDisplay="auto"
       onChange={onChange}
       min={0}
       max={100}
+      value={value}
       step={1}
       defaultValue={defaultValue}
       ThumbComponent={HorizontalThumbComponent}

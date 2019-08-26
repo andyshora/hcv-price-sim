@@ -105,8 +105,7 @@ function calculateBreakdown2({
   totalArea,
   breakdown1,
 }) {
-  const untreatedArea = breakdown1.areas[1]
-
+  const existingCuredArea = breakdown1.areas[0]
   const existingUntreatedArea = breakdown1.areas[1]
 
   // todo - check this
@@ -122,12 +121,21 @@ function calculateBreakdown2({
   const additionalCostsArea =
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y - newlyCuredArea
 
+  const baselineTotalArea = totalArea - breakdown1.areas[2]
+  const temp1 =
+    (additionalCostsArea +
+      newlyCuredArea +
+      existingCuredArea +
+      (existingUntreatedArea - newlyCuredArea)) /
+    baselineTotalArea
+  console.log('temp1', temp1)
+
   // const newlyCuredArea =
   //   untreatedArea * (newlyCuredArea / existingUntreatedArea)
   const areas = [
     breakdown1.areas[0],
     newlyCuredArea,
-    untreatedArea - newlyCuredArea,
+    existingUntreatedArea - newlyCuredArea,
     additionalCostsArea,
   ]
   return {
