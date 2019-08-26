@@ -14,6 +14,8 @@ export const GridWrap = styled.div`
 `
 export const Header = styled.div`
   grid-area: t;
+  display: grid;
+  grid-template-columns: 1fr 240px;
 `
 export const VerticalControls = styled.div`
   grid-area: v;
@@ -48,8 +50,10 @@ export const BreakdownWrap = styled.div`
 `
 
 export const ViewNav = styled.nav`
+  display: flex;
   position: relative;
   z-index: 20;
+  justify-content: space-between;
 `
 
 export const LineLabel = styled.div`

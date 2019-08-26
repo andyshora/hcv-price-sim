@@ -14,6 +14,7 @@ import CostBreakdown from './components/cost-breakdown'
 import SimGraph from './components/sim-graph'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
 import RadialProgress from './components/radial-progress'
+import Presets from './components/presets'
 
 import theme from './theme'
 
@@ -31,6 +32,18 @@ import {
 // data
 import patientData from './data/data.json'
 import bounds from './data/bounds.json'
+const presets = [
+  {
+    label: '',
+    x: 25,
+    y: 20,
+  },
+  {
+    label: '',
+    x: 50,
+    y: 30,
+  },
+]
 
 function getArea({ Xwidth, Yval }) {
   return Xwidth * Yval
@@ -66,9 +79,16 @@ function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
   const curedRatio = toSf(curedArea / totalArea, 3)
   const savingsRatio = 1 - (untreatedRatio + curedRatio)
 
+  const savingsArea = totalArea - (curedArea + untreatedArea)
+  // todo verify this area is the same as long calc
+  // (yVal - y) * range Xwidths
+  console.log('savingsArea', savingsArea)
+
+  console.log('savingsRatio', savingsRatio)
+
   return {
     ratios: [curedRatio, untreatedRatio, savingsRatio],
-    areas: [curedArea, untreatedArea, totalArea - (curedArea + untreatedArea)],
+    areas: [curedArea, untreatedArea, savingsArea],
   }
 }
 
@@ -99,6 +119,11 @@ function calculateBreakdown2({
   const additionalCostsArea =
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y
   const previouslyCuredArea = additionalRegionBounds.x0 * y
+
+  console.log('totalArea', totalArea)
+  console.log('additionalCostsArea', additionalCostsArea)
+  console.log('newlyCuredArea', newlyCuredArea)
+  console.warn(additionalCostsArea - newlyCuredArea)
 
   const additionalCostsFract =
     (additionalCostsArea - newlyCuredArea) / existingSavingsArea
@@ -229,40 +254,52 @@ export default function App() {
     })
   }
 
-  const handleViewChange = (event, newView) => {
+  function handleViewChange(event, newView) {
     // if (newView === 'price') {
     //   setXVal(0)
     // }
     setView(newView)
   }
 
+  function handleItemSelected({ x, y }) {
+    if (x !== xVal) {
+      setXVal(x)
+    }
+    if (y !== yVal) {
+      setYVal(y)
+    }
+  }
+
   return (
     <Container maxWidth="lg">
       <GridWrap>
         <Header>
-          <Typography variant="h2" component="h1" gutterBottom>
-            HCV Price Simulator
-          </Typography>
-          <p>
-            Explore how drug pricing affects the number of patients we are able
-            to treat.
-          </p>
-          <ViewNav>
-            <ToggleButtonGroup
-              value={view}
-              exclusive
-              onChange={handleViewChange}
-            >
-              <ToggleButton value="segments">
-                <ViewColumnIcon />
-                Segments
-              </ToggleButton>
-              <ToggleButton value="price">
-                <VerticalAlignCenterIcon />
-                Price
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </ViewNav>
+          <div>
+            <Typography variant="h2" component="h1" gutterBottom>
+              HCV Price Simulator
+            </Typography>
+            <p>
+              Explore how drug pricing affects the number of patients we are
+              able to treat. xVal: {xVal}%, yVal: ${yVal}k
+            </p>
+            <ViewNav>
+              <ToggleButtonGroup
+                value={view}
+                exclusive
+                onChange={handleViewChange}
+              >
+                <ToggleButton value="segments">
+                  <ViewColumnIcon />
+                  Segments
+                </ToggleButton>
+                <ToggleButton value="price">
+                  <VerticalAlignCenterIcon />
+                  Price
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </ViewNav>
+          </div>
+          <Presets items={presets} onItemSelected={handleItemSelected} />
         </Header>
         <VerticalControls>
           <ContainerDimensions>

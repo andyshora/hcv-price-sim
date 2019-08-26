@@ -30,7 +30,7 @@ const typography = {
     fontWeight: 'normal',
     fontSize: '1.5rem',
   },
-  fontFamily: 'Open Sans',
+  fontFamily: 'halis_rextralight',
   fontWeightRegular: 'normal',
 }
 
@@ -512,6 +512,11 @@ function generateUITheme({ base, themeName, type }) {
           '&.Mui-selected': {
             boxShadow: `inset 0 0 4px rgba(0, 0, 0, 0.1)`,
           },
+        },
+      },
+      MuiListItemIcon: {
+        root: {
+          minWidth: 32,
         },
       },
     },
