@@ -41,6 +41,9 @@ export const GraphWrap = styled.div`
   grid-area: c;
   width: 100%;
   min-height: 600px;
+  @media (max-height: 800px) {
+    min-height: 500px;
+  }
 `
 
 export const BreakdownWrap = styled.div`

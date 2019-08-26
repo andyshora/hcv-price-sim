@@ -129,7 +129,7 @@ function calculateBreakdown2({
       existingCuredArea +
       (existingUntreatedArea - newlyCuredArea)) /
     baselineTotalArea
-  console.log('temp1', temp1)
+  // console.log('temp1', temp1)
 
   // const newlyCuredArea =
   //   untreatedArea * (newlyCuredArea / existingUntreatedArea)
@@ -202,6 +202,7 @@ export default function App() {
     'rgba(111, 111, 111)',
     '#6c9bdc',
     'rgb(51, 229, 255)',
+    '#f9d129',
   ]
   const areaColors2 = ['#f9d129', 'rgba(111, 111, 111)', '#30C1D7', '#6c9bdc']
 

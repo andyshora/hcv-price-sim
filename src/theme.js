@@ -345,6 +345,9 @@ function generateVizTheme({ base, themeName }) {
       pointer-events: none;
     }
     .rv-discrete-color-legend-item__title { color: ${base.fg} }
+    .rv-discrete-color-legend-item {
+      padding: 0.2rem 0.5rem;
+  }
     `,
     themeName,
     XYPlot: {

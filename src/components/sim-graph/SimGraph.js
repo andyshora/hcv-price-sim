@@ -136,6 +136,42 @@ export default function SimGraph({
         })
       : []
 
+  let legendItems = [
+    {
+      title: 'Health system savings',
+      color: areaColors[0],
+      strokeWidth: 20,
+      enabled: true,
+    },
+    {
+      title: 'Untreated patient cost',
+      color: areaColors[1],
+      strokeWidth: 20,
+      enabled: true,
+    },
+    {
+      title: 'Cost for cure',
+      color: areaColors[2],
+      strokeWidth: 20,
+      enabled: true,
+    },
+  ]
+
+  if (highlightValues.x) {
+    legendItems.splice(2, 0, {
+      title: 'Newly cured cost',
+      color: areaColors[3],
+      strokeWidth: 20,
+      enabled: true,
+    })
+    legendItems.unshift({
+      title: 'Additional cure cost',
+      color: areaColors[4],
+      strokeWidth: 20,
+      enabled: true,
+    })
+  }
+
   // console.log('highlightValues.x', highlightValues.x)
 
   return (
@@ -253,6 +289,18 @@ export default function SimGraph({
             (chartAreaWidth - curedRegionOffset) * highlightValues.x * 0.01
           }
           height={chartAreaHeight}
+        />
+      )}
+      {view !== 'segments' && (
+        <DiscreteColorLegend
+          style={{
+            fontSize: '1rem',
+            padding: '0.5rem',
+            top: -70,
+            background: 'none',
+            border: 'none',
+          }}
+          items={legendItems}
         />
       )}
     </ChartWrap>

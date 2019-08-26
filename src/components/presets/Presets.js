@@ -26,10 +26,11 @@ const icons = [
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: 240,
-    maxWidth: 360,
-    padding: '1rem 0.5rem',
+    maxWidth: 800,
+    padding: '0.5rem 0rem',
     backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+    whiteSpace: 'nowrap',
   },
 }))
 
@@ -52,12 +53,7 @@ export default function InsetList({ items, onItemSelected }) {
 
   return (
     <Paper style={{ position: 'relative', zIndex: 11 }}>
-      <List
-        component="nav"
-        className={classes.root}
-        aria-label="Presets"
-        subheader={SubHeader}
-      >
+      <List component="nav" className={classes.root} aria-label="Presets">
         {items.map((item, i) => (
           <ListItem
             key={`item-${item.x}-${item.y}`}
@@ -70,9 +66,7 @@ export default function InsetList({ items, onItemSelected }) {
             {i < icons.length && (
               <ListItemIcon>{React.createElement(icons[i])}</ListItemIcon>
             )}
-            <ListItemText
-              primary={item.label || `CPP ${item.y}k, Cure +${item.x}%`}
-            />
+            <ListItemText primary={item.label || `+${item.x}, ${item.y}k`} />
           </ListItem>
         ))}
       </List>
