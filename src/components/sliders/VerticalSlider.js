@@ -40,6 +40,8 @@ export default function VerticalSlider({
   height = 300,
   defaultValue = 1,
   enabled = false,
+  max = 100,
+  margin = '0',
 }) {
   return (
     <Slider
@@ -48,13 +50,13 @@ export default function VerticalSlider({
       valueLabelDisplay="auto"
       onChange={onChange}
       min={0.5}
-      max={bounds.maxY / 1000}
+      max={max}
       step={0.5}
       defaultValue={defaultValue}
       ThumbComponent={VerticalThumbComponent}
       style={{
-        margin: 'auto',
         height: `${height}px`,
+        margin,
         transition: 'opacity 1s',
         opacity: +enabled,
       }}

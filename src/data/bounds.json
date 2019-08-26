@@ -1,6 +1,7 @@
 {
   "maxX": 131956,
   "maxY": 330000,
+  "maxYInput": 180000,
   "segments": [
     "Liver transplant",
     "Hepatocellular carcinoma",

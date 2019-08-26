@@ -184,7 +184,8 @@ export default function App() {
   )
 
   function setNewYVal(y) {
-    setYVal(Math.min(150, y))
+    setYVal(y)
+    // setYVal(Math.min(150, y))
   }
 
   const areaColors = [
@@ -307,17 +308,25 @@ export default function App() {
         </Header>
         <VerticalControls>
           <ContainerDimensions>
-            {({ width, height }) => (
-              <VerticalSlider
-                bounds={bounds}
-                height={height - (graphMargin.top + graphMargin.bottom)}
-                onChange={(e, val) => {
-                  setNewYVal(val)
-                }}
-                defaultValue={yVal}
-                enabled={view !== 'segments'}
-              />
-            )}
+            {({ width, height }) => {
+              return (
+                <VerticalSlider
+                  max={bounds.maxYInput / 1000}
+                  bounds={bounds}
+                  height={
+                    ((height - (graphMargin.top + graphMargin.bottom)) *
+                      bounds.maxYInput) /
+                    bounds.maxY
+                  }
+                  margin={`auto 0 ${graphMargin.bottom}px 0`}
+                  onChange={(e, val) => {
+                    setNewYVal(val)
+                  }}
+                  defaultValue={yVal}
+                  enabled={view !== 'segments'}
+                />
+              )
+            }}
           </ContainerDimensions>
         </VerticalControls>
         <HorizontalControls>

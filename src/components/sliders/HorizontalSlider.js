@@ -54,7 +54,7 @@ export default function HorizontalSlider({
       defaultValue={defaultValue}
       ThumbComponent={HorizontalThumbComponent}
       style={{
-        margin: `${margin}px`,
+        margin,
         width: `${width}px`,
         transition: 'opacity 1s',
         opacity: +enabled,

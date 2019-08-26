@@ -22,6 +22,7 @@ export const VerticalControls = styled.div`
   display: flex;
   flex-align: center;
   justify-content: center;
+  justify-content: flex-end;
 `
 export const HorizontalControls = styled.div`
   grid-area: h;
