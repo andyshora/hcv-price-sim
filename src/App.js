@@ -172,6 +172,10 @@ export default function App() {
   const [view, setView] = React.useState('price')
   const [formats, setFormats] = React.useState(() => ['bold'])
 
+  function setNewYVal(y) {
+    setYVal(Math.min(150, y))
+  }
+
   const areaColors = [
     '#fce0ff',
     'rgba(111, 111, 111)',
@@ -253,7 +257,7 @@ export default function App() {
       setXVal(x)
     }
     if (y !== yVal) {
-      setYVal(y)
+      setNewYVal(y)
     }
   }
 
@@ -286,7 +290,9 @@ export default function App() {
               </ToggleButtonGroup>
             </ViewNav>
           </div>
-          <Presets items={presets} onItemSelected={handleItemSelected} />
+          {view !== 'segments' && (
+            <Presets items={presets} onItemSelected={handleItemSelected} />
+          )}
         </Header>
         <VerticalControls>
           <ContainerDimensions>
@@ -295,7 +301,7 @@ export default function App() {
                 bounds={bounds}
                 height={height - (graphMargin.top + graphMargin.bottom)}
                 onChange={(e, val) => {
-                  setYVal(val)
+                  setNewYVal(val)
                 }}
                 defaultValue={yVal}
                 enabled={view !== 'segments'}
