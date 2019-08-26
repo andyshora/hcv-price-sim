@@ -4,7 +4,14 @@ import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 
 const BreakdownWrap = styled.div`
+  padding: 1rem 1rem 0;
+`
+
+const TitleWrap = styled.div`
   padding: 1rem;
+  max-width: ${props => props.width}px;
+  position: relative;
+  left: -20px;
 `
 
 const ValueLabel = styled.text`
@@ -17,8 +24,9 @@ export default function CostBreakdown({
   colors,
   items,
   height = 200,
-  width = 160,
+  width = 140,
   offsetForComplete = 0,
+  title = null,
 }) {
   let positions = []
   let yOffset = height
@@ -61,6 +69,11 @@ export default function CostBreakdown({
           ))}
         </g>
       </svg>
+      {!!title && (
+        <TitleWrap width={width}>
+          <Typography variant="h4">{title}</Typography>
+        </TitleWrap>
+      )}
     </BreakdownWrap>
   )
 }

@@ -8,6 +8,7 @@ const { series } = theme.palette
 
 const ChartWrap = styled.div`
   position: relative;
+  margin-left: 20px;
 `
 
 const CenterLabel = styled.div`

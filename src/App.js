@@ -293,7 +293,7 @@ export default function App() {
             </Typography>
             <p>
               Explore how drug pricing affects the number of patients we are
-              able to treat. x: +{xVal}%, y: ${yVal}k
+              able to treat.{view !== 'segments' && `x: +${xVal}%, y: ${yVal}k`}
             </p>
             <ViewNav>
               <ToggleButtonGroup
@@ -380,6 +380,7 @@ export default function App() {
               height={500}
               items={breakdown1}
               colors={breakdownColors}
+              title={xVal ? `Costs Before` : `Alloc'd Costs`}
             />
           )}
           {view !== 'segments' && xVal && breakdown2 ? (
@@ -388,6 +389,7 @@ export default function App() {
               height={500}
               items={breakdown2}
               colors={breakdownColors2}
+              title={`Costs After`}
             />
           ) : (
             ''
