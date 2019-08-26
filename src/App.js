@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import ContainerDimensions from 'react-container-dimensions'
 import _ from 'lodash'
 
+import { useHotkeys } from 'react-hotkeys-hook'
+
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import ToggleButton from '@material-ui/lab/ToggleButton'
@@ -170,7 +172,16 @@ export default function App() {
   const [breakdown2, setBreakdown2] = useState(null)
 
   const [view, setView] = React.useState('price')
-  const [formats, setFormats] = React.useState(() => ['bold'])
+
+  function handlePresetKeyTapped(index) {
+    if (index <= presets.length) {
+      handlePresetSelected(presets[index])
+    }
+  }
+
+  useHotkeys('1, 2, 3, 4, 5', ({ key }) =>
+    handlePresetKeyTapped(Number.parseInt(key) - 1)
+  )
 
   function setNewYVal(y) {
     setYVal(Math.min(150, y))
@@ -252,7 +263,7 @@ export default function App() {
     setView(newView)
   }
 
-  function handleItemSelected({ x, y }) {
+  function handlePresetSelected({ x, y }) {
     if (x !== xVal) {
       setXVal(x)
     }
@@ -291,7 +302,7 @@ export default function App() {
             </ViewNav>
           </div>
           {view !== 'segments' && (
-            <Presets items={presets} onItemSelected={handleItemSelected} />
+            <Presets items={presets} onItemSelected={handlePresetSelected} />
           )}
         </Header>
         <VerticalControls>
