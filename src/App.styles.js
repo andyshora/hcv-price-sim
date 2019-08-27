@@ -10,7 +10,8 @@ export const GridWrap = styled.div`
     'v c'
     '. h';
   grid-template-rows: 120px 1fr 50px;
-  grid-template-columns: 50px 1fr;
+  grid-template-columns: 70px 1fr;
+  overflow-x: hidden;
 `
 export const PresetsWrap = styled.div`
   position: fixed;
