@@ -466,7 +466,7 @@ export default function App() {
             variant="outlined"
             onClick={handleSavePresetTapped}
           >
-            Save current state as Preset
+            Save current state as hotkey
           </Button>
           {savingPreset && (
             <Button
