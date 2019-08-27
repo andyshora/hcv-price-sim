@@ -206,7 +206,7 @@ export default function App() {
 
   const presets = useRef(defaultPresets)
 
-  const [view, setView] = React.useState('price')
+  const [view, setView] = React.useState('segments')
 
   function handlePresetKeyTapped(index) {
     if (index <= presets.current.length) {
@@ -340,7 +340,7 @@ export default function App() {
             </Typography>
             <p>
               Explore how drug pricing affects the number of patients we are
-              able to treat.{view !== 'segments' && `x: +${xVal}%, y: ${yVal}k`}
+              able to treat.
             </p>
             <ViewNav>
               <ToggleButtonGroup

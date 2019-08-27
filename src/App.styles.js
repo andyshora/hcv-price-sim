@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 export const GridWrap = styled.div`
   width: 100%;
+  min-width: 1280px;
   display: grid;
   position: relative;
   margin: 50px auto 0;
@@ -43,9 +44,12 @@ export const HorizontalControls = styled.div`
 export const GraphWrap = styled.div`
   grid-area: c;
   width: 100%;
-  min-height: 600px;
-  @media (max-height: 800px) {
-    min-height: 500px;
+  min-height: 500px;
+  @media (min-height: 800px) {
+    min-height: 600px;
+  }
+  @media (min-height: 1000px) {
+    min-height: 700px;
   }
 `
 
