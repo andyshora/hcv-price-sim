@@ -48,14 +48,19 @@ export const GraphWrap = styled.div`
 
 export const BreakdownWrap = styled.div`
   width: 50%;
-  height: 500px;
+  height: 450px;
   position: absolute;
   right: 0;
-  top: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-end;
+  top: -50px;
+  display: grid;
+  grid-template-columns: 160px 160px 1fr;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
 `
 
 export const ViewNav = styled.nav`

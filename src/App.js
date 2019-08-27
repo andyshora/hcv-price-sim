@@ -376,27 +376,27 @@ export default function App() {
         </GraphWrap>
         <BreakdownWrap>
           {view !== 'segments' && breakdown1 && (
-            <CostBreakdown
-              offsetForComplete={250}
-              height={500}
-              scaleToBounds={totalCostAsPerc}
-              items={breakdown1}
-              colors={breakdownColors}
-              title={xVal ? `Costs Before` : `Alloc'd Costs`}
-            />
+            <>
+              <CostBreakdown
+                offsetForComplete={150}
+                height={450}
+                scaleToBounds={totalCostAsPerc}
+                items={breakdown1}
+                colors={breakdownColors}
+                title={xVal ? `Costs Before` : `Alloc'd Costs`}
+              />
+              <CostBreakdown
+                offsetForComplete={150}
+                height={450}
+                scaleToBounds={totalCostAsPerc}
+                items={breakdown2}
+                colors={breakdownColors2}
+                title={`Costs After`}
+                enabled={xVal && breakdown2}
+              />
+            </>
           )}
-          {view !== 'segments' && xVal && breakdown2 ? (
-            <CostBreakdown
-              offsetForComplete={250}
-              height={500}
-              scaleToBounds={totalCostAsPerc}
-              items={breakdown2}
-              colors={breakdownColors2}
-              title={`Costs After`}
-            />
-          ) : (
-            ''
-          )}
+
           {view !== 'segments' && pie1 && pie1.length && (
             <RadialProgress
               values={pie1}

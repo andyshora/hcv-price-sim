@@ -6,6 +6,7 @@ import { makeStyles, createStyles } from '@material-ui/styles'
 import theme from '../../theme'
 
 const HorizontalThumbWrap = styled.span`
+  position: relative;
   > span {
     position: absolute;
     height: 2000px;
@@ -31,6 +32,7 @@ function HorizontalThumbComponent(props) {
   return (
     <HorizontalThumbWrap {...props}>
       <span />
+      <em>{props.children}</em>
     </HorizontalThumbWrap>
   )
 }
@@ -39,14 +41,23 @@ const useStyles = makeStyles(theme =>
   createStyles({
     root: {},
     rail: {
-      opacity: 0,
+      opacity: 1,
     },
     track: {
-      opacity: 0,
+      opacity: 1,
     },
     thumb: {
       backgroundColor: 'white',
       borderRadius: '50%',
+    },
+    valueLabel: {
+      top: 30,
+      '& *': {
+        background: 'transparent',
+        color: '#fff',
+        fontStyle: 'normal',
+        fontSize: '1rem',
+      },
     },
   })
 )
@@ -65,8 +76,8 @@ export default function HorizontalSlider({
     <Slider
       classes={classes}
       orientation="horizontal"
-      valueLabelFormat={v => `${v}`}
-      valueLabelDisplay="auto"
+      valueLabelFormat={v => `+${v}%`}
+      valueLabelDisplay="on"
       onChange={onChange}
       min={0}
       max={100}

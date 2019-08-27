@@ -3,8 +3,12 @@ import theme, { reactVizTheme } from '../../theme'
 import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 
-const BreakdownWrap = styled.div`
-  padding: 0 1rem 0;
+const BreakdownWrap = styled.div``
+
+const Placeholder = styled.div`
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
+  opacity: 0;
 `
 
 const TitleWrap = styled.div`
@@ -28,12 +32,16 @@ export default function CostBreakdown({
   offsetForComplete = 0,
   scaleToBounds = 1,
   title = null,
+  enabled = true,
 }) {
+  if (!enabled) {
+    return <Placeholder width={width} height={height} />
+  }
   let positions = []
   let yOffset = height
 
   let extraHeightOffsetForExcessScaling =
-    150 * (Math.max(1.5, scaleToBounds) - 1.5)
+    200 * (Math.max(1.5, scaleToBounds) - 1.5)
   let adjustedHeight =
     height -
     (offsetForComplete + Math.min(150, extraHeightOffsetForExcessScaling))
@@ -46,6 +54,7 @@ export default function CostBreakdown({
       h,
       y: yOffset - h,
       yLabel: items[i] > 0.7 ? yOffset - 50 : yOffset - h + h / 2 + 10,
+      opacity: +!!items[i],
     })
     yOffset -= h
   }
@@ -68,11 +77,13 @@ export default function CostBreakdown({
           {positions.map((p, i) => (
             <ValueLabel
               key={i}
-              x={(width + 20) / 2}
+              x={(width + 10) / 2}
               y={Math.min(height, p.yLabel)}
               val={items[i]}
             >
-              <tspan>{(items[i] * 100).toFixed(0)}%</tspan>
+              <tspan style={{ fillOpacity: p.opacity }}>
+                {(items[i] * 100).toFixed(0)}%
+              </tspan>
             </ValueLabel>
           ))}
         </g>
