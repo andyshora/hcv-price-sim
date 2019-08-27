@@ -54,7 +54,7 @@ export default function CostBreakdown({
       h,
       y: yOffset - h,
       yLabel: items[i] > 0.7 ? yOffset - 50 : yOffset - h + h / 2 + 10,
-      opacity: +!!items[i],
+      opacity: items[i] <= 0.05 ? 0 : 1,
     })
     yOffset -= h
   }

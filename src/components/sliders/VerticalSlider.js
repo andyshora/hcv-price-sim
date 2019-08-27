@@ -31,6 +31,7 @@ function VerticalThumbComponent(props) {
   return (
     <VerticalThumbWrap {...props}>
       <span />
+      <em>{props.children}</em>
     </VerticalThumbWrap>
   )
 }
@@ -46,6 +47,16 @@ const useStyles = makeStyles(theme =>
     },
     thumb: {
       backgroundColor: 'white',
+    },
+    valueLabel: {
+      left: -40,
+      top: 0,
+      '& *': {
+        background: 'transparent',
+        color: '#fff',
+        fontStyle: 'normal',
+        fontSize: '1rem',
+      },
     },
   })
 )
@@ -65,8 +76,8 @@ export default function VerticalSlider({
     <Slider
       classes={classes}
       orientation="vertical"
-      valueLabelFormat={v => `$${v}`}
-      valueLabelDisplay="auto"
+      valueLabelFormat={v => `${v}k`}
+      valueLabelDisplay="on"
       onChange={onChange}
       min={0.5}
       max={max}

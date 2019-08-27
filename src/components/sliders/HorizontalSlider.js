@@ -41,10 +41,10 @@ const useStyles = makeStyles(theme =>
   createStyles({
     root: {},
     rail: {
-      opacity: 1,
+      opacity: 0,
     },
     track: {
-      opacity: 1,
+      opacity: 0,
     },
     thumb: {
       backgroundColor: 'white',

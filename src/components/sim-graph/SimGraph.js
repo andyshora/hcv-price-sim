@@ -184,7 +184,7 @@ export default function SimGraph({
         margin={margin}
       >
         <YAxis
-          title="Direct Cost Per Patient"
+          title="Direct Cost Per Patient ($)"
           {...reactVizTheme.YAxis}
           tickFormat={xTickFormat}
           style={{
@@ -261,7 +261,7 @@ export default function SimGraph({
         <YAxisLabel>
           Direct Cost
           <br />
-          Per Patient
+          Per Patient ($)
         </YAxisLabel>
       </XYPlot>
 
