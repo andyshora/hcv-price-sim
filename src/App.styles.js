@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
 export const GridWrap = styled.div`
-  width: 100%;
-  min-width: 1280px;
+  width: 90%;
+  min-width: 1000px;
   display: grid;
   position: relative;
   margin: 50px auto 0;
