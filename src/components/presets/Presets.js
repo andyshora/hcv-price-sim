@@ -34,12 +34,16 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function InsetList({ items, onItemSelected }) {
+export default function InsetList({
+  items,
+  onItemSelected,
+  replaceMode = false,
+}) {
   const classes = useStyles()
 
-  function handleItemSelected(item) {
+  function handleItemSelected(i, item) {
     if (typeof onItemSelected === 'function') {
-      onItemSelected(item)
+      onItemSelected(i, item)
     }
   }
 
@@ -51,6 +55,14 @@ export default function InsetList({ items, onItemSelected }) {
     </ListSubheader>
   )
 
+  const itemStyles = replaceMode
+    ? {
+        background: 'rgba(255, 255, 255, 0.3)',
+        border: '1px dashed white',
+        marginRight: 1,
+      }
+    : { border: '1px solid transparent', marginRight: 1 }
+
   return (
     <Paper style={{ position: 'relative', zIndex: 11 }}>
       <List component="nav" className={classes.root} aria-label="Presets">
@@ -58,10 +70,11 @@ export default function InsetList({ items, onItemSelected }) {
           <ListItem
             key={`item-${item.x}-${item.y}`}
             button={true}
-            onClick={(e, i) => {
-              handleItemSelected(item)
+            onClick={e => {
+              handleItemSelected(i, item)
             }}
             dense={true}
+            style={itemStyles}
           >
             {i < icons.length && (
               <ListItemIcon>{React.createElement(icons[i])}</ListItemIcon>

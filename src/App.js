@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import ContainerDimensions from 'react-container-dimensions'
 import _ from 'lodash'
 
@@ -34,7 +34,9 @@ import {
 // data
 import patientData from './data/data.json'
 import bounds from './data/bounds.json'
-const presets = [
+import { Button } from '@material-ui/core'
+
+const defaultPresets = [
   {
     label: '',
     x: 25,
@@ -173,28 +175,50 @@ function getHighlightedArea(data, { maxY }) {
   return res
 }
 
+function saveToLocalStorage(key, value) {
+  if (typeof window !== 'undefined' && 'localStorage' in window) {
+    localStorage.setItem(key, JSON.stringify(value))
+  }
+}
+
+function getFromLocalStorage(key) {
+  let res = null
+  if (typeof window !== 'undefined' && 'localStorage' in window) {
+    res = localStorage.getItem(key)
+  }
+  return JSON.parse(res)
+}
+
 export default function App() {
   const [xVal, setXVal] = useState(0)
   const [yVal, setYVal] = useState(20)
+  const [savingPreset, setSavingPreset] = useState(false)
   const [breakdown1, setBreakdown1] = useState(null)
   const [breakdown2, setBreakdown2] = useState(null)
+  // const [presets, setPresets] = useState([])
   const [totalCostAsPerc, setTotalCostAsPerc] = useState(null)
+  function setPresets(p) {
+    presets.current = p
+  }
+
+  const presets = useRef(defaultPresets)
 
   const [view, setView] = React.useState('price')
 
   function handlePresetKeyTapped(index) {
-    if (index <= presets.length) {
-      handlePresetSelected(presets[index])
+    if (index <= presets.current.length) {
+      handlePresetSelected(index, presets.current[index])
     }
   }
 
-  useHotkeys('1, 2, 3, 4, 5', ({ key }) =>
-    handlePresetKeyTapped(Number.parseInt(key) - 1)
-  )
+  // useHotkeys('1, 2, 3, 4, 5', handleHotkeyTapped)
 
-  function setNewYVal(y) {
-    setYVal(y)
-    // setYVal(Math.min(150, y))
+  function handleHotkeyTapped({ key }) {
+    handlePresetKeyTapped(Number.parseInt(key) - 1)
+  }
+
+  function handleSavePresetTapped() {
+    setSavingPreset(true)
   }
 
   const areaColors = [
@@ -246,6 +270,13 @@ export default function App() {
     }
   }, [xVal, yVal, view])
 
+  useEffect(() => {
+    const persistedPresets = getFromLocalStorage('presets')
+    if (persistedPresets) {
+      setPresets(persistedPresets)
+    }
+  }, [])
+
   const highlightedPriceAreaData =
     view !== 'segments' ? getHighlightedArea(patientData, { maxY: yVal }) : []
   const xPercOffset =
@@ -269,18 +300,30 @@ export default function App() {
   }
 
   function handleViewChange(event, newView) {
-    // if (newView === 'price') {
-    //   setXVal(0)
-    // }
     setView(newView)
+    if (savingPreset) {
+      setSavingPreset(false)
+    }
   }
 
-  function handlePresetSelected({ x, y }) {
-    if (x !== xVal) {
-      setXVal(x)
-    }
-    if (y !== yVal) {
-      setNewYVal(y)
+  function handlePresetSelected(i, { x, y }) {
+    if (savingPreset) {
+      const newPresets = [...presets.current]
+      newPresets[i] = {
+        label: null,
+        x: xVal,
+        y: yVal,
+      }
+      setPresets(newPresets)
+      setSavingPreset(false)
+      saveToLocalStorage('presets', newPresets)
+    } else {
+      if (x !== xVal) {
+        setXVal(x)
+      }
+      if (y !== yVal) {
+        setYVal(y)
+      }
     }
   }
 
@@ -328,7 +371,10 @@ export default function App() {
                   }
                   margin={`auto 0 ${graphMargin.bottom}px 0`}
                   onChange={(e, val) => {
-                    setNewYVal(val)
+                    setYVal(val)
+                    if (savingPreset) {
+                      setSavingPreset(false)
+                    }
                   }}
                   defaultValue={yVal}
                   enabled={view !== 'segments'}
@@ -350,6 +396,9 @@ export default function App() {
                   margin={`0 ${graphMargin.right}px 0 0`}
                   onChange={(e, val) => {
                     setXVal(val)
+                    if (savingPreset) {
+                      setSavingPreset(false)
+                    }
                   }}
                   defaultValue={xVal}
                 />
@@ -413,7 +462,27 @@ export default function App() {
       </GridWrap>
       {view !== 'segments' && (
         <PresetsWrap>
-          <Presets items={presets} onItemSelected={handlePresetSelected} />
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={handleSavePresetTapped}
+          >
+            Save current state as Preset
+          </Button>
+          {savingPreset && (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => setSavingPreset(false)}
+            >
+              Cancel
+            </Button>
+          )}
+          <Presets
+            items={presets.current}
+            onItemSelected={handlePresetSelected}
+            replaceMode={savingPreset}
+          />
         </PresetsWrap>
       )}
     </Container>
