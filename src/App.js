@@ -211,7 +211,7 @@ export default function App() {
     }
   }
 
-  // useHotkeys('1, 2, 3, 4, 5', handleHotkeyTapped)
+  useHotkeys('1, 2, 3, 4, 5', handleHotkeyTapped)
 
   function handleHotkeyTapped({ key }) {
     handlePresetKeyTapped(Number.parseInt(key) - 1)
@@ -228,7 +228,6 @@ export default function App() {
     'rgb(51, 229, 255)',
     '#f9d129',
   ]
-  const areaColors2 = ['#f9d129', 'rgba(111, 111, 111)', '#30C1D7', '#6c9bdc']
 
   const breakdownColors = ['#6c9bdc', 'rgba(111, 111, 111)', '#fce0ff']
   const breakdownColors2 = [
@@ -318,12 +317,12 @@ export default function App() {
       setSavingPreset(false)
       saveToLocalStorage('presets', newPresets)
     } else {
-      if (x !== xVal) {
-        setXVal(x)
-      }
-      if (y !== yVal) {
-        setYVal(y)
-      }
+      // if (x !== xVal) {
+      setXVal(x)
+      // }
+      // if (y !== yVal) {
+      setYVal(y)
+      // }
     }
   }
 
