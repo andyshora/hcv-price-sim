@@ -64,30 +64,3 @@ export const ViewNav = styled.nav`
   z-index: 20;
   justify-content: space-between;
 `
-
-export const LineLabel = styled.div`
-text-align: center;
-display: flex;
-flex-direction: row;
-align-items: baseline;
-text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
-
-> span {
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  margin: 0 5px;
-  text-align: center;
-  white-space: nowrap;
-}
-> div {
-  font-size: 3rem;
-  margin: 0;
-  text-align: center;
-  &::before {
-    content: '${props => props.prefix || ''}';
-    opacity: 0.2;
-    position: relative;
-    left: -18px;
-  }
-}
-`

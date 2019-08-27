@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 
 const BreakdownWrap = styled.div`
-  padding: 1rem 1rem 0;
+  padding: 0 1rem 0;
 `
 
 const TitleWrap = styled.div`
@@ -16,7 +16,7 @@ const TitleWrap = styled.div`
 
 const ValueLabel = styled.text`
   font-size: ${props =>
-    props.val < 0.1 ? Math.max(1, 2 * (props.val / 0.1)) : 2}rem;
+    props.val < 0.06 ? Math.max(1, 1.6 * (props.val / 0.1)) : 1.6}rem;
   fill: white;
 `
 
@@ -26,11 +26,19 @@ export default function CostBreakdown({
   height = 200,
   width = 140,
   offsetForComplete = 0,
+  scaleToBounds = 1,
   title = null,
 }) {
   let positions = []
   let yOffset = height
-  let adjustedHeight = height - offsetForComplete
+
+  let extraHeightOffsetForExcessScaling =
+    150 * (Math.max(1.5, scaleToBounds) - 1.5)
+  let adjustedHeight =
+    height -
+    (offsetForComplete + Math.min(150, extraHeightOffsetForExcessScaling))
+
+  // calculate label and bar positions
   for (let i = 0; i < items.length; i++) {
     const h = adjustedHeight * items[i]
 
@@ -61,7 +69,7 @@ export default function CostBreakdown({
             <ValueLabel
               key={i}
               x={(width + 20) / 2}
-              y={p.yLabel}
+              y={Math.min(height, p.yLabel)}
               val={items[i]}
             >
               <tspan>{(items[i] * 100).toFixed(0)}%</tspan>

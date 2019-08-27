@@ -29,7 +29,6 @@ import {
   GraphWrap,
   BreakdownWrap,
   ViewNav,
-  LineLabel,
 } from './App.styles'
 
 // data
@@ -179,6 +178,7 @@ export default function App() {
   const [yVal, setYVal] = useState(20)
   const [breakdown1, setBreakdown1] = useState(null)
   const [breakdown2, setBreakdown2] = useState(null)
+  const [totalCostAsPerc, setTotalCostAsPerc] = useState(null)
 
   const [view, setView] = React.useState('price')
 
@@ -242,6 +242,7 @@ export default function App() {
         breakdown1: newBreakdown1,
       })
       setBreakdown2(newBreakdown2.ratios)
+      setTotalCostAsPerc(_.sum(newBreakdown2.ratios))
     }
   }, [xVal, yVal, view])
 
@@ -378,6 +379,7 @@ export default function App() {
             <CostBreakdown
               offsetForComplete={250}
               height={500}
+              scaleToBounds={totalCostAsPerc}
               items={breakdown1}
               colors={breakdownColors}
               title={xVal ? `Costs Before` : `Alloc'd Costs`}
@@ -387,6 +389,7 @@ export default function App() {
             <CostBreakdown
               offsetForComplete={250}
               height={500}
+              scaleToBounds={totalCostAsPerc}
               items={breakdown2}
               colors={breakdownColors2}
               title={`Costs After`}
