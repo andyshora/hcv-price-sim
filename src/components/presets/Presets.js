@@ -27,7 +27,7 @@ const icons = [
 const useStyles = makeStyles(theme => ({
   root: {
     maxWidth: 800,
-    padding: '0.5rem 0rem',
+    padding: 0,
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
     whiteSpace: 'nowrap',

@@ -146,16 +146,17 @@ function calculateBreakdown2({
   }
 }
 
-function calculatePie1({ x = 0, x2 = 0, data }) {
+function calculatePie1({ x = 0, xPerc = 0, data, bounds }) {
   const sum1 = _.sumBy(data.filter(d => d.Xcumsumleft <= x), 'Xwidth')
-  const sum2 = _.sumBy(data.filter(d => d.Xcumsumleft > x), 'Xwidth')
-  const total = sum1 + sum2
+  const total = bounds.maxX
   const seg1 = toSf((100 * sum1) / total, 1)
 
+  const remainingPatients = total - sum1
   const slicesArr = [seg1]
 
-  if (x2) {
-    slicesArr.push(toSf(x2 * 0.01 * (100 - seg1), 1))
+  // using slider %, calculate abs patient bounds who are now cured in the new region
+  if (xPerc) {
+    slicesArr.push(toSf((xPerc * remainingPatients) / total, 1))
   }
 
   return slicesArr
@@ -167,8 +168,10 @@ function getHighlightedArea(data, { maxY }) {
   const res = data
     .filter(d => d.Yval / 1000 >= maxY)
     .map(d => ({
-      xVal: d.Xcumsumleft + d.Xwidth / 2,
-      x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+      xLeft: d.Xcumsumleft,
+      xVal: d.Xcumsumleft + d.Xwidth,
+      x: (d.Xcumsumleft + d.Xwidth) / 1000,
+      xRight: d.Xcumsum,
       y: d.Yval / 1000,
     }))
 
@@ -292,9 +295,10 @@ export default function App() {
     highlightedPriceAreaData.length
   ) {
     pie1 = calculatePie1({
-      x: _.last(highlightedPriceAreaData).xVal,
-      x2: xVal || 0,
+      x: _.last(highlightedPriceAreaData).xRight,
+      xPerc: xVal || 0,
       data: patientData,
+      bounds,
     })
   }
 
@@ -461,6 +465,11 @@ export default function App() {
       </GridWrap>
       {view !== 'segments' && (
         <PresetsWrap>
+          <Presets
+            items={presets.current}
+            onItemSelected={handlePresetSelected}
+            replaceMode={savingPreset}
+          />
           <Button
             size="small"
             variant="outlined"
@@ -477,11 +486,6 @@ export default function App() {
               Cancel
             </Button>
           )}
-          <Presets
-            items={presets.current}
-            onItemSelected={handlePresetSelected}
-            replaceMode={savingPreset}
-          />
         </PresetsWrap>
       )}
     </Container>

@@ -48,8 +48,7 @@ export default function CostBreakdown({
 
   // calculate label and bar positions
   for (let i = 0; i < items.length; i++) {
-    const h = adjustedHeight * items[i]
-
+    const h = Math.max(0, adjustedHeight * items[i])
     positions.push({
       h,
       y: yOffset - h,

@@ -11,12 +11,14 @@ export const GridWrap = styled.div`
     '. h';
   grid-template-rows: 120px 1fr 50px;
   grid-template-columns: 70px 1fr;
-  overflow-x: hidden;
+  overflow: hidden;
 `
 export const PresetsWrap = styled.div`
   position: fixed;
   right: 0;
-  bottom: 0;
+  top: 0;
+  display: flex;
+  justify-content: flex-end;
 `
 export const Header = styled.div`
   grid-area: t;

@@ -123,8 +123,9 @@ export default function SimGraph({
     view !== 'segments' &&
     highlightedPriceAreaData &&
     highlightedPriceAreaData.length
-      ? _.last(highlightedPriceAreaData).xVal
+      ? _.last(highlightedPriceAreaData).xLeft
       : 0
+
   const curedRegionOffset = (xDivider / bounds.maxX) * chartAreaWidth
 
   const additionalCureAreaData =
