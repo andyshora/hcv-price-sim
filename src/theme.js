@@ -573,6 +573,7 @@ export const colorScales = {
   helix: chroma.cubehelix().lightness([0.3, 0.7]),
   brewer1: chroma.scale('RdBu'),
   temperature: chroma.scale(['#E71C57', '#ff0', 'rgb(67,253,162)']),
+  jmi: ['#c41300', '#f56324', '#f5ac24', '#ffff00'],
 }
 
 const baseColors = {

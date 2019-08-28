@@ -168,7 +168,7 @@ export default function SimGraph({
             style={{ fontSize: '1.2rem' }}
             items={bounds.segments.map((s, i) => ({
               title: s,
-              color: colorScales.temperature(i / 3).css(),
+              color: colorScales.jmi[i],
               strokeWidth: 20,
             }))}
           />
@@ -183,7 +183,7 @@ export default function SimGraph({
                 segment: bounds.segments[i],
               })}
               curve="curveBasis"
-              color={colorScales.temperature(i / 3).css()}
+              color={colorScales.jmi[i]}
               style={{ stroke: 'none', fillOpacity: 1 }}
             />
           ))
