@@ -551,7 +551,7 @@ function generateUITheme({ base, themeName, type }) {
         '#f9d129',
         '#6c9bdc',
         '#fd4343',
-        '#fce0ff',
+        '#dcf6df',
         '#30C1D7',
       ],
       seriesQ: chroma.scale('PuRd').colors(3),

@@ -243,14 +243,14 @@ export default function App() {
   }
 
   const areaColors = [
-    '#fce0ff',
+    '#dcf6df',
     'rgba(111, 111, 111)',
     '#6c9bdc',
     'rgb(51, 229, 255)',
     '#f9d129',
   ]
 
-  const breakdownColors = ['#6c9bdc', 'rgba(111, 111, 111)', '#fce0ff']
+  const breakdownColors = ['#6c9bdc', 'rgba(111, 111, 111)', '#dcf6df']
   const breakdownColors2 = [
     '#6c9bdc',
     '#30C1D7',
@@ -400,7 +400,7 @@ export default function App() {
         <Header>
           <div>
             <Typography variant="h2" component="h1" gutterBottom>
-              HCV Price Simulator
+              Hepatitis C Price Simulator for 100K Patients
             </Typography>
             <p>
               Explore how drug pricing affects the number of patients we are
