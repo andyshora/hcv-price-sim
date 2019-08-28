@@ -10,7 +10,9 @@ import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import ViewColumnIcon from '@material-ui/icons/ViewColumn'
 import VerticalAlignCenterIcon from '@material-ui/icons/VerticalAlignCenter'
-import CropIcon from '@material-ui/icons/Crop'
+import SaveIcon from '@material-ui/icons/Save'
+
+import { DiscreteColorLegend } from 'react-vis'
 
 import CostBreakdown from './components/cost-breakdown'
 import SimGraph from './components/sim-graph'
@@ -29,6 +31,7 @@ import {
   GraphWrap,
   BreakdownWrap,
   ViewNav,
+  VerticalCenter,
 } from './App.styles'
 
 // data
@@ -46,6 +49,21 @@ const defaultPresets = [
     label: '',
     x: 50,
     y: 30,
+  },
+  {
+    label: '',
+    x: 70,
+    y: 32,
+  },
+  {
+    label: '',
+    x: 70,
+    y: 32,
+  },
+  {
+    label: '',
+    x: 70,
+    y: 32,
   },
   {
     label: '',
@@ -214,7 +232,7 @@ export default function App() {
     }
   }
 
-  useHotkeys('1, 2, 3, 4, 5', handleHotkeyTapped)
+  useHotkeys('1, 2, 3, 4, 5, 6', handleHotkeyTapped)
 
   function handleHotkeyTapped({ key }) {
     handlePresetKeyTapped(Number.parseInt(key) - 1)
@@ -274,6 +292,16 @@ export default function App() {
 
   useEffect(() => {
     const persistedPresets = getFromLocalStorage('presets')
+    // new default presets might be longer
+    if (persistedPresets && defaultPresets.length > persistedPresets.length) {
+      for (
+        let i = persistedPresets.length - 1;
+        i < defaultPresets.length - 1;
+        i++
+      ) {
+        persistedPresets.push(defaultPresets[i])
+      }
+    }
     if (persistedPresets) {
       setPresets(persistedPresets)
     }
@@ -330,8 +358,44 @@ export default function App() {
     }
   }
 
+  let legendItems = [
+    {
+      title: 'Health system savings',
+      color: areaColors[0],
+      strokeWidth: 20,
+      enabled: true,
+    },
+    {
+      title: 'Untreated patient cost',
+      color: areaColors[1],
+      strokeWidth: 20,
+      enabled: true,
+    },
+    {
+      title: 'Cost for cure',
+      color: areaColors[2],
+      strokeWidth: 20,
+      enabled: true,
+    },
+  ]
+
+  if (xVal) {
+    legendItems.splice(2, 0, {
+      title: 'Newly cured cost',
+      color: areaColors[3],
+      strokeWidth: 20,
+      enabled: true,
+    })
+    legendItems.unshift({
+      title: 'Additional cure cost',
+      color: areaColors[4],
+      strokeWidth: 20,
+      enabled: true,
+    })
+  }
+
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <GridWrap>
         <Header>
           <div>
@@ -427,6 +491,35 @@ export default function App() {
           </ContainerDimensions>
         </GraphWrap>
         <BreakdownWrap>
+          {view !== 'segments' && pie1 && pie1.length && (
+            <VerticalCenter>
+              <RadialProgress
+                values={pie1}
+                max={100}
+                width={200}
+                height={200}
+                suffix={'%'}
+                title="Patients Cured"
+                colors={[areaColors[2], areaColors[3]]}
+                label={_.sum(pie1).toFixed(0)}
+              />
+            </VerticalCenter>
+          )}
+          {view !== 'segments' && (
+            <VerticalCenter>
+              <DiscreteColorLegend
+                style={{
+                  fontSize: '1rem',
+                  padding: '0.5rem',
+                  background: 'none',
+                  border: 'none',
+                  position: 'static',
+                  textAlign: 'left',
+                }}
+                items={legendItems}
+              />
+            </VerticalCenter>
+          )}
           {view !== 'segments' && breakdown1 && (
             <>
               <CostBreakdown
@@ -435,7 +528,11 @@ export default function App() {
                 scaleToBounds={totalCostAsPerc}
                 items={breakdown1}
                 colors={breakdownColors}
-                title={xVal ? `Costs Before` : `Alloc'd Costs`}
+                title={
+                  xVal
+                    ? 'Without uneconomical patients'
+                    : 'Total Health Care Cost'
+                }
               />
               <CostBreakdown
                 offsetForComplete={150}
@@ -443,23 +540,10 @@ export default function App() {
                 scaleToBounds={totalCostAsPerc}
                 items={breakdown2}
                 colors={breakdownColors2}
-                title={`Costs After`}
+                title={'With uneconomical patients'}
                 enabled={xVal && breakdown2}
               />
             </>
-          )}
-
-          {view !== 'segments' && pie1 && pie1.length && (
-            <RadialProgress
-              values={pie1}
-              max={100}
-              width={200}
-              height={200}
-              suffix={'%'}
-              title="Patients Cured"
-              colors={[areaColors[2], areaColors[3]]}
-              label={_.sum(pie1).toFixed(0)}
-            />
           )}
         </BreakdownWrap>
       </GridWrap>
@@ -470,12 +554,14 @@ export default function App() {
             onItemSelected={handlePresetSelected}
             replaceMode={savingPreset}
           />
+
           <Button
             size="small"
             variant="outlined"
             onClick={handleSavePresetTapped}
+            title="Save current state as hotkey"
           >
-            Save current state as hotkey
+            <SaveIcon size="small" />
           </Button>
           {savingPreset && (
             <Button

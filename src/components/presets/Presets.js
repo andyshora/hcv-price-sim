@@ -13,6 +13,7 @@ import LooksTwoIcon from '@material-ui/icons/LooksTwo'
 import LooksThreeIcon from '@material-ui/icons/Looks3'
 import LooksFourIcon from '@material-ui/icons/Looks4'
 import LooksFiveIcon from '@material-ui/icons/Looks5'
+import LooksSixIcon from '@material-ui/icons/Looks6'
 
 import theme from '../../theme'
 
@@ -22,6 +23,7 @@ const icons = [
   LooksThreeIcon,
   LooksFourIcon,
   LooksFiveIcon,
+  LooksSixIcon,
 ]
 
 const useStyles = makeStyles(theme => ({
@@ -68,7 +70,7 @@ export default function InsetList({
       <List component="nav" className={classes.root} aria-label="Presets">
         {items.map((item, i) => (
           <ListItem
-            key={`item-${item.x}-${item.y}`}
+            key={`item-${item.x}-${item.y}-${i}`}
             button={true}
             onClick={e => {
               handleItemSelected(i, item)

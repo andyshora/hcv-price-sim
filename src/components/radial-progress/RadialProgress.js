@@ -37,6 +37,10 @@ const CenterLabel = styled.div`
 const TitleLabel = styled.div`
   padding: 1rem 0;
   text-align: center;
+
+  > h4 {
+    font-size: 1.2rem;
+  }
 `
 
 const PlotWrap = styled.div`

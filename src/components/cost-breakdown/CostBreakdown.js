@@ -16,6 +16,10 @@ const TitleWrap = styled.div`
   max-width: ${props => props.width}px;
   position: relative;
   left: -20px;
+
+  > h4 {
+    font-size: 1.2rem;
+  }
 `
 
 const ValueLabel = styled.text`
