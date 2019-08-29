@@ -406,11 +406,11 @@ export default function App() {
         <SimpleGridWrap simple={view === 'segments'}>
           <Header>
             <div>
+              {viewNav}
               <Typography variant="h2" gutterBottom>
                 Hepatitis C Demand Curve by Patient Segment
               </Typography>
               <p>Each color represents a different segment of HCV patients.</p>
-              {viewNav}
             </div>
           </Header>
           <SimpleGraphWrap>
@@ -435,6 +435,7 @@ export default function App() {
         <GridWrap simple={view === 'segments'}>
           <Header>
             <div>
+              {viewNav}
               <Typography variant="h2" gutterBottom>
                 Hepatitis C Price Simulator for 100K Patients
               </Typography>
@@ -442,7 +443,6 @@ export default function App() {
                 Explore how drug pricing affects the number of patients we are
                 able to treat.
               </p>
-              {viewNav}
             </div>
           </Header>
           {view !== 'segments' && (

@@ -47,7 +47,7 @@ export const Header = styled.div`
   grid-area: top;
   display: grid;
   grid-template-columns: 1fr;
-  padding-top: 50px;
+  padding-top: 2rem;
 `
 export const VerticalControls = styled.div`
   grid-area: yaxis;
@@ -108,6 +108,7 @@ export const ViewNav = styled.nav`
   position: relative;
   z-index: 20;
   justify-content: space-between;
+  margin: 0 0 2rem 0;
 `
 
 export const VerticalCenter = styled.div`
