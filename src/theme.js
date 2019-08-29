@@ -92,11 +92,13 @@ function generateVizTheme({ base, themeName }) {
     .rv-xy-plot__axis__tick__text {
       fill: ${base.fgScale(0.42).css()};
       font-size: 20px;
+      user-select: none;
     }
     
     .rv-xy-plot__axis__title text {
       fill: ${base.fg};
-      font-size: 1.6rem;
+      font-size: 1.4rem;
+      user-select: none;
     }
     
     .rv-xy-plot__axis--vertical .rv-xy-plot__axis__title {
@@ -208,6 +210,7 @@ function generateVizTheme({ base, themeName }) {
       padding: 1rem;
       top: 1rem;
       right: 1rem;
+      user-select: none;
       border: 1px solid ${base.vizBgScale(0.55).css()};
       background: ${chroma(base.bg)
         .alpha(0.8)

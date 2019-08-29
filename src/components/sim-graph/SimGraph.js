@@ -20,7 +20,7 @@ const YAxisLabel = styled.p`
   top: 80px;
   left: -90px;
   color: white;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
 `
 
 const HighlightedRegion = styled.div`

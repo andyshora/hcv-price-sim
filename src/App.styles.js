@@ -68,7 +68,7 @@ export const HorizontalControls = styled.div`
 
 export const SimpleGraphWrap = styled.div`
   grid-area: main;
-  width: 100%;
+  width: 90%;
   min-height: 500px;
   @media (min-height: 800px) {
     min-height: 600px;

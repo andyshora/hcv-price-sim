@@ -20,10 +20,10 @@ const Placeholder = styled.div`
 `
 
 const TitleWrap = styled.div`
-  padding: 1rem;
-  max-width: ${props => props.width}px;
+  padding: 1rem 0 0 0;
   position: relative;
-  left: -20px;
+  left: 0;
+  text-align: ${props => props.align};
 
   > h4 {
     font-size: 1.2rem;
@@ -34,6 +34,13 @@ const ValueLabel = styled.text`
   font-size: ${props =>
     props.val < 0.06 ? Math.max(1, 1.6 * (props.val / 0.1)) : 1.6}rem;
   fill: white;
+  width: ${props => props.width}px;
+
+  transform: translate(100);
+
+  > tspan {
+    text-anchor: middle;
+  }
 `
 
 export default function CostBreakdown({
@@ -46,6 +53,7 @@ export default function CostBreakdown({
   totalCost = null,
   title = null,
   enabled = true,
+  align = 'left',
 }) {
   if (!enabled) {
     return <Placeholder width={width} height={height} />
@@ -71,6 +79,9 @@ export default function CostBreakdown({
     yOffset -= h
   }
 
+  let labelPosX = align === 'left' ? 0 : width / 2
+  let barPosX = align === 'left' ? 0 : width / 2
+
   return (
     <BreakdownWrap>
       {totalCost && (
@@ -89,9 +100,9 @@ export default function CostBreakdown({
           {positions.map((p, i) => (
             <rect
               key={i}
-              width={width / 2}
+              width={width * 0.4}
               height={p.h}
-              x={0}
+              x={barPosX}
               y={p.y}
               fill={colors[i]}
             />
@@ -101,7 +112,10 @@ export default function CostBreakdown({
           {positions.map((p, i) => (
             <ValueLabel
               key={i}
-              x={(width + 10) / 2}
+              width={width * 0.4}
+              x={
+                align === 'left' ? barPosX + width * 0.6 : barPosX - width * 0.2
+              }
               y={Math.min(height, p.yLabel)}
               val={items[i]}
             >
@@ -113,7 +127,11 @@ export default function CostBreakdown({
         </g>
       </svg>
       {!!title && (
-        <TitleWrap width={width}>
+        <TitleWrap
+          width={width}
+          align={align}
+          style={{ left: align === 'right' ? -width * 0.1 : 0 }}
+        >
           <Typography variant="h4">{title}</Typography>
         </TitleWrap>
       )}

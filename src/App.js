@@ -553,10 +553,12 @@ export default function App() {
                   <CostBreakdown
                     offsetForComplete={150}
                     height={500}
+                    width={200}
                     scaleToBounds={totalCostAsPerc}
                     items={breakdown1}
                     colors={breakdownColors}
                     totalCost={cost1}
+                    align="right"
                     title={
                       xVal
                         ? 'Without uneconomical patients'
@@ -566,10 +568,12 @@ export default function App() {
                   <CostBreakdown
                     offsetForComplete={150}
                     height={500}
+                    width={200}
                     scaleToBounds={totalCostAsPerc}
                     items={breakdown2}
                     colors={breakdownColors2}
                     totalCost={cost2}
+                    align="left"
                     title={'With uneconomical patients'}
                     enabled={xVal && breakdown2}
                   />
