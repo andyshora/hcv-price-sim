@@ -49,12 +49,12 @@ const useStyles = makeStyles(theme =>
       borderRadius: '50%',
     },
     valueLabel: {
-      top: 30,
+      top: 40,
       '& *': {
         background: 'transparent',
         color: '#fff',
         fontStyle: 'normal',
-        fontSize: '1rem',
+        fontSize: '1.4rem',
       },
     },
   })

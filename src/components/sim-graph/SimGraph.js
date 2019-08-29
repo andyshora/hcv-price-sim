@@ -17,7 +17,7 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 10px;
+  top: 80px;
   left: -90px;
   color: white;
   font-size: 1.6rem;
@@ -82,7 +82,7 @@ function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
 }
 
 function xTickFormat(val) {
-  return `${val}k`
+  return `${val}K`
 }
 
 export default function SimGraph({
@@ -213,9 +213,15 @@ export default function SimGraph({
           />
         )}
         <YAxisLabel>
-          Direct Cost
+          Direct
           <br />
-          Per Patient ($)
+          Cost
+          <br />
+          Per
+          <br />
+          Patient
+          <br />
+          ($)
         </YAxisLabel>
       </XYPlot>
 

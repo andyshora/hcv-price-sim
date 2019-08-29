@@ -22,11 +22,13 @@ import Presets from './components/presets'
 
 import {
   GridWrap,
+  SimpleGridWrap,
   PresetsWrap,
   Header,
   VerticalControls,
   HorizontalControls,
   GraphWrap,
+  SimpleGraphWrap,
   BreakdownWrap,
   ViewNav,
   VerticalCenter,
@@ -379,163 +381,204 @@ export default function App() {
     })
   }
 
+  const viewNav = (
+    <ViewNav>
+      <ToggleButtonGroup value={view} exclusive onChange={handleViewChange}>
+        <ToggleButton value="segments">
+          <ViewColumnIcon />
+          Segments
+        </ToggleButton>
+        <ToggleButton value="price">
+          <VerticalAlignCenterIcon />
+          Price per patient
+        </ToggleButton>
+        <ToggleButton value="population" disabled>
+          <VerticalAlignCenterIcon />
+          Price per population
+        </ToggleButton>
+      </ToggleButtonGroup>
+    </ViewNav>
+  )
+
   return (
     <Container maxWidth="xl">
-      <GridWrap>
-        <Header>
-          <div>
-            <Typography variant="h2" component="h1" gutterBottom>
-              Hepatitis C Price Simulator for 100K Patients
-            </Typography>
-            <p>
-              Explore how drug pricing affects the number of patients we are
-              able to treat.
-            </p>
-            <ViewNav>
-              <ToggleButtonGroup
-                value={view}
-                exclusive
-                onChange={handleViewChange}
-              >
-                <ToggleButton value="segments">
-                  <ViewColumnIcon />
-                  Segments
-                </ToggleButton>
-                <ToggleButton value="price">
-                  <VerticalAlignCenterIcon />
-                  Price
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </ViewNav>
-          </div>
-        </Header>
-        <VerticalControls>
-          <ContainerDimensions>
-            {({ width, height }) => {
-              return (
-                <VerticalSlider
-                  max={bounds.maxYInput / 1000}
+      {view === 'segments' ? (
+        <SimpleGridWrap simple={view === 'segments'}>
+          <Header>
+            <div>
+              <Typography variant="h2" component="h1" gutterBottom>
+                Hepatitis C Demand Curve by Patient Segment
+              </Typography>
+              <p>Each color represents a different segment of HCV patients.</p>
+              {viewNav}
+            </div>
+          </Header>
+          <SimpleGraphWrap>
+            <ContainerDimensions>
+              {({ width, height }) => (
+                <SimGraph
+                  areaColors={areaColors}
+                  view={view}
                   bounds={bounds}
-                  height={
-                    ((height - (graphMargin.top + graphMargin.bottom)) *
-                      bounds.maxYInput) /
-                    bounds.maxY
-                  }
-                  margin={`auto 0 ${graphMargin.bottom}px 0`}
-                  onChange={(e, val) => {
-                    setYVal(val)
-                    if (savingPreset) {
-                      setSavingPreset(false)
-                    }
-                  }}
-                  defaultValue={yVal}
-                  enabled={view !== 'segments'}
+                  patientData={patientData}
+                  highlightValues={{ x: xVal, y: yVal }}
+                  highlightedPriceAreaData={highlightedPriceAreaData}
+                  height={height}
+                  width={width}
+                  margin={graphMargin}
                 />
-              )
-            }}
-          </ContainerDimensions>
-        </VerticalControls>
-        <HorizontalControls>
-          <ContainerDimensions>
-            {({ width, height }) =>
-              view !== 'segments' && (
-                <HorizontalSlider
-                  bounds={bounds}
-                  width={
-                    (width - (graphMargin.left + graphMargin.right)) *
-                    (1 - xPercOffset)
-                  }
-                  margin={`0 ${graphMargin.right}px 0 0`}
-                  onChange={(e, val) => {
-                    setXVal(val)
-                    if (savingPreset) {
-                      setSavingPreset(false)
-                    }
-                  }}
-                  defaultValue={xVal}
-                />
-              )
-            }
-          </ContainerDimensions>
-        </HorizontalControls>
-        <GraphWrap>
-          <ContainerDimensions>
-            {({ width, height }) => (
-              <SimGraph
-                areaColors={areaColors}
-                view={view}
-                bounds={bounds}
-                patientData={patientData}
-                highlightValues={{ x: xVal, y: yVal }}
-                highlightedPriceAreaData={highlightedPriceAreaData}
-                height={height}
-                width={width}
-                margin={graphMargin}
-              />
-            )}
-          </ContainerDimensions>
-          <CuredWrap>
-            {view !== 'segments' && pie1 && pie1.length && (
-              <VerticalCenter>
-                <RadialProgress
-                  values={pie1}
-                  max={100}
-                  width={200}
-                  height={200}
-                  suffix={'%'}
-                  title="Patients Cured"
-                  colors={[areaColors[2], areaColors[3]]}
-                  label={_.sum(pie1).toFixed(0)}
-                />
-              </VerticalCenter>
-            )}
-          </CuredWrap>
-        </GraphWrap>
-        <BreakdownWrap>
-          {view !== 'segments' && false && (
-            <VerticalCenter>
-              <DiscreteColorLegend
-                style={{
-                  fontSize: '1rem',
-                  padding: '0.5rem',
-                  background: 'none',
-                  border: 'none',
-                  position: 'static',
-                  textAlign: 'left',
+              )}
+            </ContainerDimensions>
+          </SimpleGraphWrap>
+        </SimpleGridWrap>
+      ) : (
+        <GridWrap simple={view === 'segments'}>
+          <Header>
+            <div>
+              <Typography variant="h2" component="h1" gutterBottom>
+                Hepatitis C Price Simulator for 100K Patients
+              </Typography>
+              <p>
+                Explore how drug pricing affects the number of patients we are
+                able to treat.
+              </p>
+              {viewNav}
+            </div>
+          </Header>
+          {view !== 'segments' && (
+            <VerticalControls>
+              <ContainerDimensions>
+                {({ width, height }) => {
+                  return (
+                    <VerticalSlider
+                      max={bounds.maxYInput / 1000}
+                      bounds={bounds}
+                      height={
+                        ((height - (graphMargin.top + graphMargin.bottom)) *
+                          bounds.maxYInput) /
+                        bounds.maxY
+                      }
+                      margin={`auto 0 ${graphMargin.bottom}px 0`}
+                      onChange={(e, val) => {
+                        setYVal(val)
+                        if (savingPreset) {
+                          setSavingPreset(false)
+                        }
+                      }}
+                      defaultValue={yVal}
+                      enabled={view !== 'segments'}
+                    />
+                  )
                 }}
-                items={legendItems}
-              />
-            </VerticalCenter>
+              </ContainerDimensions>
+            </VerticalControls>
           )}
-          {view !== 'segments' && breakdown1 && (
-            <>
-              <CostBreakdown
-                offsetForComplete={150}
-                height={450}
-                scaleToBounds={totalCostAsPerc}
-                items={breakdown1}
-                colors={breakdownColors}
-                totalCost={cost1}
-                title={
-                  xVal
-                    ? 'Without uneconomical patients'
-                    : 'Total Health Care Cost'
+          {view !== 'segments' && (
+            <HorizontalControls>
+              <ContainerDimensions>
+                {({ width, height }) =>
+                  view !== 'segments' && (
+                    <HorizontalSlider
+                      bounds={bounds}
+                      width={
+                        (width - (graphMargin.left + graphMargin.right)) *
+                        (1 - xPercOffset)
+                      }
+                      margin={`0 ${graphMargin.right}px 0 0`}
+                      onChange={(e, val) => {
+                        setXVal(val)
+                        if (savingPreset) {
+                          setSavingPreset(false)
+                        }
+                      }}
+                      defaultValue={xVal}
+                    />
+                  )
                 }
-              />
-              <CostBreakdown
-                offsetForComplete={150}
-                height={450}
-                scaleToBounds={totalCostAsPerc}
-                items={breakdown2}
-                colors={breakdownColors2}
-                totalCost={cost2}
-                title={'With uneconomical patients'}
-                enabled={xVal && breakdown2}
-              />
-            </>
+              </ContainerDimensions>
+            </HorizontalControls>
           )}
-        </BreakdownWrap>
-      </GridWrap>
+          <GraphWrap>
+            <ContainerDimensions>
+              {({ width, height }) => (
+                <SimGraph
+                  areaColors={areaColors}
+                  view={view}
+                  bounds={bounds}
+                  patientData={patientData}
+                  highlightValues={{ x: xVal, y: yVal }}
+                  highlightedPriceAreaData={highlightedPriceAreaData}
+                  height={height}
+                  width={width}
+                  margin={graphMargin}
+                />
+              )}
+            </ContainerDimensions>
+            {view !== 'segments' && pie1 && pie1.length && (
+              <CuredWrap>
+                <VerticalCenter>
+                  <RadialProgress
+                    values={pie1}
+                    max={100}
+                    width={200}
+                    height={200}
+                    suffix={'%'}
+                    title="Patients Cured"
+                    colors={[areaColors[2], areaColors[3]]}
+                    label={_.sum(pie1).toFixed(0)}
+                  />
+                </VerticalCenter>
+              </CuredWrap>
+            )}
+          </GraphWrap>
+          {view !== 'segments' && (
+            <BreakdownWrap>
+              {false && (
+                <VerticalCenter>
+                  <DiscreteColorLegend
+                    style={{
+                      fontSize: '1rem',
+                      padding: '0.5rem',
+                      background: 'none',
+                      border: 'none',
+                      position: 'static',
+                      textAlign: 'left',
+                    }}
+                    items={legendItems}
+                  />
+                </VerticalCenter>
+              )}
+              {breakdown1 && (
+                <>
+                  <CostBreakdown
+                    offsetForComplete={150}
+                    height={500}
+                    scaleToBounds={totalCostAsPerc}
+                    items={breakdown1}
+                    colors={breakdownColors}
+                    totalCost={cost1}
+                    title={
+                      xVal
+                        ? 'Without uneconomical patients'
+                        : 'Total Health Care Cost'
+                    }
+                  />
+                  <CostBreakdown
+                    offsetForComplete={150}
+                    height={500}
+                    scaleToBounds={totalCostAsPerc}
+                    items={breakdown2}
+                    colors={breakdownColors2}
+                    totalCost={cost2}
+                    title={'With uneconomical patients'}
+                    enabled={xVal && breakdown2}
+                  />
+                </>
+              )}
+            </BreakdownWrap>
+          )}
+        </GridWrap>
+      )}
       {view !== 'segments' && (
         <PresetsWrap>
           <Presets

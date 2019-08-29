@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme =>
         background: 'transparent',
         color: '#fff',
         fontStyle: 'normal',
-        fontSize: '1rem',
+        fontSize: '1.4rem',
       },
     },
   })

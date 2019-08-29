@@ -75,7 +75,7 @@ export default function CostBreakdown({
     <BreakdownWrap>
       {totalCost && (
         <TotalCost>
-          <p>Total Cost:</p>
+          <Typography variant="h5">Total Cost:</Typography>
           <Typography variant="h4" style={{ textTransform: 'none' }}>
             $
             {currency(totalCost, { precision: 0, separator: ',' })

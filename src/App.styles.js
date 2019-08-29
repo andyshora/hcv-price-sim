@@ -1,24 +1,43 @@
 import styled from 'styled-components'
+import { Paper } from '@material-ui/core'
 
 // grid-template-areas:
 //     't t'
 //     'v c'
 //     '. h';
+
 export const GridWrap = styled.div`
   width: 100%;
   min-width: 1000px;
   display: grid;
   position: relative;
-  margin: 50px auto 0;
+  margin: 0 auto;
   grid-template-areas:
     'top    top     side'
     'yaxis  main    side'
     '.      xaxis   .'
     'bottom bottom  bottom';
-  grid-template-columns: 100px 1fr 400px;
+  grid-template-columns: 100px 1fr 450px;
   grid-template-rows: 120px 1fr 120px 50px;
   overflow: hidden;
 `
+
+export const SimpleGridWrap = styled(GridWrap)`
+  width: 100%;
+  min-width: 1000px;
+  display: grid;
+  position: relative;
+  margin: 0 auto;
+  grid-template-areas:
+    'top    top'
+    'yaxis  main'
+    '.      xaxis'
+    'bottom bottom  bottom';
+  grid-template-columns: 100px 1fr;
+  grid-template-rows: 120px 1fr 120px;
+  overflow: hidden;
+`
+
 export const PresetsWrap = styled.div`
   position: fixed;
   right: 1rem;
@@ -35,6 +54,7 @@ export const Header = styled.div`
   grid-area: top;
   display: grid;
   grid-template-columns: 1fr;
+  padding-top: 50px;
 `
 export const VerticalControls = styled.div`
   grid-area: yaxis;
@@ -53,6 +73,18 @@ export const HorizontalControls = styled.div`
   top: -2.5rem;
 `
 
+export const SimpleGraphWrap = styled.div`
+  grid-area: main;
+  width: 100%;
+  min-height: 500px;
+  @media (min-height: 800px) {
+    min-height: 700px;
+  }
+  @media (min-height: 1000px) {
+    min-height: 800px;
+  }
+`
+
 export const GraphWrap = styled.div`
   grid-area: main;
   width: 100%;
@@ -68,30 +100,14 @@ export const GraphWrap = styled.div`
 export const CuredWrap = styled.div`
   position: absolute;
   top: 0;
-  right: 0;
+  right: 2rem;
 `
 
-export const BreakdownWrap = styled.aside`
-  // width: 80%;
-  // position: absolute;
-  right: 0;
-  // top: -50px;
+export const BreakdownWrap = styled(Paper)`
   display: grid;
   grid-area: side;
   grid-template-columns: 50% 50%;
-  padding: 0 0 0 2rem;
-
-  // @media (min-height: 700px) {
-  //   top: 0;
-  // }
-
-  // @media (min-width: 1200px) {
-  //   width: 70%;
-  // }
-
-  // @media (min-width: 1400px) {
-  //   width: 60%;
-  // }
+  padding: 50px 0 0 3rem;
 `
 
 export const ViewNav = styled.nav`
