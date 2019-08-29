@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import Slider from '@material-ui/core/Slider'
-import theme from '../../theme'
 import { makeStyles, createStyles } from '@material-ui/styles'
 
 const VerticalThumbWrap = styled.span`

@@ -1,25 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { Typography } from '@material-ui/core'
 import _ from 'lodash'
 import {
   XYPlot,
-  FlexibleWidthXYPlot,
   XAxis,
   YAxis,
-  VerticalGridLines,
-  HorizontalGridLines,
-  LineSeries,
   AreaSeries,
-  Crosshair,
   DiscreteColorLegend,
-  GradientDefs,
-  CustomSVGSeries,
-  VerticalRectSeries,
 } from 'react-vis'
 
-import theme, { colorScales, reactVizTheme } from '../../theme'
-import HighlightLegend from '../highlight-legend'
+import { colorScales, reactVizTheme } from '../../theme'
 
 const ChartWrap = styled.div`
   position: relative;

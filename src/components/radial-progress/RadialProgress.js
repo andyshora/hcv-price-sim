@@ -1,6 +1,6 @@
 import React from 'react'
-import { XYPlot, ArcSeries, GradientDefs } from 'react-vis'
-import theme, { colorScales, reactVizTheme } from '../../theme'
+import { XYPlot, ArcSeries } from 'react-vis'
+import theme from '../../theme'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 

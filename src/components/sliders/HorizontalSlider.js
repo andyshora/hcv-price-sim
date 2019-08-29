@@ -3,8 +3,6 @@ import styled from 'styled-components'
 import Slider from '@material-ui/core/Slider'
 import { makeStyles, createStyles } from '@material-ui/styles'
 
-import theme from '../../theme'
-
 const HorizontalThumbWrap = styled.span`
   position: relative;
   > span {

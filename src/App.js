@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ContainerDimensions from 'react-container-dimensions'
 import _ from 'lodash'
 
@@ -19,8 +19,6 @@ import SimGraph from './components/sim-graph'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
 import RadialProgress from './components/radial-progress'
 import Presets from './components/presets'
-
-import theme from './theme'
 
 import {
   GridWrap,
@@ -115,7 +113,7 @@ function calculateBreakdown2({
   totalArea,
   breakdown1,
 }) {
-  const existingCuredArea = breakdown1.areas[0]
+  // const existingCuredArea = breakdown1.areas[0]
   const existingUntreatedArea = breakdown1.areas[1]
 
   // todo - check this
@@ -130,7 +128,7 @@ function calculateBreakdown2({
   const additionalCostsArea =
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y - newlyCuredArea
 
-  const baselineTotalArea = totalArea - breakdown1.areas[2]
+  // const baselineTotalArea = totalArea - breakdown1.areas[2]
 
   const areas = [
     breakdown1.areas[0],
@@ -274,7 +272,7 @@ export default function App() {
       setCost2(newBreakdown2.totalCost)
       setTotalCostAsPerc(_.sum(newBreakdown2.ratios))
     }
-  }, [xVal, yVal, view])
+  }, [xVal, yVal, view, totalArea])
 
   useEffect(() => {
     const persistedPresets = getFromLocalStorage('presets')

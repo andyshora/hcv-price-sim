@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import theme, { reactVizTheme } from '../../theme'
+import React from 'react'
 import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 import currency from 'currency.js'

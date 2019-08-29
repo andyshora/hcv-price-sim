@@ -1,12 +1,10 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import Paper from '@material-ui/core/Paper'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import Typography from '@material-ui/core/Typography'
 
 import LooksOneIcon from '@material-ui/icons/LooksOne'
 import LooksTwoIcon from '@material-ui/icons/LooksTwo'
@@ -14,8 +12,6 @@ import LooksThreeIcon from '@material-ui/icons/Looks3'
 import LooksFourIcon from '@material-ui/icons/Looks4'
 import LooksFiveIcon from '@material-ui/icons/Looks5'
 import LooksSixIcon from '@material-ui/icons/Looks6'
-
-import theme from '../../theme'
 
 const icons = [
   LooksOneIcon,
@@ -48,14 +44,6 @@ export default function InsetList({
       onItemSelected(i, item)
     }
   }
-
-  const SubHeader = (
-    <ListSubheader>
-      <Typography variant="h4" component="h4">
-        Presets
-      </Typography>
-    </ListSubheader>
-  )
 
   const itemStyles = replaceMode
     ? {
