@@ -18,7 +18,7 @@ export const GridWrap = styled.div`
     '.      xaxis   .'
     'bottom bottom  bottom';
   grid-template-columns: 100px 1fr 450px;
-  grid-template-rows: 120px 1fr 120px 50px;
+  grid-template-rows: 200px 1fr 120px 50px;
   overflow: hidden;
 `
 
@@ -34,21 +34,14 @@ export const SimpleGridWrap = styled(GridWrap)`
     '.      xaxis'
     'bottom bottom  bottom';
   grid-template-columns: 100px 1fr;
-  grid-template-rows: 120px 1fr 120px;
+  grid-template-rows: 200px 1fr 120px;
   overflow: hidden;
 `
 
 export const PresetsWrap = styled.div`
-  position: fixed;
-  right: 1rem;
-  bottom: 0;
   display: flex;
   justify-content: flex-end;
   transition: opacity 0.4s ease;
-  opacity: 0.2;
-  &:hover {
-    opacity: 1;
-  }
 `
 export const Header = styled.div`
   grid-area: top;
@@ -78,7 +71,7 @@ export const SimpleGraphWrap = styled.div`
   width: 100%;
   min-height: 500px;
   @media (min-height: 800px) {
-    min-height: 700px;
+    min-height: 600px;
   }
   @media (min-height: 1000px) {
     min-height: 800px;
@@ -103,7 +96,7 @@ export const CuredWrap = styled.div`
   right: 2rem;
 `
 
-export const BreakdownWrap = styled(Paper)`
+export const BreakdownWrap = styled.aside`
   display: grid;
   grid-area: side;
   grid-template-columns: 50% 50%;

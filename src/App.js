@@ -162,7 +162,7 @@ function calculatePie1({ x = 0, xPerc = 0, data, bounds }) {
   return slicesArr
 }
 
-const graphMargin = { top: 80, left: 80, right: 10, bottom: 80 }
+const graphMargin = { top: 10, left: 80, right: 10, bottom: 80 }
 
 function getHighlightedArea(data, { maxY }) {
   const res = data
@@ -406,7 +406,7 @@ export default function App() {
         <SimpleGridWrap simple={view === 'segments'}>
           <Header>
             <div>
-              <Typography variant="h2" component="h1" gutterBottom>
+              <Typography variant="h2" gutterBottom>
                 Hepatitis C Demand Curve by Patient Segment
               </Typography>
               <p>Each color represents a different segment of HCV patients.</p>
@@ -435,7 +435,7 @@ export default function App() {
         <GridWrap simple={view === 'segments'}>
           <Header>
             <div>
-              <Typography variant="h2" component="h1" gutterBottom>
+              <Typography variant="h2" gutterBottom>
                 Hepatitis C Price Simulator for 100K Patients
               </Typography>
               <p>
