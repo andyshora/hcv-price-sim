@@ -35,7 +35,7 @@ import {
 } from './App.styles'
 
 // data
-import patientData from './data/data.json'
+import patientData from './data/cleaned.json'
 import bounds from './data/bounds.json'
 import { Button } from '@material-ui/core'
 
@@ -72,17 +72,6 @@ const defaultPresets = [
   },
 ]
 
-function getArea({ Xwidth, Yval }) {
-  return Xwidth * Yval
-}
-
-function getTotalArea(data) {
-  return data
-    .filter(d => d.Xwidth > 0)
-    .map(getArea)
-    .reduce((sum, v) => sum + v)
-}
-
 function toSf(val, num = 2) {
   return ~~(val * Math.pow(10, num)) / Math.pow(10, num)
 }
@@ -92,7 +81,7 @@ function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
 
   const filteredData = data.filter(d => d.Xwidth > 0 && d.Yval < y)
 
-  const untreatedArea = filteredData.map(getArea).reduce((sum, v) => sum + v, 0)
+  const untreatedArea = filteredData.reduce((sum, d) => sum + d.area, 0)
 
   // blue rectangle - we have top left position, and it's a filled rectangle
   const curedArea =
@@ -113,6 +102,7 @@ function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
   return {
     ratios: [curedRatio, untreatedRatio, savingsRatio],
     areas: [curedArea, untreatedArea, savingsArea],
+    totalCost: totalArea,
   }
 }
 
@@ -135,23 +125,13 @@ function calculateBreakdown2({
         d.Xcumsumleft >= additionalRegionBounds.x0 &&
         d.Xcumsumleft <= additionalRegionBounds.x1
     )
-    .map(getArea)
-    .reduce((sum, v) => sum + v, 0)
+    .reduce((sum, d) => sum + d.area, 0)
 
   const additionalCostsArea =
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y - newlyCuredArea
 
   const baselineTotalArea = totalArea - breakdown1.areas[2]
-  const temp1 =
-    (additionalCostsArea +
-      newlyCuredArea +
-      existingCuredArea +
-      (existingUntreatedArea - newlyCuredArea)) /
-    baselineTotalArea
-  // console.log('temp1', temp1)
 
-  // const newlyCuredArea =
-  //   untreatedArea * (newlyCuredArea / existingUntreatedArea)
   const areas = [
     breakdown1.areas[0],
     newlyCuredArea,
@@ -161,6 +141,7 @@ function calculateBreakdown2({
   return {
     areas,
     ratios: areas.map(a => a / totalArea),
+    totalCost: totalArea + additionalCostsArea,
   }
 }
 
@@ -216,6 +197,9 @@ export default function App() {
   const [savingPreset, setSavingPreset] = useState(false)
   const [breakdown1, setBreakdown1] = useState(null)
   const [breakdown2, setBreakdown2] = useState(null)
+
+  const [cost1, setCost1] = useState(null)
+  const [cost2, setCost2] = useState(null)
   // const [presets, setPresets] = useState([])
   const [totalCostAsPerc, setTotalCostAsPerc] = useState(null)
   function setPresets(p) {
@@ -258,7 +242,7 @@ export default function App() {
     '#f9d129',
   ]
 
-  const totalArea = getTotalArea(patientData)
+  const { totalArea } = bounds
 
   useEffect(() => {
     const newBreakdown1 = calculateBreakdown1({
@@ -268,6 +252,7 @@ export default function App() {
       totalArea,
     })
     setBreakdown1(newBreakdown1.ratios)
+    setCost1(newBreakdown1.totalCost)
 
     if (view !== 'segments' && xVal) {
       const x0 =
@@ -286,6 +271,7 @@ export default function App() {
         breakdown1: newBreakdown1,
       })
       setBreakdown2(newBreakdown2.ratios)
+      setCost2(newBreakdown2.totalCost)
       setTotalCostAsPerc(_.sum(newBreakdown2.ratios))
     }
   }, [xVal, yVal, view])
@@ -528,6 +514,7 @@ export default function App() {
                 scaleToBounds={totalCostAsPerc}
                 items={breakdown1}
                 colors={breakdownColors}
+                totalCost={cost1}
                 title={
                   xVal
                     ? 'Without uneconomical patients'
@@ -540,6 +527,7 @@ export default function App() {
                 scaleToBounds={totalCostAsPerc}
                 items={breakdown2}
                 colors={breakdownColors2}
+                totalCost={cost2}
                 title={'With uneconomical patients'}
                 enabled={xVal && breakdown2}
               />

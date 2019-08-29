@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import theme, { reactVizTheme } from '../../theme'
 import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
+import currency from 'currency.js'
 
 const BreakdownWrap = styled.div``
+const TotalCost = styled.div``
 
 const Placeholder = styled.div`
   width: ${props => props.width}px;
@@ -35,6 +37,7 @@ export default function CostBreakdown({
   width = 140,
   offsetForComplete = 0,
   scaleToBounds = 1,
+  totalCost = null,
   title = null,
   enabled = true,
 }) {
@@ -61,8 +64,12 @@ export default function CostBreakdown({
     })
     yOffset -= h
   }
+
   return (
     <BreakdownWrap>
+      {totalCost && (
+        <TotalCost>${currency(totalCost, { precision: 0 }).format()}</TotalCost>
+      )}
       <svg height={height} width={width}>
         <g>
           {positions.map((p, i) => (
