@@ -1,17 +1,22 @@
 import styled from 'styled-components'
 
+// grid-template-areas:
+//     't t'
+//     'v c'
+//     '. h';
 export const GridWrap = styled.div`
-  width: 90%;
+  width: 100%;
   min-width: 1000px;
   display: grid;
   position: relative;
   margin: 50px auto 0;
   grid-template-areas:
-    't t'
-    'v c'
-    '. h';
-  grid-template-rows: 120px 1fr 50px;
-  grid-template-columns: 70px 1fr;
+    'top    top     side'
+    'yaxis  main    side'
+    '.      xaxis   .'
+    'bottom bottom  bottom';
+  grid-template-columns: 100px 1fr 400px;
+  grid-template-rows: 120px 1fr 120px 50px;
   overflow: hidden;
 `
 export const PresetsWrap = styled.div`
@@ -27,19 +32,19 @@ export const PresetsWrap = styled.div`
   }
 `
 export const Header = styled.div`
-  grid-area: t;
+  grid-area: top;
   display: grid;
   grid-template-columns: 1fr;
 `
 export const VerticalControls = styled.div`
-  grid-area: v;
+  grid-area: yaxis;
   display: flex;
   flex-align: center;
   justify-content: center;
   justify-content: flex-end;
 `
 export const HorizontalControls = styled.div`
-  grid-area: h;
+  grid-area: xaxis;
   display: flex;
   flex-direction: row;
   flex-align: center;
@@ -49,7 +54,7 @@ export const HorizontalControls = styled.div`
 `
 
 export const GraphWrap = styled.div`
-  grid-area: c;
+  grid-area: main;
   width: 100%;
   min-height: 500px;
   @media (min-height: 800px) {
@@ -60,33 +65,33 @@ export const GraphWrap = styled.div`
   }
 `
 
-export const BreakdownWrap = styled.div`
-  width: 80%;
-  height: 450px;
+export const CuredWrap = styled.div`
   position: absolute;
+  top: 0;
   right: 0;
-  top: -50px;
+`
+
+export const BreakdownWrap = styled.aside`
+  // width: 80%;
+  // position: absolute;
+  right: 0;
+  // top: -50px;
   display: grid;
-  grid-template-columns: 1fr 240px 180px 180px;
+  grid-area: side;
+  grid-template-columns: 50% 50%;
+  padding: 0 0 0 2rem;
 
-  @media (min-height: 700px) {
-    top: 0;
-  }
+  // @media (min-height: 700px) {
+  //   top: 0;
+  // }
 
-  @media (min-width: 1200px) {
-    width: 70%;
-  }
+  // @media (min-width: 1200px) {
+  //   width: 70%;
+  // }
 
-  @media (min-width: 1400px) {
-    width: 60%;
-  }
-
-  > div {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-  }
+  // @media (min-width: 1400px) {
+  //   width: 60%;
+  // }
 `
 
 export const ViewNav = styled.nav`

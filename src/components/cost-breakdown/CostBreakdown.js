@@ -3,7 +3,14 @@ import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 import currency from 'currency.js'
 
-const BreakdownWrap = styled.div``
+const BreakdownWrap = styled.div`
+  display: grid !important;
+  grid-template-rows: 1rem 1fr 80px;
+
+  > svg {
+    align-self: flex-end;
+  }
+`
 const TotalCost = styled.div``
 
 const Placeholder = styled.div`
@@ -67,7 +74,15 @@ export default function CostBreakdown({
   return (
     <BreakdownWrap>
       {totalCost && (
-        <TotalCost>${currency(totalCost, { precision: 0 }).format()}</TotalCost>
+        <TotalCost>
+          <p>Total Cost:</p>
+          <Typography variant="h4" style={{ textTransform: 'none' }}>
+            $
+            {currency(totalCost, { precision: 0, separator: ',' })
+              // .divide(1e3)
+              .format()}
+          </Typography>
+        </TotalCost>
       )}
       <svg height={height} width={width}>
         <g>

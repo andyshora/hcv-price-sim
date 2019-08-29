@@ -30,12 +30,13 @@ import {
   BreakdownWrap,
   ViewNav,
   VerticalCenter,
+  CuredWrap,
 } from './App.styles'
 
 // data
 import patientData from './data/cleaned.json'
 import bounds from './data/bounds.json'
-import { Button } from '@material-ui/core'
+import { Button, Paper } from '@material-ui/core'
 
 const defaultPresets = [
   {
@@ -159,7 +160,7 @@ function calculatePie1({ x = 0, xPerc = 0, data, bounds }) {
   return slicesArr
 }
 
-const graphMargin = { top: 80, left: 80, right: 80, bottom: 80 }
+const graphMargin = { top: 80, left: 80, right: 10, bottom: 80 }
 
 function getHighlightedArea(data, { maxY }) {
   const res = data
@@ -473,23 +474,25 @@ export default function App() {
               />
             )}
           </ContainerDimensions>
+          <CuredWrap>
+            {view !== 'segments' && pie1 && pie1.length && (
+              <VerticalCenter>
+                <RadialProgress
+                  values={pie1}
+                  max={100}
+                  width={200}
+                  height={200}
+                  suffix={'%'}
+                  title="Patients Cured"
+                  colors={[areaColors[2], areaColors[3]]}
+                  label={_.sum(pie1).toFixed(0)}
+                />
+              </VerticalCenter>
+            )}
+          </CuredWrap>
         </GraphWrap>
         <BreakdownWrap>
-          {view !== 'segments' && pie1 && pie1.length && (
-            <VerticalCenter>
-              <RadialProgress
-                values={pie1}
-                max={100}
-                width={200}
-                height={200}
-                suffix={'%'}
-                title="Patients Cured"
-                colors={[areaColors[2], areaColors[3]]}
-                label={_.sum(pie1).toFixed(0)}
-              />
-            </VerticalCenter>
-          )}
-          {view !== 'segments' && (
+          {view !== 'segments' && false && (
             <VerticalCenter>
               <DiscreteColorLegend
                 style={{

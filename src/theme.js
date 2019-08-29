@@ -91,12 +91,12 @@ function generateVizTheme({ base, themeName }) {
     
     .rv-xy-plot__axis__tick__text {
       fill: ${base.fgScale(0.42).css()};
-      font-size: 18px;
+      font-size: 20px;
     }
     
     .rv-xy-plot__axis__title text {
       fill: ${base.fg};
-      font-size: 16px;
+      font-size: 1.6rem;
     }
     
     .rv-xy-plot__axis--vertical .rv-xy-plot__axis__title {
@@ -104,7 +104,7 @@ function generateVizTheme({ base, themeName }) {
     }
     
     .rv-xy-plot__axis--horizontal .rv-xy-plot__axis__title {
-      transform: translateY(50px);
+      transform: translateY(80px);
     }
     
     .rv-xy-plot__grid-lines__line {

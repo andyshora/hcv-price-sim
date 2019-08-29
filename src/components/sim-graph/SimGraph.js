@@ -17,9 +17,10 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 40px;
-  left: -10px;
+  top: 10px;
+  left: -90px;
   color: white;
+  font-size: 1.6rem;
 `
 
 const HighlightedRegion = styled.div`
