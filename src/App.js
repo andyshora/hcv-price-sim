@@ -3,7 +3,7 @@ import ContainerDimensions from 'react-container-dimensions'
 import _ from 'lodash'
 
 import { useHotkeys } from 'react-hotkeys-hook'
-
+import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import ToggleButton from '@material-ui/lab/ToggleButton'
@@ -19,10 +19,17 @@ import SimGraph from './components/sim-graph'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
 import RadialProgress from './components/radial-progress'
 import Presets from './components/presets'
+import StaticChartView from './views/static-chart-view'
 
 import {
   GridWrap,
   SimpleGridWrap,
+  LayoutWrap,
+  LayoutHeader,
+  LayoutSidebar,
+  LayoutDial,
+  LayoutMain,
+  LayoutFooter,
   PresetsWrap,
   Header,
   VerticalControls,
@@ -192,7 +199,16 @@ function getFromLocalStorage(key) {
   return JSON.parse(res)
 }
 
+const useStyles = makeStyles(theme => ({
+  toggleButtonGroup: {
+    display: 'grid',
+    gridTemplateColumns: '50% 50%',
+    width: 300,
+  },
+}))
+
 export default function App() {
+  const classes = useStyles()
   const [xVal, setXVal] = useState(0)
   const [yVal, setYVal] = useState(20)
   const [savingPreset, setSavingPreset] = useState(false)
@@ -209,7 +225,7 @@ export default function App() {
 
   const presets = useRef(defaultPresets)
 
-  const [view, setView] = React.useState('segments')
+  const [view, setView] = React.useState('seg/patient')
 
   function handlePresetKeyTapped(index) {
     if (index <= presets.current.length) {
@@ -398,6 +414,82 @@ export default function App() {
         </ToggleButton>
       </ToggleButtonGroup>
     </ViewNav>
+  )
+
+  console.log('classes', classes)
+
+  function getMainView({ view, dims }) {
+    switch (view) {
+      case 'seg/patient':
+        return (
+          <StaticChartView title={view} {...dims}>
+            <SimGraph
+              areaColors={areaColors}
+              view={view}
+              bounds={bounds}
+              patientData={patientData}
+              highlightValues={{ x: xVal, y: yVal }}
+              highlightedPriceAreaData={highlightedPriceAreaData}
+              {...dims}
+              margin={graphMargin}
+            />
+          </StaticChartView>
+        )
+        break
+      default:
+        return <StaticChartView title={view} {...dims} />
+    }
+  }
+
+  return (
+    <LayoutWrap>
+      <LayoutHeader>
+        <Typography variant="h3">LayoutHeader: {view}</Typography>
+        <ToggleButtonGroup
+          value={view}
+          exclusive
+          onChange={handleViewChange}
+          className={classes.toggleButtonGroup}
+        >
+          <ToggleButton value="seg/patient">
+            <ViewColumnIcon />
+            seg/patient
+          </ToggleButton>
+          <ToggleButton value="seg/time">
+            <ViewColumnIcon />
+            seg/time
+          </ToggleButton>
+          <ToggleButton value="price/patient">
+            <VerticalAlignCenterIcon />
+            price/patient
+          </ToggleButton>
+          <ToggleButton value="price/time">
+            <VerticalAlignCenterIcon />
+            price/time
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </LayoutHeader>
+      <LayoutSidebar>
+        <ContainerDimensions>
+          {({ width, height }) => (
+            <Typography variant="h3">
+              LayoutSidebar: {width}x{height}
+            </Typography>
+          )}
+        </ContainerDimensions>
+        <LayoutDial>
+          <p>LayoutDial</p>
+        </LayoutDial>
+      </LayoutSidebar>
+      <LayoutMain>
+        <ContainerDimensions>
+          {dims => getMainView({ view, dims })}
+        </ContainerDimensions>
+      </LayoutMain>
+      <LayoutFooter>
+        <Typography variant="h3">LayoutFooter</Typography>
+      </LayoutFooter>
+    </LayoutWrap>
   )
 
   return (

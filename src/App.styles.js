@@ -1,10 +1,62 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Paper } from '@material-ui/core'
 
 // grid-template-areas:
 //     't t'
 //     'v c'
 //     '. h';
+
+export const LayoutWrap = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-areas:
+    'top   side'
+    'main     side'
+    'bottom bottom';
+  grid-template-columns: 1fr 360px;
+  grid-template-rows: 140px 1fr 80px;
+`
+
+const debugBg = css`
+  // background: linear-gradient(45deg, lime, black);
+`
+
+export const LayoutHeader = styled.header`
+  grid-area: top;
+  min-height: 50px;
+  ${debugBg}
+`
+export const LayoutSidebar = styled.aside`
+  grid-area: side;
+  position: relative;
+  min-height: 50px;
+  ${debugBg}
+`
+
+export const LayoutDial = styled.div`
+  position: absolute;
+  width: 200px;
+  height: 250px;
+  top: 160px;
+  left: -220px;
+
+  ${debugBg}
+`
+
+export const LayoutMain = styled.div`
+  grid-area: main;
+  min-height: 50px;
+  ${debugBg}
+`
+export const LayoutFooter = styled.footer`
+  grid-area: bottom;
+  min-height: 50px;
+  ${debugBg}
+`
 
 export const GridWrap = styled.div`
   width: 100%;
