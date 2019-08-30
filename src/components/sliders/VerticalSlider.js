@@ -65,7 +65,7 @@ export default function VerticalSlider({
   onChange,
   height = 300,
   defaultValue = 1,
-  enabled = false,
+  enabled = true,
   max = 100,
   margin = '0',
   value = defaultValue,

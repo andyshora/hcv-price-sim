@@ -22,7 +22,7 @@ export const LayoutWrap = styled.div`
 `
 
 const debugBg = css`
-  // background: linear-gradient(45deg, lime, black);
+  background: linear-gradient(45deg, hotpink, black);
 `
 
 export const LayoutHeader = styled.header`
@@ -56,6 +56,26 @@ export const LayoutFooter = styled.footer`
   grid-area: bottom;
   min-height: 50px;
   ${debugBg}
+`
+
+export const DynamicChartViewWrap = styled.div`
+  ${debugBg}
+  width: 100%;
+  height: 100%;
+  min-height: 50px;
+  display: grid;
+  grid-template-areas:
+    'yaxis  main'
+    '.      xaxis';
+  grid-template-columns: 100px 1fr;
+  grid-template-rows: 1fr 50px;
+  overflow: hidden;
+`
+
+export const ChartWrap = styled.div`
+  grid-area: main;
+  height: 100%;
+  background: black;
 `
 
 export const GridWrap = styled.div`
@@ -108,6 +128,7 @@ export const VerticalControls = styled.div`
   justify-content: center;
   justify-content: flex-end;
 `
+
 export const HorizontalControls = styled.div`
   grid-area: xaxis;
   display: flex;

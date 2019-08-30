@@ -30,6 +30,7 @@ import {
   LayoutDial,
   LayoutMain,
   LayoutFooter,
+  DynamicChartViewWrap,
   PresetsWrap,
   Header,
   VerticalControls,
@@ -40,10 +41,12 @@ import {
   ViewNav,
   VerticalCenter,
   CuredWrap,
+  ChartWrap,
 } from './App.styles'
 
 // data
 import patientData from './data/cleaned.json'
+import segTimeData from './data/segtime.json'
 import bounds from './data/bounds.json'
 import { Button, Paper } from '@material-ui/core'
 
@@ -416,10 +419,64 @@ export default function App() {
     </ViewNav>
   )
 
-  console.log('classes', classes)
-
   function getMainView({ view, dims }) {
+    const { width, height } = dims
     switch (view) {
+      case 'price/patient':
+        return (
+          <DynamicChartViewWrap>
+            <VerticalControls>
+              <VerticalSlider
+                max={bounds.maxYInput / 1000}
+                bounds={bounds}
+                height={
+                  ((height - (graphMargin.top + graphMargin.bottom)) *
+                    bounds.maxYInput) /
+                  bounds.maxY
+                }
+                margin={`auto 0 ${graphMargin.bottom}px 0`}
+                onChange={(e, val) => {
+                  setYVal(val)
+                  if (savingPreset) {
+                    setSavingPreset(false)
+                  }
+                }}
+                defaultValue={yVal}
+                enabled={view !== 'segments'}
+              />
+            </VerticalControls>
+            <HorizontalControls>
+              <HorizontalSlider
+                bounds={bounds}
+                width={
+                  (width - (graphMargin.left + graphMargin.right)) *
+                  (1 - xPercOffset)
+                }
+                margin={`0 ${graphMargin.right}px 0 0`}
+                onChange={(e, val) => {
+                  setXVal(val)
+                  if (savingPreset) {
+                    setSavingPreset(false)
+                  }
+                }}
+                defaultValue={xVal}
+              />
+            </HorizontalControls>
+            <ChartWrap>
+              <SimGraph
+                areaColors={areaColors}
+                view={view}
+                bounds={bounds}
+                patientData={patientData}
+                highlightValues={{ x: xVal, y: yVal }}
+                highlightedPriceAreaData={highlightedPriceAreaData}
+                width={width}
+                height={height}
+                margin={graphMargin}
+              />
+            </ChartWrap>
+          </DynamicChartViewWrap>
+        )
       case 'seg/patient':
         return (
           <StaticChartView title={view} {...dims}>
@@ -436,6 +493,24 @@ export default function App() {
           </StaticChartView>
         )
         break
+      case 'seg/time':
+        return (
+          <StaticChartView title={view} {...dims}>
+            <SimGraph
+              areaColors={areaColors}
+              view={view}
+              bounds={bounds}
+              patientData={segTimeData}
+              plotProps={{ stackBy: 'y' }}
+              xDomain={[1, 13]}
+              yDomain={[0, 1e10]}
+              {...dims}
+              margin={graphMargin}
+            />
+          </StaticChartView>
+        )
+        break
+
       default:
         return <StaticChartView title={view} {...dims} />
     }

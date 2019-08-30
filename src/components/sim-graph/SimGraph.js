@@ -2,11 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
 import {
-  XYPlot,
+  FlexibleWidthXYPlot,
   XAxis,
   YAxis,
   AreaSeries,
   DiscreteColorLegend,
+  VerticalBarSeries,
 } from 'react-vis'
 
 import { colorScales, reactVizTheme } from '../../theme'
@@ -95,13 +96,12 @@ export default function SimGraph({
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
   patientData = [],
   areaColors,
+  plotProps = {},
+  xDomain = null,
+  yDomain = null,
 }) {
-  // function onNearestXY(value, { event, innerX, innerY, index }) {
-  //   console.log('onNearestXY', value)
-  // }
-
   const highlightedSquareAreaData =
-    view !== 'segments'
+    view === 'price/patient'
       ? getSquareHighlightedArea(highlightedPriceAreaData, {
           maxY: highlightValues.y,
         })
@@ -111,7 +111,7 @@ export default function SimGraph({
   const chartAreaHeight = height - (margin.top + margin.bottom)
 
   const xDivider =
-    view !== 'segments' &&
+    view === 'price/patient' &&
     highlightedPriceAreaData &&
     highlightedPriceAreaData.length
       ? _.last(highlightedPriceAreaData).xLeft
@@ -120,7 +120,7 @@ export default function SimGraph({
   const curedRegionOffset = (xDivider / bounds.maxX) * chartAreaWidth
 
   const additionalCureAreaData =
-    view !== 'segments'
+    view === 'price/patient'
       ? getAdditionalCureAreaData(patientData, {
           minX: xDivider,
           maxX: highlightValues.x,
@@ -130,12 +130,12 @@ export default function SimGraph({
 
   return (
     <ChartWrap>
-      <XYPlot
-        width={width}
+      <FlexibleWidthXYPlot
         height={height}
-        yDomain={[0, bounds.maxY / 1000]}
-        xDomain={[0, bounds.maxX / 1000]}
+        yDomain={yDomain || [0, bounds.maxY / 1000]}
+        xDomain={xDomain || [0, bounds.maxX / 1000]}
         margin={margin}
+        {...plotProps}
       >
         <YAxis
           title="Direct Cost Per Patient ($)"
@@ -154,7 +154,7 @@ export default function SimGraph({
           tickFormat={xTickFormat}
         />
 
-        {view === 'segments' && (
+        {view === 'seg/patient' && (
           <DiscreteColorLegend
             style={{ fontSize: '1.2rem' }}
             items={bounds.segments.map((s, i) => ({
@@ -165,7 +165,7 @@ export default function SimGraph({
           />
         )}
 
-        {view === 'segments' ? (
+        {view === 'seg/patient' &&
           bounds.segments.map((s, i) => (
             <AreaSeries
               key={s}
@@ -177,8 +177,9 @@ export default function SimGraph({
               color={colorScales.jmi[i]}
               style={{ stroke: 'none', fillOpacity: 1 }}
             />
-          ))
-        ) : (
+          ))}
+
+        {view === 'price/patient' && (
           <AreaSeries
             data={getFormattedData(patientData)}
             curve="curveBasis"
@@ -188,7 +189,32 @@ export default function SimGraph({
           />
         )}
 
-        {view !== 'segments' && (
+        {view === 'seg/time' && (
+          <VerticalBarSeries
+            data={patientData[0].map((d, i) => ({ x: i + 1, y: d }))}
+            color={colorScales.jmi[0]}
+          />
+        )}
+        {view === 'seg/time' && (
+          <VerticalBarSeries
+            data={patientData[1].map((d, i) => ({ x: i + 1, y: d }))}
+            color={colorScales.jmi[1]}
+          />
+        )}
+        {view === 'seg/time' && (
+          <VerticalBarSeries
+            data={patientData[2].map((d, i) => ({ x: i + 1, y: d }))}
+            color={colorScales.jmi[2]}
+          />
+        )}
+        {view === 'seg/time' && (
+          <VerticalBarSeries
+            data={patientData[3].map((d, i) => ({ x: i + 1, y: d }))}
+            color={colorScales.jmi[3]}
+          />
+        )}
+
+        {view === 'price/patient' && (
           <AreaSeries
             data={highlightedPriceAreaData}
             curve="curveBasis"
@@ -196,7 +222,7 @@ export default function SimGraph({
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         )}
-        {view !== 'segments' && (
+        {view === 'price/patient' && (
           <AreaSeries
             data={highlightedSquareAreaData}
             curve="curveBasis"
@@ -204,7 +230,7 @@ export default function SimGraph({
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         )}
-        {view !== 'segments' && (
+        {view === 'price/patient' && (
           <AreaSeries
             data={additionalCureAreaData}
             curve="curveBasis"
@@ -223,9 +249,9 @@ export default function SimGraph({
           <br />
           ($)
         </YAxisLabel>
-      </XYPlot>
+      </FlexibleWidthXYPlot>
 
-      {view !== 'segments' && (
+      {view === 'price/patient' && (
         <HighlightedPriceRegion
           offset={curedRegionOffset}
           dimensions={view === 'price' ? 1 : 2}
@@ -237,7 +263,7 @@ export default function SimGraph({
           height={chartAreaHeight}
         />
       )}
-      {view !== 'segments' && (
+      {view === 'price/patient' && (
         <AdditionalCureRegion
           offset={curedRegionOffset}
           dimensions={view === 'price' ? 1 : 2}
