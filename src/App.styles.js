@@ -22,7 +22,7 @@ export const LayoutWrap = styled.div`
 `
 
 const debugBg = css`
-  background: linear-gradient(45deg, hotpink, black);
+  // background: linear-gradient(45deg, hotpink, black);
 `
 
 export const LayoutHeader = styled.header`
@@ -62,7 +62,7 @@ export const DynamicChartViewWrap = styled.div`
   ${debugBg}
   width: 100%;
   height: 100%;
-  min-height: 50px;
+  min-height: 300px;
   display: grid;
   grid-template-areas:
     'yaxis  main'
@@ -74,6 +74,7 @@ export const DynamicChartViewWrap = styled.div`
 
 export const ChartWrap = styled.div`
   grid-area: main;
+  min-height: 300px;
   height: 100%;
   background: black;
 `

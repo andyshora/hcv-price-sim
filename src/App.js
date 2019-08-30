@@ -19,6 +19,8 @@ import SimGraph from './components/sim-graph'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
 import RadialProgress from './components/radial-progress'
 import Presets from './components/presets'
+import SegTimeChart from './components/seg-time-chart'
+
 import StaticChartView from './views/static-chart-view'
 
 import {
@@ -274,7 +276,7 @@ export default function App() {
     setBreakdown1(newBreakdown1.ratios)
     setCost1(newBreakdown1.totalCost)
 
-    if (view !== 'segments' && xVal) {
+    if (view === 'price/patient' && xVal) {
       const x0 =
         highlightedPriceAreaData && highlightedPriceAreaData.length
           ? _.last(highlightedPriceAreaData).xVal
@@ -314,9 +316,11 @@ export default function App() {
   }, [])
 
   const highlightedPriceAreaData =
-    view !== 'segments' ? getHighlightedArea(patientData, { maxY: yVal }) : []
+    view === 'price/patient'
+      ? getHighlightedArea(patientData, { maxY: yVal })
+      : []
   const xPercOffset =
-    view !== 'segments' &&
+    view === 'price/patient' &&
     highlightedPriceAreaData &&
     highlightedPriceAreaData.length
       ? _.last(highlightedPriceAreaData).xVal / bounds.maxX
@@ -324,7 +328,7 @@ export default function App() {
 
   let pie1 = null
   if (
-    view !== 'segments' &&
+    view === 'price/patient' &&
     highlightedPriceAreaData &&
     highlightedPriceAreaData.length
   ) {
@@ -442,14 +446,14 @@ export default function App() {
                   }
                 }}
                 defaultValue={yVal}
-                enabled={view !== 'segments'}
+                enabled={view === 'price/patient'}
               />
             </VerticalControls>
             <HorizontalControls>
               <HorizontalSlider
                 bounds={bounds}
                 width={
-                  (width - (graphMargin.left + graphMargin.right)) *
+                  (width - (100 + graphMargin.left + graphMargin.right)) *
                   (1 - xPercOffset)
                 }
                 margin={`0 ${graphMargin.right}px 0 0`}
@@ -496,16 +500,10 @@ export default function App() {
       case 'seg/time':
         return (
           <StaticChartView title={view} {...dims}>
-            <SimGraph
-              areaColors={areaColors}
-              view={view}
-              bounds={bounds}
-              patientData={segTimeData}
-              plotProps={{ stackBy: 'y' }}
-              xDomain={[1, 13]}
-              yDomain={[0, 1e10]}
-              {...dims}
+            <SegTimeChart
               margin={graphMargin}
+              data={segTimeData}
+              bounds={bounds}
             />
           </StaticChartView>
         )
@@ -565,218 +563,5 @@ export default function App() {
         <Typography variant="h3">LayoutFooter</Typography>
       </LayoutFooter>
     </LayoutWrap>
-  )
-
-  return (
-    <Container maxWidth="xl">
-      {view === 'segments' ? (
-        <SimpleGridWrap simple={view === 'segments'}>
-          <Header>
-            <div>
-              {viewNav}
-              <Typography variant="h2" gutterBottom>
-                Hepatitis C Demand Curve by Patient Segment
-              </Typography>
-              <p>Each color represents a different segment of HCV patients.</p>
-            </div>
-          </Header>
-          <SimpleGraphWrap>
-            <ContainerDimensions>
-              {({ width, height }) => (
-                <SimGraph
-                  areaColors={areaColors}
-                  view={view}
-                  bounds={bounds}
-                  patientData={patientData}
-                  highlightValues={{ x: xVal, y: yVal }}
-                  highlightedPriceAreaData={highlightedPriceAreaData}
-                  height={height}
-                  width={width}
-                  margin={graphMargin}
-                />
-              )}
-            </ContainerDimensions>
-          </SimpleGraphWrap>
-        </SimpleGridWrap>
-      ) : (
-        <GridWrap simple={view === 'segments'}>
-          <Header>
-            <div>
-              {viewNav}
-              <Typography variant="h2" gutterBottom>
-                Hepatitis C Price Simulator for 100K Patients
-              </Typography>
-              <p>
-                Explore how drug pricing affects the number of patients we are
-                able to treat.
-              </p>
-            </div>
-          </Header>
-          {view !== 'segments' && (
-            <VerticalControls>
-              <ContainerDimensions>
-                {({ width, height }) => {
-                  return (
-                    <VerticalSlider
-                      max={bounds.maxYInput / 1000}
-                      bounds={bounds}
-                      height={
-                        ((height - (graphMargin.top + graphMargin.bottom)) *
-                          bounds.maxYInput) /
-                        bounds.maxY
-                      }
-                      margin={`auto 0 ${graphMargin.bottom}px 0`}
-                      onChange={(e, val) => {
-                        setYVal(val)
-                        if (savingPreset) {
-                          setSavingPreset(false)
-                        }
-                      }}
-                      defaultValue={yVal}
-                      enabled={view !== 'segments'}
-                    />
-                  )
-                }}
-              </ContainerDimensions>
-            </VerticalControls>
-          )}
-          {view !== 'segments' && (
-            <HorizontalControls>
-              <ContainerDimensions>
-                {({ width, height }) =>
-                  view !== 'segments' && (
-                    <HorizontalSlider
-                      bounds={bounds}
-                      width={
-                        (width - (graphMargin.left + graphMargin.right)) *
-                        (1 - xPercOffset)
-                      }
-                      margin={`0 ${graphMargin.right}px 0 0`}
-                      onChange={(e, val) => {
-                        setXVal(val)
-                        if (savingPreset) {
-                          setSavingPreset(false)
-                        }
-                      }}
-                      defaultValue={xVal}
-                    />
-                  )
-                }
-              </ContainerDimensions>
-            </HorizontalControls>
-          )}
-          <GraphWrap>
-            <ContainerDimensions>
-              {({ width, height }) => (
-                <SimGraph
-                  areaColors={areaColors}
-                  view={view}
-                  bounds={bounds}
-                  patientData={patientData}
-                  highlightValues={{ x: xVal, y: yVal }}
-                  highlightedPriceAreaData={highlightedPriceAreaData}
-                  height={height}
-                  width={width}
-                  margin={graphMargin}
-                />
-              )}
-            </ContainerDimensions>
-            {view !== 'segments' && pie1 && pie1.length && (
-              <CuredWrap>
-                <VerticalCenter>
-                  <RadialProgress
-                    values={pie1}
-                    max={100}
-                    width={200}
-                    height={200}
-                    suffix={'%'}
-                    title="Patients Cured"
-                    colors={[areaColors[2], areaColors[3]]}
-                    label={_.sum(pie1).toFixed(0)}
-                  />
-                </VerticalCenter>
-              </CuredWrap>
-            )}
-          </GraphWrap>
-          {view !== 'segments' && (
-            <BreakdownWrap>
-              {false && (
-                <VerticalCenter>
-                  <DiscreteColorLegend
-                    style={{
-                      fontSize: '1rem',
-                      padding: '0.5rem',
-                      background: 'none',
-                      border: 'none',
-                      position: 'static',
-                      textAlign: 'left',
-                    }}
-                    items={legendItems}
-                  />
-                </VerticalCenter>
-              )}
-              {breakdown1 && (
-                <>
-                  <CostBreakdown
-                    offsetForComplete={150}
-                    height={500}
-                    width={200}
-                    scaleToBounds={totalCostAsPerc}
-                    items={breakdown1}
-                    colors={breakdownColors}
-                    totalCost={cost1}
-                    align="right"
-                    title={
-                      xVal
-                        ? 'Without uneconomical patients'
-                        : 'Total Health Care Cost'
-                    }
-                  />
-                  <CostBreakdown
-                    offsetForComplete={150}
-                    height={500}
-                    width={200}
-                    scaleToBounds={totalCostAsPerc}
-                    items={breakdown2}
-                    colors={breakdownColors2}
-                    totalCost={cost2}
-                    align="left"
-                    title={'With uneconomical patients'}
-                    enabled={xVal && breakdown2}
-                  />
-                </>
-              )}
-            </BreakdownWrap>
-          )}
-        </GridWrap>
-      )}
-      {view !== 'segments' && (
-        <PresetsWrap>
-          <Presets
-            items={presets.current}
-            onItemSelected={handlePresetSelected}
-            replaceMode={savingPreset}
-          />
-
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={handleSavePresetTapped}
-            title="Save current state as hotkey"
-          >
-            <SaveIcon size="small" />
-          </Button>
-          {savingPreset && (
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={() => setSavingPreset(false)}
-            >
-              Cancel
-            </Button>
-          )}
-        </PresetsWrap>
-      )}
-    </Container>
   )
 }

@@ -3,10 +3,10 @@
   "maxY": 330000,
   "maxYInput": 180000,
   "segments": [
-    "Liver transplant",
-    "Hepatocellular carcinoma",
+    "Early fibrotic stage (F0-3)",
     "Late fibrotic stage (F4)",
-    "Early fibrotic stage (F0-3)"
+    "Hepatocellular carcinoma",
+    "Liver transplant"
   ],
   "totalArea": 1446267748.6721947
 }
