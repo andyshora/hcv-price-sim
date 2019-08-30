@@ -24,14 +24,11 @@ const YAxisLabel = styled.p`
   font-size: 1.4rem;
 `
 
-const HighlightedRegion = styled.div`
+const HighlightedPriceRegion = styled.div`
   height: ${props => props.highlightValues.y * props.height}px;
   position: absolute;
-  bottom: 80px;
-  left: 80px;
-`
-
-const HighlightedPriceRegion = styled(HighlightedRegion)`
+  bottom: ${props => (props.margin ? props.margin.bottom : 0)}px;
+  left: ${props => (props.margin ? props.margin.left : 0)}px;
   background: ${props =>
     props.dimensions === 1 ? 'none' : 'rgba(255, 255, 255, 0.05)'};
   border-top: ${props =>
@@ -39,12 +36,16 @@ const HighlightedPriceRegion = styled(HighlightedRegion)`
   width: ${props => props.width}px;
 `
 
-const AdditionalCureRegion = styled(HighlightedRegion)`
+const AdditionalCureRegion = styled.div`
+  height: ${props => props.highlightValues.y * props.height}px;
+  position: absolute;
   width: ${props => props.width}px;
   margin-left: ${props => props.offset}px;
+  left: ${props => (props.margin ? props.margin.left : 0)}px;
+  bottom: ${props => (props.margin ? props.margin.bottom : 0)}px;
 
   background: rgba(249, 219, 47, 0.6);
-  mix-blend-mode: saturation;
+  // mix-blend-mode: saturation;
 `
 
 function getSquareHighlightedArea(data, { maxY }) {
@@ -189,31 +190,6 @@ export default function SimGraph({
           />
         )}
 
-        {view === 'seg/time' && (
-          <VerticalBarSeries
-            data={patientData[0].map((d, i) => ({ x: i + 1, y: d }))}
-            color={colorScales.jmi[0]}
-          />
-        )}
-        {view === 'seg/time' && (
-          <VerticalBarSeries
-            data={patientData[1].map((d, i) => ({ x: i + 1, y: d }))}
-            color={colorScales.jmi[1]}
-          />
-        )}
-        {view === 'seg/time' && (
-          <VerticalBarSeries
-            data={patientData[2].map((d, i) => ({ x: i + 1, y: d }))}
-            color={colorScales.jmi[2]}
-          />
-        )}
-        {view === 'seg/time' && (
-          <VerticalBarSeries
-            data={patientData[3].map((d, i) => ({ x: i + 1, y: d }))}
-            color={colorScales.jmi[3]}
-          />
-        )}
-
         {view === 'price/patient' && (
           <AreaSeries
             data={highlightedPriceAreaData}
@@ -261,6 +237,7 @@ export default function SimGraph({
           }}
           width={chartAreaWidth}
           height={chartAreaHeight}
+          margin={margin}
         />
       )}
       {view === 'price/patient' && (
@@ -275,6 +252,7 @@ export default function SimGraph({
             (chartAreaWidth - curedRegionOffset) * highlightValues.x * 0.01
           }
           height={chartAreaHeight}
+          margin={margin}
         />
       )}
     </ChartWrap>

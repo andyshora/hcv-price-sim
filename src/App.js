@@ -20,6 +20,7 @@ import { VerticalSlider, HorizontalSlider } from './components/sliders'
 import RadialProgress from './components/radial-progress'
 import Presets from './components/presets'
 import SegTimeChart from './components/seg-time-chart'
+import PriceTimeChart from './components/price-time-chart'
 
 import StaticChartView from './views/static-chart-view'
 
@@ -49,6 +50,8 @@ import {
 // data
 import patientData from './data/cleaned.json'
 import segTimeData from './data/segtime.json'
+import priceTimeData from './data/pricetime.json'
+
 import bounds from './data/bounds.json'
 import { Button, Paper } from '@material-ui/core'
 
@@ -427,6 +430,7 @@ export default function App() {
     const { width, height } = dims
     switch (view) {
       case 'price/patient':
+        const margin = { top: 10, left: 80, right: 10, bottom: 120 }
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
@@ -434,11 +438,10 @@ export default function App() {
                 max={bounds.maxYInput / 1000}
                 bounds={bounds}
                 height={
-                  ((height - (graphMargin.top + graphMargin.bottom)) *
-                    bounds.maxYInput) /
+                  ((height - (margin.top + margin.bottom)) * bounds.maxYInput) /
                   bounds.maxY
                 }
-                margin={`auto 0 ${graphMargin.bottom}px 0`}
+                margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
                   if (savingPreset) {
@@ -453,10 +456,10 @@ export default function App() {
               <HorizontalSlider
                 bounds={bounds}
                 width={
-                  (width - (100 + graphMargin.left + graphMargin.right)) *
+                  (width - (100 + margin.left + margin.right)) *
                   (1 - xPercOffset)
                 }
-                margin={`0 ${graphMargin.right}px 0 0`}
+                margin={`0 ${margin.right}px 0 0`}
                 onChange={(e, val) => {
                   setXVal(val)
                   if (savingPreset) {
@@ -476,7 +479,7 @@ export default function App() {
                 highlightedPriceAreaData={highlightedPriceAreaData}
                 width={width}
                 height={height}
-                margin={graphMargin}
+                margin={margin}
               />
             </ChartWrap>
           </DynamicChartViewWrap>
@@ -504,6 +507,18 @@ export default function App() {
               margin={graphMargin}
               data={segTimeData}
               bounds={bounds}
+            />
+          </StaticChartView>
+        )
+        break
+      case 'price/time':
+        return (
+          <StaticChartView title={view} {...dims}>
+            <PriceTimeChart
+              margin={graphMargin}
+              data={priceTimeData}
+              bounds={bounds}
+              colors={areaColors}
             />
           </StaticChartView>
         )
