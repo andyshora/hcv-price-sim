@@ -8,6 +8,7 @@ import {
   AreaSeries,
   DiscreteColorLegend,
   VerticalBarSeries,
+  LineSeries,
 } from 'react-vis'
 
 import { colorScales, reactVizTheme } from '../../theme'
@@ -24,6 +25,17 @@ const YAxisLabel = styled.p`
   font-size: 1.4rem;
 `
 
+const HighlightedRegion = styled.div`
+  height: ${props => props.perc * props.height}px;
+  position: absolute;
+  bottom: ${props => (props.margin ? props.margin.bottom : 0)}px;
+  left: ${props => (props.margin ? props.margin.left : 0)}px;
+  background: ${props =>
+    props.dimensions === 1 ? 'none' : 'rgba(255, 255, 255, 0.05)'};
+  border-top: ${props => (props.perc > 0 ? '1px dashed white' : 'none')};
+  width: ${props => props.width}px;
+`
+
 function getFormattedData(data) {
   return data.map((d, i) => ({ x: i + 1, y: d / 1e6 }))
 }
@@ -38,7 +50,10 @@ function createSeriesData(data, perc = 0.2) {
     const total = data.total[i] / 1e6
     const hospital = data.hospital[i] / 1e6
     const hospitalElm = { x: i + 1, y: hospital }
-    const drugElm = { x: i + 1, y: perc * total }
+    const drugElm = {
+      x: i + 1,
+      y: i > 9 ? data.drugEnd[i - 10] / 1e6 : perc * total,
+    }
     const savingsElm = { x: i + 1, y: total - (hospitalElm.y + drugElm.y) }
     res.hospital.push(hospitalElm)
     res.drug.push(drugElm)
@@ -46,6 +61,18 @@ function createSeriesData(data, perc = 0.2) {
   }
 
   return res
+}
+
+function createLineData(data) {
+  let arr = []
+  for (let i = 0; i < data.length; i++) {
+    arr.push({ x: data[i].x - 0.4, y: data[i].y })
+    arr.push({ x: data[i].x, y: data[i].y })
+    arr.push({ x: data[i].x + 0.4, y: data[i].y })
+  }
+
+  console.log(arr)
+  return arr
 }
 
 function yTickFormat(val) {
@@ -59,8 +86,11 @@ export default function PriceTimeChart({
   height = 600,
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
   data = [],
+  perc = 0,
 }) {
-  const seriesData = createSeriesData(data, 0.2)
+  const seriesData = createSeriesData(data, perc)
+  const chartAreaWidth = width - (margin.left + margin.right)
+  const chartAreaHeight = height - (margin.top + margin.bottom)
 
   return (
     <ChartWrap>
@@ -82,17 +112,31 @@ export default function PriceTimeChart({
         />
         <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={13} />
 
-        {/* <DiscreteColorLegend
+        <DiscreteColorLegend
           style={{ fontSize: '1.2rem' }}
-          items={bounds.segments.map((s, i) => ({
-            title: s,
-            color: colorScales.jmi[i],
-            strokeWidth: 20,
-          }))}
-        /> */}
+          items={[
+            {
+              title: 'Healthcare cost savings',
+              color: colors[0],
+              strokeWidth: 20,
+            },
+            {
+              title: 'Untreated patient costs',
+              color: colors[1],
+              strokeWidth: 20,
+            },
+            { title: 'Cost of cure', color: colors[2], strokeWidth: 20 },
+          ]}
+        />
         <VerticalBarSeries data={seriesData.drug} color={colors[2]} />
         <VerticalBarSeries data={seriesData.hospital} color={colors[1]} />
         <VerticalBarSeries data={seriesData.savings} color={colors[0]} />
+
+        <LineSeries
+          color="white"
+          data={createLineData(seriesData.drug)}
+          strokeStyle="dashed"
+        />
       </FlexibleWidthXYPlot>
     </ChartWrap>
   )

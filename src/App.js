@@ -429,12 +429,14 @@ export default function App() {
   function getMainView({ view, dims }) {
     const { width, height } = dims
     switch (view) {
-      case 'price/patient':
+      case 'price/patient': {
         const margin = { top: 10, left: 80, right: 10, bottom: 120 }
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
+                min={0.5}
+                step={0.5}
                 max={bounds.maxYInput / 1000}
                 bounds={bounds}
                 height={
@@ -449,7 +451,7 @@ export default function App() {
                   }
                 }}
                 defaultValue={yVal}
-                enabled={view === 'price/patient'}
+                valueLabelSuffix="K"
               />
             </VerticalControls>
             <HorizontalControls>
@@ -484,6 +486,7 @@ export default function App() {
             </ChartWrap>
           </DynamicChartViewWrap>
         )
+      }
       case 'seg/patient':
         return (
           <StaticChartView title={view} {...dims}>
@@ -511,18 +514,42 @@ export default function App() {
           </StaticChartView>
         )
         break
-      case 'price/time':
+      case 'price/time': {
+        const margin = { top: 10, left: 80, right: 10, bottom: 120 }
         return (
-          <StaticChartView title={view} {...dims}>
-            <PriceTimeChart
-              margin={graphMargin}
-              data={priceTimeData}
-              bounds={bounds}
-              colors={areaColors}
-            />
-          </StaticChartView>
+          <DynamicChartViewWrap>
+            <VerticalControls>
+              <VerticalSlider
+                min={0}
+                step={1}
+                max={50}
+                bounds={bounds}
+                height={height / 2 - (margin.top + margin.bottom)}
+                margin={`auto 0 ${-50 + margin.bottom}px 0`}
+                onChange={(e, val) => {
+                  setYVal(val)
+                  if (savingPreset) {
+                    setSavingPreset(false)
+                  }
+                }}
+                valueLabelSuffix="%"
+              />
+            </VerticalControls>
+            <HorizontalControls>
+              <div />
+            </HorizontalControls>
+            <ChartWrap>
+              <PriceTimeChart
+                margin={graphMargin}
+                data={priceTimeData}
+                bounds={bounds}
+                colors={areaColors}
+                perc={yVal / 100}
+              />
+            </ChartWrap>
+          </DynamicChartViewWrap>
         )
-        break
+      }
 
       default:
         return <StaticChartView title={view} {...dims} />

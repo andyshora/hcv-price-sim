@@ -39,10 +39,10 @@ const useStyles = makeStyles(theme =>
   createStyles({
     root: {},
     rail: {
-      opacity: 0,
+      opacity: 1,
     },
     track: {
-      opacity: 0,
+      opacity: 1,
     },
     thumb: {
       backgroundColor: 'white',
@@ -61,29 +61,30 @@ const useStyles = makeStyles(theme =>
 )
 
 export default function VerticalSlider({
-  bounds,
   onChange,
   height = 300,
   defaultValue = 1,
   enabled = true,
+  min = 0,
   max = 100,
+  step = 1,
   margin = '0',
   value = defaultValue,
+  valueLabelSuffix = '',
 }) {
   const classes = useStyles()
   return (
     <Slider
       classes={classes}
       orientation="vertical"
-      valueLabelFormat={v => `${v}k`}
+      valueLabelFormat={v => `${v}${valueLabelSuffix}`}
       valueLabelDisplay="on"
       onChange={onChange}
-      min={0.5}
+      min={min}
       max={max}
-      step={0.5}
+      step={step}
       defaultValue={defaultValue}
       ThumbComponent={VerticalThumbComponent}
-      value={value}
       style={{
         height: `${height}px`,
         margin,
