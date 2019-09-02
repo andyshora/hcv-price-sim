@@ -17,7 +17,7 @@ export const LayoutWrap = styled.div`
     'top   side'
     'main     side'
     'bottom bottom';
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: 1fr 400px;
   grid-template-rows: 140px 1fr 80px;
 `
 
@@ -34,13 +34,16 @@ export const LayoutSidebar = styled.aside`
   grid-area: side;
   position: relative;
   min-height: 640px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+
   @media (min-height: 800px) {
     min-height: 740px;
   }
   @media (min-height: 1000px) {
     min-height: 940px;
   }
-  // ${debugBg}
+  ${debugBg}
 `
 
 export const LayoutDial = styled.div`

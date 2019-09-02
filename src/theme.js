@@ -532,7 +532,7 @@ function generateUITheme({ base, themeName, type }) {
     palette: {
       base,
       background: {
-        default: base.bgScale(0.22).css(),
+        default: base.bg,
         paper: base.bgScale(0.22).css(),
       },
       type,

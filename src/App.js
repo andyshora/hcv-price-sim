@@ -11,6 +11,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import ViewColumnIcon from '@material-ui/icons/ViewColumn'
 import VerticalAlignCenterIcon from '@material-ui/icons/VerticalAlignCenter'
 import SaveIcon from '@material-ui/icons/Save'
+import { Button, Paper } from '@material-ui/core'
 
 import CostBreakdown from './components/cost-breakdown'
 import SimGraph from './components/sim-graph'
@@ -48,12 +49,13 @@ import {
 } from './App.styles'
 
 // data
+import areaData from './data/areas.json'
 import patientData from './data/cleaned.json'
 import segTimeData from './data/segtime.json'
 import priceTimeData from './data/pricetime.json'
 
 import bounds from './data/bounds.json'
-import { Button, Paper } from '@material-ui/core'
+import { colorScales } from './theme'
 
 const defaultPresets = [
   {
@@ -112,14 +114,17 @@ function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
   const savingsRatio = 1 - (untreatedRatio + curedRatio)
 
   const savingsArea = totalArea - (curedArea + untreatedArea)
-  // todo verify this area is the same as long calc
-  // (yVal - y) * range Xwidths
 
-  return {
-    ratios: [curedRatio, untreatedRatio, savingsRatio],
-    areas: [curedArea, untreatedArea, savingsArea],
-    totalCost: totalArea,
+  const res = {
+    total: totalArea,
+    bars: [
+      { ratio: curedRatio, area: curedArea, key: 'Drug' },
+      { ratio: untreatedRatio, area: untreatedArea, key: 'Hospital' },
+      { ratio: savingsRatio, area: savingsArea, key: 'Saving' },
+    ],
   }
+
+  return res
 }
 
 function calculateBreakdown2({
@@ -131,8 +136,7 @@ function calculateBreakdown2({
   totalArea,
   breakdown1,
 }) {
-  // const existingCuredArea = breakdown1.areas[0]
-  const existingUntreatedArea = breakdown1.areas[1]
+  const existingUntreatedArea = breakdown1.bars[1].area
 
   // todo - check this
   const newlyCuredArea = data
@@ -146,19 +150,23 @@ function calculateBreakdown2({
   const additionalCostsArea =
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y - newlyCuredArea
 
-  // const baselineTotalArea = totalArea - breakdown1.areas[2]
+  let bars = [
+    { ratio: 0, area: breakdown1.bars[0].area, key: 'Drug' },
+    { ratio: 0, area: newlyCuredArea, key: '+Drug' },
+    {
+      ratio: 0,
+      area: existingUntreatedArea - newlyCuredArea,
+      key: 'Hospital',
+    },
+    { ratio: 0, area: additionalCostsArea, key: '+Cost' },
+  ].map(b => ({ ...b, ratio: b.area / totalArea }))
 
-  const areas = [
-    breakdown1.areas[0],
-    newlyCuredArea,
-    existingUntreatedArea - newlyCuredArea,
-    additionalCostsArea,
-  ]
-  return {
-    areas,
-    ratios: areas.map(a => a / totalArea),
-    totalCost: totalArea + additionalCostsArea,
+  const res = {
+    total: totalArea + additionalCostsArea,
+    bars,
   }
+
+  return res
 }
 
 function calculatePie1({ x = 0, xPerc = 0, data, bounds }) {
@@ -255,16 +263,22 @@ export default function App() {
     '#f9d129',
   ]
 
-  const breakdownColors = [
+  const breakdownColorsPrice = [
     '#6c9bdc',
     'rgba(111, 111, 111)',
     'rgb(116, 222, 147)',
   ]
-  const breakdownColors2 = [
+  const breakdownColorsPrice2 = [
     '#6c9bdc',
     '#30C1D7',
     'rgba(111, 111, 111)',
     '#f9d129',
+  ]
+  const breakdownColorsTime = [
+    colorScales.jmi[3],
+    colorScales.jmi[2],
+    colorScales.jmi[1],
+    colorScales.jmi[0],
   ]
 
   const { totalArea } = bounds
@@ -276,6 +290,7 @@ export default function App() {
       y: yVal * 1000,
       totalArea,
     })
+    console.log('newBreakdown1', newBreakdown1)
     setBreakdown1(newBreakdown1)
     setCost1(newBreakdown1.totalCost)
 
@@ -544,28 +559,28 @@ export default function App() {
                 <CostBreakdown
                   offsetForComplete={150}
                   height={height}
-                  width={200}
+                  width={width * 0.5}
                   scaleToBounds={totalCostAsPerc}
                   items={breakdown1}
-                  colors={breakdownColors}
-                  totalCost={cost1}
+                  colors={
+                    view === 'price/patient' || view === 'price/time'
+                      ? breakdownColorsPrice
+                      : breakdownColorsTime
+                  }
                   align="right"
                   title={xVal ? 'Without uneconomical patients' : 'Total Cost'}
                 />
-                {false && (
-                  <CostBreakdown
-                    offsetForComplete={150}
-                    height={500}
-                    width={200}
-                    scaleToBounds={totalCostAsPerc}
-                    items={breakdown2}
-                    colors={breakdownColors2}
-                    totalCost={cost2}
-                    align="left"
-                    title={'With uneconomical patients'}
-                    enabled={xVal && breakdown2}
-                  />
-                )}
+                <CostBreakdown
+                  offsetForComplete={150}
+                  height={height}
+                  width={width * 0.5}
+                  scaleToBounds={totalCostAsPerc}
+                  items={breakdown2}
+                  colors={breakdownColorsPrice2}
+                  align="left"
+                  title={'With uneconomical patients'}
+                  enabled={view === 'price/patient' && xVal && breakdown2}
+                />
               </>
             )
           }

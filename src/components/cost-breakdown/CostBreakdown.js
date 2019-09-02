@@ -36,18 +36,19 @@ const TitleWrap = styled.div`
 `
 
 const ValueLabel = styled.text`
-  font-size: ${props =>
+  // font-size: ${props =>
     props.val < 0.06 ? Math.max(1, 1.6 * (props.val / 0.1)) : 1.6}rem;
+  font-size: 1rem;
   fill: white;
   width: ${props => props.width}px;
 
   > tspan {
-    text-anchor: middle;
+    
   }
 `
 
 const TotalLabel = styled.text`
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   fill: white;
 
   > tspan {
@@ -57,7 +58,10 @@ const TotalLabel = styled.text`
 
 function getRoundedCurrency(val) {
   const valInBillions = val / 1e9
-  const precision = valInBillions < 10 ? 1 : 0
+  let precision = valInBillions < 10 ? 1 : 0
+  if (valInBillions < 0.2) {
+    precision = 2
+  }
   const valAsCurrency = currency(valInBillions, {
     precision,
     symbol: '$',
@@ -65,6 +69,15 @@ function getRoundedCurrency(val) {
   })
 
   return `$${valAsCurrency.format()}bn`
+}
+
+function getAdjustedLabelColor(color) {
+  if (color === '#c41300') {
+    return '#fd5240'
+  } else if (color === 'rgba(111, 111, 111)') {
+    return 'rgba(222, 222, 222)'
+  }
+  return color
 }
 
 export default function CostBreakdown({
@@ -84,8 +97,6 @@ export default function CostBreakdown({
 
   const SVGHeight = height - 150
 
-  const layoutItems = items.ratios
-  const labelItems = items.areas
   let positions = []
   let yOffset = SVGHeight
 
@@ -96,13 +107,15 @@ export default function CostBreakdown({
     (offsetForComplete + Math.min(150, extraHeightOffsetForExcessScaling))
 
   // calculate label and bar positions
-  for (let i = 0; i < layoutItems.length; i++) {
-    const h = Math.max(0, adjustedHeight * layoutItems[i])
+  for (let i = 0; i < items.bars.length; i++) {
+    const ratio = items.bars[i].ratio
+
+    const h = Math.max(0, adjustedHeight * ratio)
     positions.push({
       h,
       y: yOffset - h,
-      yLabel: layoutItems[i] > 0.7 ? yOffset - 50 : yOffset - h + h / 2 + 10,
-      opacity: layoutItems[i] < 0.01 ? 0 : 1,
+      yLabel: ratio > 0.7 ? yOffset - 50 : yOffset - h + h / 2 + 10,
+      opacity: ratio < 0.02 ? 0 : 1,
     })
     yOffset -= h
   }
@@ -110,55 +123,87 @@ export default function CostBreakdown({
   let labelPosX = align === 'left' ? 0 : width / 2
   let barPosX = align === 'left' ? 0 : width / 2
 
-  const totalCost = getRoundedCurrency(_.sum(items.areas))
+  // const totalCost = getRoundedCurrency(_.sum(items.areas))
+  const totalCost = getRoundedCurrency(items.total)
+  const barWidth = width * 0.35
 
   return (
     <BreakdownWrap height={height}>
       <svg height={SVGHeight} width={width}>
         <g>
-          <rect
-            width={width * 0.4 + 20}
-            height={adjustedHeight + 20}
-            x={barPosX - 10}
-            y={SVGHeight - adjustedHeight - 10}
-            fill="rgba(0, 0, 0, 0.5)"
-          />
-          <TotalLabel
-            x={barPosX + width * 0.2}
-            y={SVGHeight - adjustedHeight - 15}
-          >
-            <tspan>{totalCost}</tspan>
-          </TotalLabel>
-        </g>
-        <g>
           {positions.map((p, i) => (
             <rect
               key={i}
-              width={width * 0.4}
+              width={barWidth}
               height={p.h}
               x={barPosX}
               y={p.y}
               fill={colors[i]}
+              mask={`url(#topFade)`}
             />
           ))}
         </g>
         <g>
           {positions.map((p, i) => (
-            <ValueLabel
-              key={i}
-              width={width * 0.4}
-              x={
-                align === 'left' ? barPosX + width * 0.6 : barPosX - width * 0.2
-              }
-              y={Math.min(height, p.yLabel)}
-              val={layoutItems[i]}
-            >
-              <tspan style={{ fillOpacity: p.opacity }}>
-                {getRoundedCurrency(labelItems[i])}
-              </tspan>
-            </ValueLabel>
+            <React.Fragment key={i}>
+              <ValueLabel
+                width={100}
+                x={align === 'left' ? barPosX + 90 : barPosX - 5}
+                y={Math.min(height, p.yLabel) - 20}
+                val={items.bars[i].ratio}
+              >
+                <tspan
+                  style={{
+                    fontSize: '1.6rem',
+                    fillOpacity: p.opacity,
+                    textAnchor: align === 'left' ? 'start' : 'end',
+                    fill: getAdjustedLabelColor(colors[i]),
+                  }}
+                >
+                  {items.bars[i].key}
+                </tspan>
+              </ValueLabel>
+              <ValueLabel
+                key={i}
+                width={100}
+                x={align === 'left' ? barPosX + 90 : barPosX - 10}
+                y={Math.min(height, p.yLabel)}
+                val={items.bars[i].ratio}
+              >
+                <tspan
+                  style={{
+                    fillOpacity: p.opacity,
+                    textAnchor: align === 'left' ? 'start' : 'end',
+                  }}
+                >
+                  {getRoundedCurrency(items.bars[i].area)}
+                </tspan>
+              </ValueLabel>
+            </React.Fragment>
           ))}
         </g>
+        <g>
+          <TotalLabel
+            x={barPosX + width * 0.2}
+            y={Math.max(30, _.last(positions).y - 15)}
+          >
+            <tspan>{totalCost}</tspan>
+          </TotalLabel>
+        </g>
+        <defs>
+          <mask id="topFade">
+            <rect fill="white" width={width} height={height} x={0} y={0} />
+            <path
+              fill="black"
+              d={`M 0 50 v -50 h ${barWidth} v 50 l ${-barWidth *
+                0.5} -18 l ${-barWidth * 0.5} 18 z`}
+            />
+          </mask>
+          <linearGradient id="gradTopFade" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="black" />
+            <stop offset="100%" stopColor="white" />
+          </linearGradient>
+        </defs>
       </svg>
       {!!title && false && (
         <TitleWrap width={width} align={'center'}>
