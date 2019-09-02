@@ -36,12 +36,14 @@ export default function InsetList({
   items,
   onItemSelected,
   replaceMode = false,
+  storageKey = 'presets',
+  labelFormatter = l => l,
 }) {
   const classes = useStyles()
 
   function handleItemSelected(i, item) {
     if (typeof onItemSelected === 'function') {
-      onItemSelected(i, item)
+      onItemSelected(i, item, items, storageKey)
     }
   }
 
@@ -69,7 +71,7 @@ export default function InsetList({
             {i < icons.length && (
               <ListItemIcon>{React.createElement(icons[i])}</ListItemIcon>
             )}
-            <ListItemText primary={item.label || `+${item.x}, ${item.y}k`} />
+            <ListItemText primary={item.label || labelFormatter(item)} />
           </ListItem>
         ))}
       </List>

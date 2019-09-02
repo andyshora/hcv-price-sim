@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme =>
       borderRadius: '50%',
     },
     valueLabel: {
-      top: 40,
+      top: 50,
       '& *': {
         background: 'transparent',
         color: '#fff',

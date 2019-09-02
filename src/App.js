@@ -54,7 +54,7 @@ import priceTimeData from './data/pricetime.json'
 import bounds from './data/bounds.json'
 import { colorScales } from './theme'
 
-const defaultPresets = [
+const defaultPatientPresets = [
   {
     label: '',
     x: 25,
@@ -84,6 +84,24 @@ const defaultPresets = [
     label: '',
     x: 70,
     y: 32,
+  },
+]
+
+const defaultTimePresets = [
+  {
+    label: '',
+    x: 0,
+    y: 0,
+  },
+  {
+    label: '',
+    x: 0,
+    y: 10,
+  },
+  {
+    label: '',
+    x: 0,
+    y: 20,
   },
 ]
 
@@ -243,8 +261,6 @@ function calculatePie1({ x = 0, xPerc = 0, data, bounds }) {
   return slicesArr
 }
 
-const graphMargin = { top: 10, left: 80, right: 10, bottom: 80 }
-
 function getHighlightedArea(data, { maxY }) {
   const res = data
     .filter(d => d.Yval / 1000 >= maxY)
@@ -287,26 +303,51 @@ export default function App() {
 
   const [cost1, setCost1] = useState(null)
   const [cost2, setCost2] = useState(null)
-  // const [presets, setPresets] = useState([])
   const [totalCostAsPerc, setTotalCostAsPerc] = useState(null)
-  function setPresets(p) {
-    presets.current = p
+  function setPatientPresets(p) {
+    patientPresets.current = p
+  }
+  function setTimePresets(p) {
+    timePresets.current = p
   }
 
-  const presets = useRef(defaultPresets)
+  const patientPresets = useRef(defaultPatientPresets)
+  const timePresets = useRef(defaultTimePresets)
 
   const [view, setView] = React.useState('seg/patient')
+  const activeView = useRef('seg/patient')
 
-  function handlePresetKeyTapped(index) {
-    if (index <= presets.current.length) {
-      handlePresetSelected(index, presets.current[index])
+  function handlePatientPresetKeyTapped(index) {
+    if (index < patientPresets.current.length) {
+      handlePresetSelected(
+        index,
+        patientPresets.current[index],
+        patientPresets.current
+      )
     }
   }
 
-  useHotkeys('1, 2, 3, 4, 5, 6', handleHotkeyTapped)
+  function handleTimePresetKeyTapped(index) {
+    if (index < timePresets.current.length) {
+      handlePresetSelected(
+        index,
+        timePresets.current[index],
+        timePresets.current,
+        'time'
+      )
+    }
+  }
+
+  useHotkeys('1, 2, 3, 4, 5, 6', params => {
+    handleHotkeyTapped(params)
+  })
 
   function handleHotkeyTapped({ key }) {
-    handlePresetKeyTapped(Number.parseInt(key) - 1)
+    if (activeView.current === 'price/patient') {
+      handlePatientPresetKeyTapped(Number.parseInt(key) - 1)
+    } else if (activeView.current === 'price/time') {
+      handleTimePresetKeyTapped(Number.parseInt(key) - 1)
+    }
   }
 
   function handleSavePresetTapped() {
@@ -401,19 +442,22 @@ export default function App() {
   }, [xVal, yVal, view, totalArea])
 
   useEffect(() => {
-    const persistedPresets = getFromLocalStorage('presets')
+    const persistedPatientPresets = getFromLocalStorage('presets')
     // new default presets might be longer
-    if (persistedPresets && defaultPresets.length > persistedPresets.length) {
+    if (
+      persistedPatientPresets &&
+      defaultPatientPresets.length > persistedPatientPresets.length
+    ) {
       for (
-        let i = persistedPresets.length - 1;
-        i < defaultPresets.length - 1;
+        let i = persistedPatientPresets.length - 1;
+        i < defaultPatientPresets.length - 1;
         i++
       ) {
-        persistedPresets.push(defaultPresets[i])
+        persistedPatientPresets.push(defaultPatientPresets[i])
       }
     }
-    if (persistedPresets) {
-      setPresets(persistedPresets)
+    if (persistedPatientPresets) {
+      setPatientPresets(persistedPatientPresets)
     }
   }, [])
 
@@ -441,6 +485,7 @@ export default function App() {
   function handleViewChange(event, newView) {
     setYVal(20)
     if (newView) {
+      activeView.current = newView
       setView(newView)
     }
     if (savingPreset) {
@@ -448,24 +493,30 @@ export default function App() {
     }
   }
 
-  function handlePresetSelected(i, { x, y }) {
+  function handlePresetSelected(
+    i,
+    { x, y },
+    currentPresets,
+    storageKey = 'presets'
+  ) {
     if (savingPreset) {
-      const newPresets = [...presets.current]
+      const newPresets = [...currentPresets]
       newPresets[i] = {
         label: null,
         x: xVal,
         y: yVal,
       }
-      setPresets(newPresets)
+      if (storageKey === 'presets') {
+        setPatientPresets(newPresets)
+      } else {
+        setTimePresets(newPresets)
+      }
       setSavingPreset(false)
-      saveToLocalStorage('presets', newPresets)
+
+      saveToLocalStorage(storageKey, newPresets)
     } else {
-      // if (x !== xVal) {
       setXVal(x)
-      // }
-      // if (y !== yVal) {
       setYVal(y)
-      // }
     }
   }
 
@@ -509,7 +560,7 @@ export default function App() {
     const { width, height } = dims
     switch (view) {
       case 'price/patient': {
-        const margin = { top: 10, left: 80, right: 10, bottom: 120 }
+        const margin = { top: 10, left: 50, right: 10, bottom: 120 }
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
@@ -570,7 +621,7 @@ export default function App() {
         return (
           <StaticChartView title={view} {...dims}>
             <SegPatientChart
-              margin={{ top: 10, left: 180, right: 10, bottom: 120 }}
+              margin={{ top: 10, left: 150, right: 10, bottom: 120 }}
               height={height}
               data={patientData}
               bounds={bounds}
@@ -583,7 +634,7 @@ export default function App() {
         return (
           <StaticChartView title={view} {...dims}>
             <SegTimeChart
-              margin={{ top: 10, left: 180, right: 10, bottom: 120 }}
+              margin={{ top: 10, left: 150, right: 10, bottom: 120 }}
               height={height}
               data={segTimeData}
               bounds={bounds}
@@ -593,7 +644,7 @@ export default function App() {
         )
         break
       case 'price/time': {
-        const margin = { top: 10, left: 80, right: 10, bottom: 120 }
+        const margin = { top: 10, left: 50, right: 10, bottom: 120 }
         const seriesData = createSeriesData({
           cutOffX: null,
           data: priceTimeData,
@@ -747,7 +798,38 @@ export default function App() {
         {view === 'price/patient' && (
           <PresetsWrap>
             <Presets
-              items={presets.current}
+              storageKey="presets"
+              items={patientPresets.current}
+              labelFormatter={item => `+${item.x}, ${item.y}k`}
+              onItemSelected={handlePresetSelected}
+              replaceMode={savingPreset}
+            />
+
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={handleSavePresetTapped}
+              title="Save current state as hotkey"
+            >
+              <SaveIcon size="small" />
+            </Button>
+            {savingPreset && (
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => setSavingPreset(false)}
+              >
+                Cancel
+              </Button>
+            )}
+          </PresetsWrap>
+        )}
+        {view === 'price/time' && (
+          <PresetsWrap>
+            <Presets
+              storageKey="time"
+              items={timePresets.current}
+              labelFormatter={item => `${item.y}%`}
               onItemSelected={handlePresetSelected}
               replaceMode={savingPreset}
             />

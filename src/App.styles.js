@@ -18,7 +18,7 @@ export const LayoutWrap = styled.div`
     'main     side'
     'bottom bottom';
   grid-template-columns: 1fr 400px;
-  grid-template-rows: 140px 1fr 80px;
+  grid-template-rows: 140px 0.9fr 80px;
 `
 
 const debugBg = css`
