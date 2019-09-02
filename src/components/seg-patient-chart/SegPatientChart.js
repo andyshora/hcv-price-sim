@@ -18,8 +18,8 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 80px;
-  left: -90px;
+  top: 40px;
+  left: 30px;
   color: white;
   font-size: 1.4rem;
 `
@@ -56,7 +56,7 @@ export default function SegPatientChart({
         height={height}
         yDomain={[0, bounds.maxY / 1000]}
         xDomain={[0, bounds.maxX / 1000]}
-        margin={{ top: 50, right: 10, bottom: 100, left: 100 }}
+        margin={margin}
         stackBy="y"
       >
         <YAxis
@@ -87,6 +87,15 @@ export default function SegPatientChart({
             style={{ stroke: 'none', fillOpacity: 1 }}
           />
         ))}
+        <YAxisLabel>
+          Cost
+          <br />
+          Per
+          <br />
+          Patient
+          <br />
+          ($)
+        </YAxisLabel>
       </FlexibleWidthXYPlot>
     </ChartWrap>
   )

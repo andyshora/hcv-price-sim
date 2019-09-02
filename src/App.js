@@ -486,7 +486,7 @@ export default function App() {
         return (
           <StaticChartView title={view} {...dims}>
             <SegPatientChart
-              margin={graphMargin}
+              margin={{ top: 50, left: 180, right: 10, bottom: 120 }}
               data={patientData}
               bounds={bounds}
               colors={areaColors}
@@ -501,7 +501,7 @@ export default function App() {
               margin={graphMargin}
               data={segTimeData}
               bounds={bounds}
-              cutOffX={10}
+              cutOffX={null}
             />
           </StaticChartView>
         )
@@ -537,7 +537,7 @@ export default function App() {
                 bounds={bounds}
                 colors={areaColors}
                 perc={yVal / 100}
-                cutOffX={10}
+                cutOffX={null}
               />
             </ChartWrap>
           </DynamicChartViewWrap>
@@ -599,7 +599,7 @@ export default function App() {
           }}
         </ContainerDimensions>
         <LayoutDial>
-          {pie1 && (
+          {pie1 && view === 'price/patient' && (
             <RadialProgress
               values={pie1}
               max={100}
@@ -609,6 +609,18 @@ export default function App() {
               title="Patients Cured"
               colors={[areaColors[2], areaColors[3]]}
               label={_.sum(pie1).toFixed(0)}
+            />
+          )}
+          {view === 'price/time' && (
+            <RadialProgress
+              values={[94]}
+              max={100}
+              width={200}
+              height={200}
+              suffix={'%'}
+              title="Patients Cured"
+              colors={[areaColors[2]]}
+              label={94}
             />
           )}
         </LayoutDial>

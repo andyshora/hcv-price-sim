@@ -18,8 +18,8 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 80px;
-  left: -90px;
+  top: 40px;
+  left: -70px;
   color: white;
   font-size: 1.4rem;
 `
