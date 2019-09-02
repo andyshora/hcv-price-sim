@@ -9,6 +9,9 @@ import Typography from '@material-ui/core/Typography'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import ViewColumnIcon from '@material-ui/icons/ViewColumn'
+import TransformIcon from '@material-ui/icons/Transform'
+import DeviceHubIcon from '@material-ui/icons/DeviceHub'
+
 import VerticalAlignCenterIcon from '@material-ui/icons/VerticalAlignCenter'
 import SaveIcon from '@material-ui/icons/Save'
 import { Button, Paper } from '@material-ui/core'
@@ -459,6 +462,24 @@ export default function App() {
     if (persistedPatientPresets) {
       setPatientPresets(persistedPatientPresets)
     }
+
+    const persistedTimePresets = getFromLocalStorage('time')
+    // new default presets might be longer
+    if (
+      persistedTimePresets &&
+      defaultTimePresets.length > persistedTimePresets.length
+    ) {
+      for (
+        let i = persistedTimePresets.length - 1;
+        i < defaultTimePresets.length - 1;
+        i++
+      ) {
+        persistedTimePresets.push(defaultTimePresets[i])
+      }
+    }
+    if (persistedTimePresets) {
+      setTimePresets(persistedTimePresets)
+    }
   }, [])
 
   const highlightedPriceAreaData =
@@ -657,6 +678,8 @@ export default function App() {
                 min={0}
                 step={1}
                 max={65}
+                valueLabelDisplay={'off'}
+                defaultValue={yVal}
                 bounds={bounds}
                 height={height / 2 - (margin.top + margin.bottom)}
                 margin={`auto 0 ${-40 + margin.bottom}px 0`}
@@ -778,7 +801,7 @@ export default function App() {
             className={classes.toggleButtonGroup}
           >
             <ToggleButton value="seg/patient">
-              <ViewColumnIcon />
+              <DeviceHubIcon />
               seg/patient
             </ToggleButton>
             <ToggleButton value="seg/time">
@@ -786,7 +809,7 @@ export default function App() {
               seg/time
             </ToggleButton>
             <ToggleButton value="price/patient">
-              <VerticalAlignCenterIcon />
+              <TransformIcon />
               price/patient
             </ToggleButton>
             <ToggleButton value="price/time">

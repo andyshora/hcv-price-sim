@@ -71,6 +71,7 @@ export default function VerticalSlider({
   margin = '0',
   value = defaultValue,
   valueLabelSuffix = '',
+  valueLabelDisplay = 'on',
 }) {
   const classes = useStyles()
   return (
@@ -78,11 +79,12 @@ export default function VerticalSlider({
       classes={classes}
       orientation="vertical"
       valueLabelFormat={v => `${v}${valueLabelSuffix}`}
-      valueLabelDisplay="on"
+      valueLabelDisplay={valueLabelDisplay}
       onChange={onChange}
       min={min}
       max={max}
       step={step}
+      value={value}
       defaultValue={defaultValue}
       ThumbComponent={VerticalThumbComponent}
       style={{
