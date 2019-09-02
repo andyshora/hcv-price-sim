@@ -37,6 +37,7 @@ export const LayoutSidebar = styled.aside`
   min-height: 640px;
   display: grid;
   grid-template-columns: 50% 50%;
+  margin-right: 0.5rem;
 
   ${debugBg}
 `

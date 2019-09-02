@@ -14,13 +14,13 @@ import SaveIcon from '@material-ui/icons/Save'
 import { Button, Paper } from '@material-ui/core'
 
 import CostBreakdown from './components/cost-breakdown'
-import SimGraph from './components/sim-graph'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
 import RadialProgress from './components/radial-progress'
 import Presets from './components/presets'
 import SegTimeChart from './components/seg-time-chart'
 import SegPatientChart from './components/seg-patient-chart'
 import PriceTimeChart from './components/price-time-chart'
+import PricePatientChart from './components/price-patient-chart'
 
 import StaticChartView from './views/static-chart-view'
 
@@ -467,7 +467,7 @@ export default function App() {
               />
             </HorizontalControls>
             <ChartWrap>
-              <SimGraph
+              <PricePatientChart
                 areaColors={areaColors}
                 view={view}
                 bounds={bounds}
