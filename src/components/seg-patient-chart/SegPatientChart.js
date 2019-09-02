@@ -36,7 +36,7 @@ function getSegmentData({ data, segment }) {
 }
 
 function yTickFormat(val) {
-  return `$${val}K`
+  return `${val}`
 }
 
 function xTickFormat(val) {
@@ -94,7 +94,7 @@ export default function SegPatientChart({
           <br />
           Patient
           <br />
-          ($)
+          ($K)
         </YAxisLabel>
       </FlexibleWidthXYPlot>
     </ChartWrap>

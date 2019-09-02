@@ -91,7 +91,7 @@ function toSf(val, num = 2) {
   return ~~(val * Math.pow(10, num)) / Math.pow(10, num)
 }
 
-function calculateBreakdown1({ bounds, data, x, y, totalArea }) {
+function calculateBreakdown1({ data, x, y, totalArea }) {
   // get everything in the blue rect
 
   const filteredData = data.filter(d => d.Xwidth > 0 && d.Yval < y)
@@ -162,6 +162,66 @@ function calculateBreakdown2({
   const res = {
     total: totalArea + additionalCostsArea - existingSavingArea,
     bars,
+  }
+
+  return res
+}
+
+function createSeriesData({ cutOffX, data, perc }) {
+  const res = {
+    hospital: [],
+    drug: [],
+    savings: [],
+  }
+  const maxLen = cutOffX || data.total.length
+  for (let i = 0; i < maxLen; i++) {
+    const total = data.total[i] / 1e6
+    const hospital = data.hospital[i] / 1e6
+    const hospitalElm = { x: i + 1, y: hospital }
+    const drugElm = {
+      x: i + 1,
+      y: i > 9 ? data.drugEnd[i - 10] / 1e6 : perc * total,
+    }
+    const savingsElm = { x: i + 1, y: total - (hospitalElm.y + drugElm.y) }
+    res.hospital.push(hospitalElm)
+    res.drug.push(drugElm)
+    res.savings.push(savingsElm)
+  }
+
+  return res
+}
+
+function calculateTimeBreakdown({ bounds, cutOffX, data, y }) {
+  const areas = {
+    hospital: 0,
+    drug: 0,
+    saving: 0,
+  }
+
+  const maxLen = cutOffX || data.total.length
+  for (let i = 0; i < maxLen; i++) {
+    const total = data.total[i]
+    const hospital = data.hospital[i]
+    const drug = i > 9 ? data.drugEnd[i - 10] : y * total
+    const saving = total - (hospital + drug)
+    areas.hospital += hospital
+    areas.drug += drug
+    areas.saving += saving
+  }
+
+  const totalArea = areas.hospital + areas.drug + areas.saving
+
+  const res = {
+    total: totalArea,
+    bars: [
+      { key: 'Drug', area: areas.drug, ratio: areas.drug / totalArea },
+      {
+        key: 'Hospital',
+        area: areas.hospital,
+        ratio: areas.hospital / totalArea,
+      },
+      { key: 'Saving', area: areas.saving, ratio: areas.saving / totalArea },
+    ],
   }
 
   return res
@@ -282,18 +342,39 @@ export default function App() {
   const { totalArea } = bounds
 
   useEffect(() => {
-    const newBreakdown1 =
-      view === 'price/patient' || view === 'price/time'
-        ? calculateBreakdown1({
-            data: patientData,
-            bounds,
-            y: yVal * 1000,
-            totalArea,
-          })
-        : {
-            total: totalArea,
-            bars: areaData,
-          }
+    let newBreakdown1 = null
+
+    switch (view) {
+      case 'price/patient':
+        newBreakdown1 = calculateBreakdown1({
+          data: patientData,
+          bounds,
+          y: yVal * 1000,
+          totalArea, // todo - wrong
+        })
+        break
+      case 'price/time':
+        newBreakdown1 = calculateTimeBreakdown({
+          data: priceTimeData,
+          bounds,
+          y: yVal * 0.01,
+          totalArea: bounds.totalSegArea,
+          cutOffX: null,
+        })
+        break
+      case 'seg/time': {
+        newBreakdown1 = {
+          total: bounds.totalSegArea,
+          bars: areaData,
+        }
+      }
+      default:
+        newBreakdown1 = {
+          total: bounds.totalSegArea,
+          bars: areaData,
+        }
+        break
+    }
     setBreakdown1(newBreakdown1)
     setCost1(newBreakdown1.totalCost)
 
@@ -358,7 +439,10 @@ export default function App() {
   }
 
   function handleViewChange(event, newView) {
-    setView(newView)
+    setYVal(20)
+    if (newView) {
+      setView(newView)
+    }
     if (savingPreset) {
       setSavingPreset(false)
     }
@@ -486,7 +570,8 @@ export default function App() {
         return (
           <StaticChartView title={view} {...dims}>
             <SegPatientChart
-              margin={{ top: 50, left: 180, right: 10, bottom: 120 }}
+              margin={{ top: 10, left: 180, right: 10, bottom: 120 }}
+              height={height}
               data={patientData}
               bounds={bounds}
               colors={areaColors}
@@ -498,7 +583,8 @@ export default function App() {
         return (
           <StaticChartView title={view} {...dims}>
             <SegTimeChart
-              margin={graphMargin}
+              margin={{ top: 10, left: 180, right: 10, bottom: 120 }}
+              height={height}
               data={segTimeData}
               bounds={bounds}
               cutOffX={null}
@@ -508,6 +594,11 @@ export default function App() {
         break
       case 'price/time': {
         const margin = { top: 10, left: 80, right: 10, bottom: 120 }
+        const seriesData = createSeriesData({
+          cutOffX: null,
+          data: priceTimeData,
+          perc: yVal * 0.01,
+        })
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
@@ -517,7 +608,7 @@ export default function App() {
                 max={65}
                 bounds={bounds}
                 height={height / 2 - (margin.top + margin.bottom)}
-                margin={`auto 0 ${-50 + margin.bottom}px 0`}
+                margin={`auto 0 ${-40 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
                   if (savingPreset) {
@@ -532,12 +623,11 @@ export default function App() {
             </HorizontalControls>
             <ChartWrap>
               <PriceTimeChart
-                margin={graphMargin}
-                data={priceTimeData}
+                margin={margin}
+                seriesData={seriesData}
                 bounds={bounds}
                 colors={areaColors}
                 perc={yVal / 100}
-                cutOffX={null}
               />
             </ChartWrap>
           </DynamicChartViewWrap>
@@ -548,8 +638,6 @@ export default function App() {
         return <StaticChartView title={view} {...dims} />
     }
   }
-
-  const breakdownWidthFunc = view === 'price/patient' ? w => w * 0.5 : w => w
 
   return (
     <LayoutWrap>

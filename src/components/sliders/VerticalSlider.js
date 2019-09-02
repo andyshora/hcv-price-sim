@@ -21,7 +21,7 @@ const VerticalThumbWrap = styled.span`
         #ffffff57 13px,
         rgba(0, 0, 0, 0) 13px
       );
-      mix-blend-mode: color;
+      // mix-blend-mode: color;
     }
   }
 `

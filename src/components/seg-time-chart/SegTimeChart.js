@@ -18,8 +18,8 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 80px;
-  left: -90px;
+  top: 40px;
+  left: 40px;
   color: white;
   font-size: 1.4rem;
 `
@@ -30,7 +30,7 @@ function getFormattedData({ cutOffX, data }) {
 }
 
 function yTickFormat(val) {
-  return `$${val / 1000}bn`
+  return `${val / 1000}`
 }
 
 export default function SegTimeChart({
@@ -47,7 +47,7 @@ export default function SegTimeChart({
         height={height}
         yDomain={[0, 8000]}
         xDomain={[1, cutOffX || 13]}
-        margin={{ top: 50, right: 10, bottom: 100, left: 100 }}
+        margin={margin}
         stackBy="y"
       >
         <YAxis
@@ -78,6 +78,13 @@ export default function SegTimeChart({
           color={colorScales.jmi[0]}
         />
       </FlexibleWidthXYPlot>
+      <YAxisLabel>
+        Total
+        <br />
+        Cost
+        <br />
+        ($B)
+      </YAxisLabel>
     </ChartWrap>
   )
 }

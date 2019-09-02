@@ -71,6 +71,10 @@ function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
   return res
 }
 
+function yTickFormat(val) {
+  return `${val}`
+}
+
 function xTickFormat(val) {
   return `${val}K`
 }
@@ -143,7 +147,7 @@ export default function PricePatientChart({
         <YAxis
           title="Cost Per Patient ($)"
           {...reactVizTheme.YAxis}
-          tickFormat={xTickFormat}
+          tickFormat={yTickFormat}
           style={{
             title: {
               display: 'none',
@@ -190,7 +194,7 @@ export default function PricePatientChart({
           <br />
           Patient
           <br />
-          ($)
+          ($K)
         </YAxisLabel>
       </FlexibleWidthXYPlot>
 
