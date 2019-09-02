@@ -33,8 +33,14 @@ export const LayoutHeader = styled.header`
 export const LayoutSidebar = styled.aside`
   grid-area: side;
   position: relative;
-  min-height: 50px;
-  ${debugBg}
+  min-height: 640px;
+  @media (min-height: 800px) {
+    min-height: 740px;
+  }
+  @media (min-height: 1000px) {
+    min-height: 940px;
+  }
+  // ${debugBg}
 `
 
 export const LayoutDial = styled.div`
@@ -43,6 +49,7 @@ export const LayoutDial = styled.div`
   height: 250px;
   top: 160px;
   left: -220px;
+  z-index: 10;
 
   ${debugBg}
 `
@@ -57,6 +64,8 @@ export const LayoutFooter = styled.footer`
   min-height: 50px;
   ${debugBg}
 `
+
+export const LayoutNav = styled.nav``
 
 export const DynamicChartViewWrap = styled.div`
   ${debugBg}
@@ -162,12 +171,6 @@ export const GraphWrap = styled.div`
   @media (min-height: 1000px) {
     min-height: 700px;
   }
-`
-
-export const CuredWrap = styled.div`
-  position: absolute;
-  top: 0;
-  right: 2rem;
 `
 
 export const BreakdownWrap = styled.aside`

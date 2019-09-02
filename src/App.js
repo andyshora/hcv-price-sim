@@ -12,14 +12,13 @@ import ViewColumnIcon from '@material-ui/icons/ViewColumn'
 import VerticalAlignCenterIcon from '@material-ui/icons/VerticalAlignCenter'
 import SaveIcon from '@material-ui/icons/Save'
 
-import { DiscreteColorLegend } from 'react-vis'
-
 import CostBreakdown from './components/cost-breakdown'
 import SimGraph from './components/sim-graph'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
 import RadialProgress from './components/radial-progress'
 import Presets from './components/presets'
 import SegTimeChart from './components/seg-time-chart'
+import SegPatientChart from './components/seg-patient-chart'
 import PriceTimeChart from './components/price-time-chart'
 
 import StaticChartView from './views/static-chart-view'
@@ -33,6 +32,7 @@ import {
   LayoutDial,
   LayoutMain,
   LayoutFooter,
+  LayoutNav,
   DynamicChartViewWrap,
   PresetsWrap,
   Header,
@@ -208,11 +208,7 @@ function getFromLocalStorage(key) {
 }
 
 const useStyles = makeStyles(theme => ({
-  toggleButtonGroup: {
-    display: 'grid',
-    gridTemplateColumns: '50% 50%',
-    width: 300,
-  },
+  toggleButtonGroup: {},
 }))
 
 export default function App() {
@@ -252,14 +248,18 @@ export default function App() {
   }
 
   const areaColors = [
-    '#dcf6df',
+    'rgb(116, 222, 147)',
     'rgba(111, 111, 111)',
     '#6c9bdc',
     'rgb(51, 229, 255)',
     '#f9d129',
   ]
 
-  const breakdownColors = ['#6c9bdc', 'rgba(111, 111, 111)', '#dcf6df']
+  const breakdownColors = [
+    '#6c9bdc',
+    'rgba(111, 111, 111)',
+    'rgb(116, 222, 147)',
+  ]
   const breakdownColors2 = [
     '#6c9bdc',
     '#30C1D7',
@@ -276,7 +276,7 @@ export default function App() {
       y: yVal * 1000,
       totalArea,
     })
-    setBreakdown1(newBreakdown1.ratios)
+    setBreakdown1(newBreakdown1)
     setCost1(newBreakdown1.totalCost)
 
     if (view === 'price/patient' && xVal) {
@@ -295,7 +295,7 @@ export default function App() {
         totalArea,
         breakdown1: newBreakdown1,
       })
-      setBreakdown2(newBreakdown2.ratios)
+      setBreakdown2(newBreakdown2)
       setCost2(newBreakdown2.totalCost)
       setTotalCostAsPerc(_.sum(newBreakdown2.ratios))
     }
@@ -330,11 +330,7 @@ export default function App() {
       : 0
 
   let pie1 = null
-  if (
-    view === 'price/patient' &&
-    highlightedPriceAreaData &&
-    highlightedPriceAreaData.length
-  ) {
+  if (highlightedPriceAreaData && highlightedPriceAreaData.length) {
     pie1 = calculatePie1({
       x: _.last(highlightedPriceAreaData).xRight,
       xPerc: xVal || 0,
@@ -407,25 +403,6 @@ export default function App() {
     })
   }
 
-  const viewNav = (
-    <ViewNav>
-      <ToggleButtonGroup value={view} exclusive onChange={handleViewChange}>
-        <ToggleButton value="segments">
-          <ViewColumnIcon />
-          Segments
-        </ToggleButton>
-        <ToggleButton value="price">
-          <VerticalAlignCenterIcon />
-          Price per patient
-        </ToggleButton>
-        <ToggleButton value="population" disabled>
-          <VerticalAlignCenterIcon />
-          Price per population
-        </ToggleButton>
-      </ToggleButtonGroup>
-    </ViewNav>
-  )
-
   function getMainView({ view, dims }) {
     const { width, height } = dims
     switch (view) {
@@ -490,15 +467,11 @@ export default function App() {
       case 'seg/patient':
         return (
           <StaticChartView title={view} {...dims}>
-            <SimGraph
-              areaColors={areaColors}
-              view={view}
-              bounds={bounds}
-              patientData={patientData}
-              highlightValues={{ x: xVal, y: yVal }}
-              highlightedPriceAreaData={highlightedPriceAreaData}
-              {...dims}
+            <SegPatientChart
               margin={graphMargin}
+              data={patientData}
+              bounds={bounds}
+              colors={areaColors}
             />
           </StaticChartView>
         )
@@ -522,7 +495,7 @@ export default function App() {
               <VerticalSlider
                 min={0}
                 step={1}
-                max={50}
+                max={65}
                 bounds={bounds}
                 height={height / 2 - (margin.top + margin.bottom)}
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
@@ -559,41 +532,57 @@ export default function App() {
   return (
     <LayoutWrap>
       <LayoutHeader>
-        <Typography variant="h3">LayoutHeader: {view}</Typography>
-        <ToggleButtonGroup
-          value={view}
-          exclusive
-          onChange={handleViewChange}
-          className={classes.toggleButtonGroup}
-        >
-          <ToggleButton value="seg/patient">
-            <ViewColumnIcon />
-            seg/patient
-          </ToggleButton>
-          <ToggleButton value="seg/time">
-            <ViewColumnIcon />
-            seg/time
-          </ToggleButton>
-          <ToggleButton value="price/patient">
-            <VerticalAlignCenterIcon />
-            price/patient
-          </ToggleButton>
-          <ToggleButton value="price/time">
-            <VerticalAlignCenterIcon />
-            price/time
-          </ToggleButton>
-        </ToggleButtonGroup>
+        <Typography variant="h3" gutterBottom>
+          {view}
+        </Typography>
       </LayoutHeader>
       <LayoutSidebar>
         <ContainerDimensions>
-          {({ width, height }) => (
-            <Typography variant="h3">
-              LayoutSidebar: {width}x{height}
-            </Typography>
-          )}
+          {({ width, height }) =>
+            breakdown1 && (
+              <>
+                <CostBreakdown
+                  offsetForComplete={150}
+                  height={height}
+                  width={200}
+                  scaleToBounds={totalCostAsPerc}
+                  items={breakdown1}
+                  colors={breakdownColors}
+                  totalCost={cost1}
+                  align="right"
+                  title={xVal ? 'Without uneconomical patients' : 'Total Cost'}
+                />
+                {false && (
+                  <CostBreakdown
+                    offsetForComplete={150}
+                    height={500}
+                    width={200}
+                    scaleToBounds={totalCostAsPerc}
+                    items={breakdown2}
+                    colors={breakdownColors2}
+                    totalCost={cost2}
+                    align="left"
+                    title={'With uneconomical patients'}
+                    enabled={xVal && breakdown2}
+                  />
+                )}
+              </>
+            )
+          }
         </ContainerDimensions>
         <LayoutDial>
-          <p>LayoutDial</p>
+          {pie1 && (
+            <RadialProgress
+              values={pie1}
+              max={100}
+              width={200}
+              height={200}
+              suffix={'%'}
+              title="Patients Cured"
+              colors={[areaColors[2], areaColors[3]]}
+              label={_.sum(pie1).toFixed(0)}
+            />
+          )}
         </LayoutDial>
       </LayoutSidebar>
       <LayoutMain>
@@ -602,7 +591,58 @@ export default function App() {
         </ContainerDimensions>
       </LayoutMain>
       <LayoutFooter>
-        <Typography variant="h3">LayoutFooter</Typography>
+        <LayoutNav>
+          <ToggleButtonGroup
+            value={view}
+            exclusive
+            onChange={handleViewChange}
+            className={classes.toggleButtonGroup}
+          >
+            <ToggleButton value="seg/patient">
+              <ViewColumnIcon />
+              seg/patient
+            </ToggleButton>
+            <ToggleButton value="seg/time">
+              <ViewColumnIcon />
+              seg/time
+            </ToggleButton>
+            <ToggleButton value="price/patient">
+              <VerticalAlignCenterIcon />
+              price/patient
+            </ToggleButton>
+            <ToggleButton value="price/time">
+              <VerticalAlignCenterIcon />
+              price/time
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </LayoutNav>
+        {view === 'price/patient' && (
+          <PresetsWrap>
+            <Presets
+              items={presets.current}
+              onItemSelected={handlePresetSelected}
+              replaceMode={savingPreset}
+            />
+
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={handleSavePresetTapped}
+              title="Save current state as hotkey"
+            >
+              <SaveIcon size="small" />
+            </Button>
+            {savingPreset && (
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => setSavingPreset(false)}
+              >
+                Cancel
+              </Button>
+            )}
+          </PresetsWrap>
+        )}
       </LayoutFooter>
     </LayoutWrap>
   )
