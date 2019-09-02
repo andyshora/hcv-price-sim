@@ -74,14 +74,7 @@ export default function SegPatientChart({
           tickTotal={5}
           tickFormat={xTickFormat}
         />
-        <DiscreteColorLegend
-          style={{ fontSize: '1.2rem' }}
-          items={bounds.segments.map((s, i) => ({
-            title: s,
-            color: colorScales.jmi[i],
-            strokeWidth: 20,
-          }))}
-        />
+
         {bounds.segments.map((s, i) => (
           <AreaSeries
             key={s}

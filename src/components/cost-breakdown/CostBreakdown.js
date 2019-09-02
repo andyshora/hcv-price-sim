@@ -10,12 +10,8 @@ const BreakdownWrap = styled.div`
   align-items: flex-start;
   justify-content: flex-end;
   flex-direction: column;
-
-  > svg {
-  }
+  padding-bottom: ${props => props.paddingBottom}px;
 `
-const TotalCost = styled.div``
-
 const Placeholder = styled.div`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
@@ -38,7 +34,7 @@ const TitleWrap = styled.div`
 const ValueLabel = styled.text`
   // font-size: ${props =>
     props.val < 0.06 ? Math.max(1, 1.6 * (props.val / 0.1)) : 1.6}rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   fill: white;
   width: ${props => props.width}px;
 
@@ -50,6 +46,7 @@ const ValueLabel = styled.text`
 const TotalLabel = styled.text`
   font-size: 1.8rem;
   fill: white;
+  width: 120px;
 
   > tspan {
     text-anchor: middle;
@@ -101,7 +98,7 @@ export default function CostBreakdown({
   let yOffset = SVGHeight
 
   let extraHeightOffsetForExcessScaling =
-    200 * (Math.max(1.5, scaleToBounds) - 1.5)
+    200 * (Math.max(1.1, scaleToBounds) - 1.1)
   let adjustedHeight =
     SVGHeight -
     (offsetForComplete + Math.min(150, extraHeightOffsetForExcessScaling))
@@ -120,15 +117,14 @@ export default function CostBreakdown({
     yOffset -= h
   }
 
-  let labelPosX = align === 'left' ? 0 : width / 2
-  let barPosX = align === 'left' ? 0 : width / 2
+  let barPosX = align === 'left' ? 20 : width / 2
 
   // const totalCost = getRoundedCurrency(_.sum(items.areas))
   const totalCost = getRoundedCurrency(items.total)
-  const barWidth = width * 0.35
+  const barWidth = Math.min(80, width * 0.35)
 
   return (
-    <BreakdownWrap height={height}>
+    <BreakdownWrap height={height} paddingBottom={80}>
       <svg height={SVGHeight} width={width}>
         <g>
           {positions.map((p, i) => (
@@ -148,7 +144,7 @@ export default function CostBreakdown({
             <React.Fragment key={i}>
               <ValueLabel
                 width={100}
-                x={align === 'left' ? barPosX + 90 : barPosX - 5}
+                x={align === 'left' ? barPosX + barWidth + 5 : barPosX - 5}
                 y={Math.min(height, p.yLabel) - 20}
                 val={items.bars[i].ratio}
               >
@@ -166,7 +162,7 @@ export default function CostBreakdown({
               <ValueLabel
                 key={i}
                 width={100}
-                x={align === 'left' ? barPosX + 90 : barPosX - 10}
+                x={align === 'left' ? barPosX + barWidth + 5 : barPosX - 5}
                 y={Math.min(height, p.yLabel)}
                 val={items.bars[i].ratio}
               >
@@ -184,7 +180,7 @@ export default function CostBreakdown({
         </g>
         <g>
           <TotalLabel
-            x={barPosX + width * 0.2}
+            x={barPosX + barWidth * 0.5}
             y={Math.max(30, _.last(positions).y - 15)}
           >
             <tspan>{totalCost}</tspan>
@@ -195,7 +191,7 @@ export default function CostBreakdown({
             <rect fill="white" width={width} height={height} x={0} y={0} />
             <path
               fill="black"
-              d={`M 0 50 v -50 h ${barWidth} v 50 l ${-barWidth *
+              d={`M 20 50 v -50 h ${barWidth} v 50 l ${-barWidth *
                 0.5} -18 l ${-barWidth * 0.5} 18 z`}
             />
           </mask>

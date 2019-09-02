@@ -28,6 +28,7 @@ const debugBg = css`
 export const LayoutHeader = styled.header`
   grid-area: top;
   min-height: 50px;
+  padding: 2rem 1rem 1rem 2rem;
   ${debugBg}
 `
 export const LayoutSidebar = styled.aside`
@@ -37,12 +38,6 @@ export const LayoutSidebar = styled.aside`
   display: grid;
   grid-template-columns: 50% 50%;
 
-  @media (min-height: 800px) {
-    min-height: 740px;
-  }
-  @media (min-height: 1000px) {
-    min-height: 940px;
-  }
   ${debugBg}
 `
 
@@ -68,7 +63,9 @@ export const LayoutFooter = styled.footer`
   ${debugBg}
 `
 
-export const LayoutNav = styled.nav``
+export const LayoutNav = styled.nav`
+  padding: 0 0 1rem 2rem;
+`
 
 export const DynamicChartViewWrap = styled.div`
   ${debugBg}
@@ -91,49 +88,12 @@ export const ChartWrap = styled.div`
   background: black;
 `
 
-export const GridWrap = styled.div`
-  width: 100%;
-  min-width: 1000px;
-  display: grid;
-  position: relative;
-  margin: 0 auto;
-  grid-template-areas:
-    'top    top     side'
-    'yaxis  main    side'
-    '.      xaxis   .'
-    'bottom bottom  bottom';
-  grid-template-columns: 100px 1fr 450px;
-  grid-template-rows: 200px 1fr 120px 50px;
-  overflow: hidden;
-`
-
-export const SimpleGridWrap = styled(GridWrap)`
-  width: 100%;
-  min-width: 1000px;
-  display: grid;
-  position: relative;
-  margin: 0 auto;
-  grid-template-areas:
-    'top    top'
-    'yaxis  main'
-    '.      xaxis'
-    'bottom bottom  bottom';
-  grid-template-columns: 100px 1fr;
-  grid-template-rows: 200px 1fr 120px;
-  overflow: hidden;
-`
-
 export const PresetsWrap = styled.div`
   display: flex;
   justify-content: flex-end;
   transition: opacity 0.4s ease;
 `
-export const Header = styled.div`
-  grid-area: top;
-  display: grid;
-  grid-template-columns: 1fr;
-  padding-top: 2rem;
-`
+
 export const VerticalControls = styled.div`
   grid-area: yaxis;
   display: flex;

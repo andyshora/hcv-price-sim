@@ -25,8 +25,6 @@ import PriceTimeChart from './components/price-time-chart'
 import StaticChartView from './views/static-chart-view'
 
 import {
-  GridWrap,
-  SimpleGridWrap,
   LayoutWrap,
   LayoutHeader,
   LayoutSidebar,
@@ -36,7 +34,6 @@ import {
   LayoutNav,
   DynamicChartViewWrap,
   PresetsWrap,
-  Header,
   VerticalControls,
   HorizontalControls,
   GraphWrap,
@@ -137,6 +134,7 @@ function calculateBreakdown2({
   breakdown1,
 }) {
   const existingUntreatedArea = breakdown1.bars[1].area
+  const existingSavingArea = breakdown1.bars[2].area
 
   // todo - check this
   const newlyCuredArea = data
@@ -162,7 +160,7 @@ function calculateBreakdown2({
   ].map(b => ({ ...b, ratio: b.area / totalArea }))
 
   const res = {
-    total: totalArea + additionalCostsArea,
+    total: totalArea + additionalCostsArea - existingSavingArea,
     bars,
   }
 
@@ -284,13 +282,18 @@ export default function App() {
   const { totalArea } = bounds
 
   useEffect(() => {
-    const newBreakdown1 = calculateBreakdown1({
-      data: patientData,
-      bounds,
-      y: yVal * 1000,
-      totalArea,
-    })
-    console.log('newBreakdown1', newBreakdown1)
+    const newBreakdown1 =
+      view === 'price/patient' || view === 'price/time'
+        ? calculateBreakdown1({
+            data: patientData,
+            bounds,
+            y: yVal * 1000,
+            totalArea,
+          })
+        : {
+            total: totalArea,
+            bars: areaData,
+          }
     setBreakdown1(newBreakdown1)
     setCost1(newBreakdown1.totalCost)
 
@@ -312,7 +315,7 @@ export default function App() {
       })
       setBreakdown2(newBreakdown2)
       setCost2(newBreakdown2.totalCost)
-      setTotalCostAsPerc(_.sum(newBreakdown2.ratios))
+      setTotalCostAsPerc(_.sumBy(newBreakdown2.bars, d => d.ratio))
     }
   }, [xVal, yVal, view, totalArea])
 
@@ -498,6 +501,7 @@ export default function App() {
               margin={graphMargin}
               data={segTimeData}
               bounds={bounds}
+              cutOffX={10}
             />
           </StaticChartView>
         )
@@ -533,6 +537,7 @@ export default function App() {
                 bounds={bounds}
                 colors={areaColors}
                 perc={yVal / 100}
+                cutOffX={10}
               />
             </ChartWrap>
           </DynamicChartViewWrap>
@@ -544,6 +549,8 @@ export default function App() {
     }
   }
 
+  const breakdownWidthFunc = view === 'price/patient' ? w => w * 0.5 : w => w
+
   return (
     <LayoutWrap>
       <LayoutHeader>
@@ -553,37 +560,43 @@ export default function App() {
       </LayoutHeader>
       <LayoutSidebar>
         <ContainerDimensions>
-          {({ width, height }) =>
-            breakdown1 && (
-              <>
-                <CostBreakdown
-                  offsetForComplete={150}
-                  height={height}
-                  width={width * 0.5}
-                  scaleToBounds={totalCostAsPerc}
-                  items={breakdown1}
-                  colors={
-                    view === 'price/patient' || view === 'price/time'
-                      ? breakdownColorsPrice
-                      : breakdownColorsTime
-                  }
-                  align="right"
-                  title={xVal ? 'Without uneconomical patients' : 'Total Cost'}
-                />
-                <CostBreakdown
-                  offsetForComplete={150}
-                  height={height}
-                  width={width * 0.5}
-                  scaleToBounds={totalCostAsPerc}
-                  items={breakdown2}
-                  colors={breakdownColorsPrice2}
-                  align="left"
-                  title={'With uneconomical patients'}
-                  enabled={view === 'price/patient' && xVal && breakdown2}
-                />
-              </>
+          {({ width, height }) => {
+            const breakdownWidth =
+              view === 'price/patient' ? width * 0.5 : width
+            return (
+              breakdown1 && (
+                <>
+                  <CostBreakdown
+                    offsetForComplete={150}
+                    height={height}
+                    width={breakdownWidth}
+                    scaleToBounds={totalCostAsPerc}
+                    items={breakdown1}
+                    colors={
+                      view === 'price/patient' || view === 'price/time'
+                        ? breakdownColorsPrice
+                        : breakdownColorsTime
+                    }
+                    align="right"
+                    title={
+                      xVal ? 'Without uneconomical patients' : 'Total Cost'
+                    }
+                  />
+                  <CostBreakdown
+                    offsetForComplete={150}
+                    height={height}
+                    width={breakdownWidth}
+                    scaleToBounds={totalCostAsPerc}
+                    items={breakdown2}
+                    colors={breakdownColorsPrice2}
+                    align="left"
+                    title={'With uneconomical patients'}
+                    enabled={view === 'price/patient' && xVal && breakdown2}
+                  />
+                </>
+              )
             )
-          }
+          }}
         </ContainerDimensions>
         <LayoutDial>
           {pie1 && (

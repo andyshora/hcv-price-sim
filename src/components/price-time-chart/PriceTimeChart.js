@@ -40,13 +40,14 @@ function getFormattedData(data) {
   return data.map((d, i) => ({ x: i + 1, y: d / 1e6 }))
 }
 
-function createSeriesData(data, perc = 0.2) {
+function createSeriesData({ cutOffX, data, perc = 0.2 }) {
   const res = {
     hospital: [],
     drug: [],
     savings: [],
   }
-  for (let i = 0; i < data.total.length; i++) {
+  const maxLen = cutOffX || data.total.length
+  for (let i = 0; i < maxLen; i++) {
     const total = data.total[i] / 1e6
     const hospital = data.hospital[i] / 1e6
     const hospitalElm = { x: i + 1, y: hospital }
@@ -71,10 +72,8 @@ function createLineData(data) {
     arr.push({ x: data[i].x + 0.4, y: data[i].y })
   }
 
-  console.log(arr)
   return arr
 }
-
 function yTickFormat(val) {
   return `$${val / 1000}bn`
 }
@@ -87,17 +86,16 @@ export default function PriceTimeChart({
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
   data = [],
   perc = 0,
+  cutOffX = null,
 }) {
-  const seriesData = createSeriesData(data, perc)
-  const chartAreaWidth = width - (margin.left + margin.right)
-  const chartAreaHeight = height - (margin.top + margin.bottom)
+  const seriesData = createSeriesData({ cutOffX, data, perc })
 
   return (
     <ChartWrap>
       <FlexibleWidthXYPlot
         height={height}
         yDomain={[0, 8000]}
-        xDomain={[1, 13]}
+        xDomain={[1, cutOffX || 13]}
         margin={{ top: 50, right: 10, bottom: 100, left: 100 }}
         stackBy="y"
       >
@@ -112,22 +110,6 @@ export default function PriceTimeChart({
         />
         <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={13} />
 
-        <DiscreteColorLegend
-          style={{ fontSize: '1.2rem' }}
-          items={[
-            {
-              title: 'Healthcare cost savings',
-              color: colors[0],
-              strokeWidth: 20,
-            },
-            {
-              title: 'Untreated patient costs',
-              color: colors[1],
-              strokeWidth: 20,
-            },
-            { title: 'Cost of cure', color: colors[2], strokeWidth: 20 },
-          ]}
-        />
         <VerticalBarSeries data={seriesData.drug} color={colors[2]} />
         <VerticalBarSeries data={seriesData.hospital} color={colors[1]} />
         <VerticalBarSeries data={seriesData.savings} color={colors[0]} />

@@ -24,8 +24,9 @@ const YAxisLabel = styled.p`
   font-size: 1.4rem;
 `
 
-function getFormattedData(data) {
-  return data.map((d, i) => ({ x: i + 1, y: d / 1e6 }))
+function getFormattedData({ cutOffX, data }) {
+  const mapped = data.map((d, i) => ({ x: i + 1, y: d / 1e6 }))
+  return cutOffX ? _.slice(mapped, 0, 10) : mapped
 }
 
 function yTickFormat(val) {
@@ -38,13 +39,14 @@ export default function SegTimeChart({
   height = 600,
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
   data = [],
+  cutOffX = null,
 }) {
   return (
     <ChartWrap>
       <FlexibleWidthXYPlot
         height={height}
         yDomain={[0, 8000]}
-        xDomain={[1, 13]}
+        xDomain={[1, cutOffX || 13]}
         margin={{ top: 50, right: 10, bottom: 100, left: 100 }}
         stackBy="y"
       >
@@ -59,29 +61,20 @@ export default function SegTimeChart({
         />
         <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={13} />
 
-        <DiscreteColorLegend
-          style={{ fontSize: '1.2rem' }}
-          items={bounds.segments.map((s, i) => ({
-            title: s,
-            color: colorScales.jmi[i],
-            strokeWidth: 20,
-          }))}
-        />
-
         <VerticalBarSeries
-          data={getFormattedData(data[0])}
+          data={getFormattedData({ data: data[0], cutOffX })}
           color={colorScales.jmi[3]}
         />
         <VerticalBarSeries
-          data={getFormattedData(data[1])}
+          data={getFormattedData({ data: data[1], cutOffX })}
           color={colorScales.jmi[2]}
         />
         <VerticalBarSeries
-          data={getFormattedData(data[2])}
+          data={getFormattedData({ data: data[2], cutOffX })}
           color={colorScales.jmi[1]}
         />
         <VerticalBarSeries
-          data={getFormattedData(data[3])}
+          data={getFormattedData({ data: data[3], cutOffX })}
           color={colorScales.jmi[0]}
         />
       </FlexibleWidthXYPlot>
