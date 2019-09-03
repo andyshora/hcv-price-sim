@@ -18,7 +18,7 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 40px;
+  top: 60px;
   left: -70px;
   color: white;
   font-size: 1.4rem;
@@ -72,7 +72,7 @@ function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
 }
 
 function yTickFormat(val) {
-  return `${val}`
+  return `${val}K`
 }
 
 function xTickFormat(val) {
@@ -194,7 +194,7 @@ export default function PricePatientChart({
           <br />
           Patient
           <br />
-          ($K)
+          ($)
         </YAxisLabel>
       </FlexibleWidthXYPlot>
 

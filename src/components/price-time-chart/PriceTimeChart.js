@@ -19,7 +19,7 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 40px;
+  top: 60px;
   left: -70px;
   color: white;
   font-size: 1.4rem;
@@ -36,7 +36,7 @@ function createLineData(data) {
   return arr
 }
 function yTickFormat(val) {
-  return `${val}`
+  return `${val}K`
 }
 
 export default function PriceTimeChart({
@@ -85,7 +85,7 @@ export default function PriceTimeChart({
         <br />
         Cost
         <br />
-        ($K)
+        ($)
       </YAxisLabel>
     </ChartWrap>
   )

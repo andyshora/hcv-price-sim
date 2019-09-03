@@ -609,7 +609,7 @@ export default function App() {
     const { width, height } = dims
     switch (view) {
       case 'price/patient': {
-        const margin = { top: 10, left: 50, right: 30, bottom: 120 }
+        const margin = { top: 10, left: 80, right: 30, bottom: 120 }
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
@@ -670,7 +670,7 @@ export default function App() {
         return (
           <StaticChartView title={view} {...dims}>
             <SegPatientChart
-              margin={{ top: 10, left: 150, right: 30, bottom: 120 }}
+              margin={{ top: 10, left: 180, right: 30, bottom: 120 }}
               height={height}
               data={patientData}
               bounds={bounds}
@@ -682,7 +682,7 @@ export default function App() {
         return (
           <StaticChartView title={view} {...dims}>
             <SegTimeChart
-              margin={{ top: 10, left: 150, right: 30, bottom: 120 }}
+              margin={{ top: 10, left: 180, right: 30, bottom: 120 }}
               height={height}
               data={segTimeData}
               bounds={bounds}
@@ -691,7 +691,7 @@ export default function App() {
           </StaticChartView>
         )
       case 'price/time': {
-        const margin = { top: 10, left: 50, right: 30, bottom: 120 }
+        const margin = { top: 10, left: 80, right: 30, bottom: 120 }
         const seriesData = createSeriesData({
           dynamic: subscriptionEnabled,
           cutOffX: null,

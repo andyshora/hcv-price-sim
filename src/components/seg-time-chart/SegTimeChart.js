@@ -11,7 +11,7 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 40px;
+  top: 60px;
   left: 40px;
   color: white;
   font-size: 1.4rem;
@@ -23,7 +23,7 @@ function getFormattedData({ cutOffX, data }) {
 }
 
 function yTickFormat(val) {
-  return `${val}`
+  return `${val}K`
 }
 
 export default function SegTimeChart({
@@ -75,7 +75,7 @@ export default function SegTimeChart({
         <br />
         Cost
         <br />
-        ($K)
+        ($)
       </YAxisLabel>
     </ChartWrap>
   )

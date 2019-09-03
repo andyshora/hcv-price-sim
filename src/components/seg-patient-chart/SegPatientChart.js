@@ -18,7 +18,7 @@ const ChartWrap = styled.div`
 
 const YAxisLabel = styled.p`
   position: absolute;
-  top: 40px;
+  top: 60px;
   left: 30px;
   color: white;
   font-size: 1.4rem;
@@ -36,7 +36,7 @@ function getSegmentData({ data, segment }) {
 }
 
 function yTickFormat(val) {
-  return `${val}`
+  return `${val}K`
 }
 
 function xTickFormat(val) {
@@ -94,7 +94,7 @@ export default function SegPatientChart({
           <br />
           Patient
           <br />
-          ($K)
+          ($)
         </YAxisLabel>
       </FlexibleWidthXYPlot>
     </ChartWrap>
