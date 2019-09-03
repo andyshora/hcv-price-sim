@@ -68,6 +68,28 @@ function getRoundedCurrency(val) {
   return `$${valAsCurrency.format()}bn`
 }
 
+function getFormattedLabel({ text, style, x }) {
+  if (text.length > 15) {
+    const textArr = text.split(' ')
+    const last = textArr.pop()
+    return (
+      <>
+        <tspan x={x} dy={0} style={style}>
+          {textArr.join(' ')}
+        </tspan>
+        <tspan x={x} dy={26} style={style}>
+          {last}
+        </tspan>
+      </>
+    )
+  }
+  return (
+    <>
+      <tspan style={style}>{text}</tspan>
+    </>
+  )
+}
+
 function getAdjustedLabelColor(color) {
   if (color === '#c41300') {
     return '#fd5240'
@@ -140,43 +162,51 @@ export default function CostBreakdown({
           ))}
         </g>
         <g>
-          {positions.map((p, i) => (
-            <React.Fragment key={i}>
-              <ValueLabel
-                width={100}
-                x={align === 'left' ? barPosX + barWidth + 5 : barPosX - 5}
-                y={Math.min(height, p.yLabel) - 20}
-                val={items.bars[i].ratio}
-              >
-                <tspan
-                  style={{
-                    fontSize: '1.6rem',
-                    fillOpacity: p.opacity,
-                    textAnchor: align === 'left' ? 'start' : 'end',
-                    fill: getAdjustedLabelColor(colors[i]),
-                  }}
+          {positions.map((p, i) => {
+            const showValue = /drug/i.test(items.bars[i].key)
+            const labelPosX =
+              align === 'left' ? barPosX + barWidth + 5 : barPosX - 5
+            return (
+              <React.Fragment key={items.bars[i].key}>
+                <ValueLabel
+                  width={100}
+                  x={labelPosX}
+                  y={Math.min(height, p.yLabel) - 20}
+                  val={items.bars[i].ratio}
+                  dy={0}
                 >
-                  {items.bars[i].key}
-                </tspan>
-              </ValueLabel>
-              <ValueLabel
-                key={i}
-                width={100}
-                x={align === 'left' ? barPosX + barWidth + 5 : barPosX - 5}
-                y={Math.min(height, p.yLabel)}
-                val={items.bars[i].ratio}
-              >
-                <tspan
-                  style={{
-                    fillOpacity: p.opacity,
-                    textAnchor: align === 'left' ? 'start' : 'end',
-                  }}
-                >
-                  {getRoundedCurrency(items.bars[i].area)}
-                </tspan>
-              </ValueLabel>
-            </React.Fragment>
-          ))}
+                  {getFormattedLabel({
+                    text: items.bars[i].key,
+                    x: labelPosX,
+                    style: {
+                      fontSize: '1.6rem',
+                      fillOpacity: p.opacity,
+                      textAnchor: align === 'left' ? 'start' : 'end',
+                      fill: getAdjustedLabelColor(colors[i]),
+                    },
+                  })}
+                </ValueLabel>
+                {showValue && (
+                  <ValueLabel
+                    key={i}
+                    width={100}
+                    x={labelPosX}
+                    y={Math.min(height, p.yLabel)}
+                    val={items.bars[i].ratio}
+                  >
+                    <tspan
+                      style={{
+                        fillOpacity: p.opacity,
+                        textAnchor: align === 'left' ? 'start' : 'end',
+                      }}
+                    >
+                      {getRoundedCurrency(items.bars[i].area)}
+                    </tspan>
+                  </ValueLabel>
+                )}
+              </React.Fragment>
+            )
+          })}
         </g>
         <g>
           <TotalLabel

@@ -108,6 +108,20 @@ const defaultTimePresets = [
   },
 ]
 
+function getTitle(view) {
+  switch (view) {
+    case 'price/patient':
+      return 'Price per patient simulation'
+    case 'price/time':
+      return 'Price per year simulation over 10 year contract'
+    case 'seg/time':
+      return 'Hepatitis health care cost per year for 100K patients'
+
+    default:
+      return 'Hepatitis health care cost per patient for 100K patients'
+  }
+}
+
 function toSf(val, num = 2) {
   return ~~(val * Math.pow(10, num)) / Math.pow(10, num)
 }
@@ -719,7 +733,7 @@ export default function App() {
     <LayoutWrap>
       <LayoutHeader>
         <Typography variant="h3" gutterBottom>
-          {view}
+          {getTitle(view)}
         </Typography>
       </LayoutHeader>
       <LayoutSidebar columns={breakdownColumns}>

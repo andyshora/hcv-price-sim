@@ -18,7 +18,7 @@ export const LayoutWrap = styled.div`
     'main   side'
     'bottom bottom';
   grid-template-columns: 1fr 400px;
-  grid-template-rows: 140px 0.9fr 80px;
+  grid-template-rows: 120px 0.9fr 80px;
 `
 
 const debugBg = css`
@@ -27,8 +27,7 @@ const debugBg = css`
 
 export const LayoutHeader = styled.header`
   grid-area: top;
-  min-height: 50px;
-  padding: 2rem 1rem 1rem 2rem;
+  padding: 3rem 1rem 0 2rem;
   ${debugBg}
 `
 export const LayoutSidebar = styled.aside`
