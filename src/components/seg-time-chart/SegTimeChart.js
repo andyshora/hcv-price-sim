@@ -23,7 +23,7 @@ function getFormattedData({ cutOffX, data }) {
 }
 
 function yTickFormat(val) {
-  return `${val}K`
+  return `${val}M`
 }
 
 export default function SegTimeChart({
