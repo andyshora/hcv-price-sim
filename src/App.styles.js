@@ -14,8 +14,8 @@ export const LayoutWrap = styled.div`
   height: 100%;
   display: grid;
   grid-template-areas:
-    'top   side'
-    'main     side'
+    'top   top'
+    'main   side'
     'bottom bottom';
   grid-template-columns: 1fr 400px;
   grid-template-rows: 140px 0.9fr 80px;
@@ -36,8 +36,9 @@ export const LayoutSidebar = styled.aside`
   position: relative;
   min-height: 640px;
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: ${props => (props.columns === 2 ? '50% 50%' : '100%')};
   margin-right: 0.5rem;
+  overflow: hidden;
 
   ${debugBg}
 `

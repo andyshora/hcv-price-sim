@@ -10,7 +10,6 @@ const BreakdownWrap = styled.div`
   align-items: flex-start;
   justify-content: flex-end;
   flex-direction: column;
-  padding-bottom: ${props => props.paddingBottom}px;
 `
 const Placeholder = styled.div`
   width: ${props => props.width}px;
@@ -19,12 +18,13 @@ const Placeholder = styled.div`
 `
 
 const TitleWrap = styled.div`
-  padding: 1rem 0 0 0;
+  padding: ${props =>
+    props.align === 'left' ? '1rem 0 0 1.5rem' : '1rem 1.8rem 0 0'};
   position: relative;
   left: 0;
   text-align: ${props => props.align};
-  background: hotpink;
-  height: 80px;
+  height: 120px;
+  width: 100%;
 
   > h4 {
     font-size: 1.2rem;
@@ -124,7 +124,7 @@ export default function CostBreakdown({
   const barWidth = Math.min(80, width * 0.35)
 
   return (
-    <BreakdownWrap height={height} paddingBottom={80}>
+    <BreakdownWrap height={height} paddingBottom={120}>
       <svg height={SVGHeight} width={width}>
         <g>
           {positions.map((p, i) => (
@@ -201,8 +201,8 @@ export default function CostBreakdown({
           </linearGradient>
         </defs>
       </svg>
-      {!!title && false && (
-        <TitleWrap width={width} align={'center'}>
+      {!!title && (
+        <TitleWrap width={width} align={align}>
           <Typography variant="h4">{title}</Typography>
         </TitleWrap>
       )}

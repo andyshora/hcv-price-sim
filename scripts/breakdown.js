@@ -9,9 +9,9 @@ function getShortLabel(label) {
     case 'Hepatocellular carcinoma':
       return 'Liver Cancer'
     case 'Late fibrotic stage (F4)':
-      return 'Late Fibrosis'
+      return 'Late Liver Disease'
     case 'Early fibrotic stage (F0-3)':
-      return 'Early Fibrosis'
+      return 'Early Liver Disease'
     default:
       return label
   }

@@ -713,6 +713,8 @@ export default function App() {
     }
   }
 
+  const breakdownColumns = view === 'price/patient' ? 2 : 1
+
   return (
     <LayoutWrap>
       <LayoutHeader>
@@ -720,7 +722,7 @@ export default function App() {
           {view}
         </Typography>
       </LayoutHeader>
-      <LayoutSidebar>
+      <LayoutSidebar columns={breakdownColumns}>
         <ContainerDimensions>
           {({ width, height }) => {
             const breakdownWidth =
@@ -729,7 +731,7 @@ export default function App() {
               breakdown1 && (
                 <>
                   <CostBreakdown
-                    offsetForComplete={150}
+                    offsetForComplete={40}
                     height={height}
                     width={breakdownWidth}
                     scaleToBounds={totalCostAsPerc}
@@ -739,22 +741,26 @@ export default function App() {
                         ? breakdownColorsPrice
                         : breakdownColorsTime
                     }
-                    align="right"
+                    align={breakdownColumns === 1 ? 'center' : 'right'}
                     title={
-                      xVal ? 'Without uneconomical patients' : 'Total Cost'
+                      view === 'price/patient' && xVal
+                        ? 'Without uneconomical patients'
+                        : 'Total Health Care Cost'
                     }
                   />
-                  <CostBreakdown
-                    offsetForComplete={150}
-                    height={height}
-                    width={breakdownWidth}
-                    scaleToBounds={totalCostAsPerc}
-                    items={breakdown2}
-                    colors={breakdownColorsPrice2}
-                    align="left"
-                    title={'With uneconomical patients'}
-                    enabled={view === 'price/patient' && xVal && breakdown2}
-                  />
+                  {view === 'price/patient' && (
+                    <CostBreakdown
+                      offsetForComplete={40}
+                      height={height}
+                      width={breakdownWidth}
+                      scaleToBounds={totalCostAsPerc}
+                      items={breakdown2}
+                      colors={breakdownColorsPrice2}
+                      align="left"
+                      title={'With uneconomical patients'}
+                      enabled={view === 'price/patient' && xVal && breakdown2}
+                    />
+                  )}
                 </>
               )
             )
