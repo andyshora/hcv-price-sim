@@ -168,12 +168,14 @@ export default function CostBreakdown({
             const showValue = /drug/i.test(items.bars[i].key)
             const labelPosX =
               align === 'left' ? barPosX + barWidth + 5 : barPosX - 5
+
+            const labelOffset = showValue ? -25 : 0
             return (
               <React.Fragment key={items.bars[i].key}>
                 <ValueLabel
                   width={100}
                   x={labelPosX}
-                  y={Math.min(height, p.yLabel) - 25}
+                  y={Math.min(height, p.yLabel) + labelOffset}
                   val={items.bars[i].ratio}
                   dy={0}
                 >
