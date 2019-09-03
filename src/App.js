@@ -294,7 +294,7 @@ function getHighlightedArea(data, { maxY }) {
     .filter(d => d.Yval / 1000 >= maxY)
     .map(d => ({
       xLeft: d.Xcumsumleft,
-      xVal: d.Xcumsumleft + d.Xwidth,
+      xVal: d.Xcumsumleft + d.Xwidth / 2,
       x: (d.Xcumsumleft + d.Xwidth) / 1000,
       xRight: d.Xcumsum,
       y: d.Yval / 1000,

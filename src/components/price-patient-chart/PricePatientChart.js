@@ -107,7 +107,7 @@ export default function PricePatientChart({
     view === 'price/patient' &&
     highlightedPriceAreaData &&
     highlightedPriceAreaData.length
-      ? _.last(highlightedPriceAreaData).xLeft
+      ? _.last(highlightedPriceAreaData).xVal
       : 0
 
   const curedRegionOffset = (xDivider / bounds.maxX) * chartAreaWidth
