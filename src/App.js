@@ -104,12 +104,17 @@ const defaultTimePresets = [
   },
 ]
 
-function getTitle(view) {
+function getTitle({ view, subscriptionEnabled }) {
   switch (view) {
     case 'price/patient':
       return 'Price per patient simulation'
     case 'price/time':
-      return 'Price per year simulation over 10 year contract'
+      if (subscriptionEnabled) {
+        return 'Price per year simulation over 10 year contract'
+      } else {
+        return 'Price per year simulation over 10 years'
+      }
+
     case 'seg/time':
       return 'Hepatitis health care cost per year for 100K patients'
 
@@ -532,7 +537,11 @@ export default function App() {
   }
 
   function handleViewChange(event, newView) {
-    setYVal(20)
+    if (newView === 'price/time') {
+      setYVal(42)
+    } else if (newView === 'price/patient') {
+      setYVal(20)
+    }
     if (newView) {
       activeView.current = newView
       setView(newView)
@@ -750,7 +759,7 @@ export default function App() {
     <LayoutWrap>
       <LayoutHeader>
         <Typography variant="h3" gutterBottom>
-          {getTitle(view)}
+          {getTitle({ view, subscriptionEnabled })}
         </Typography>
       </LayoutHeader>
       <LayoutSidebar columns={breakdownColumns}>
