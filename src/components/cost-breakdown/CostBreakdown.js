@@ -34,7 +34,7 @@ const TitleWrap = styled.div`
 const ValueLabel = styled.text`
   // font-size: ${props =>
     props.val < 0.06 ? Math.max(1, 1.6 * (props.val / 0.1)) : 1.6}rem;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   fill: white;
   width: ${props => props.width}px;
 

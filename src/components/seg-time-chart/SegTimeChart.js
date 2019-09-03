@@ -1,14 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
-import {
-  FlexibleWidthXYPlot,
-  XAxis,
-  YAxis,
-  AreaSeries,
-  DiscreteColorLegend,
-  VerticalBarSeries,
-} from 'react-vis'
+import { FlexibleWidthXYPlot, XAxis, YAxis, VerticalBarSeries } from 'react-vis'
 
 import { colorScales, reactVizTheme } from '../../theme'
 
@@ -30,12 +23,10 @@ function getFormattedData({ cutOffX, data }) {
 }
 
 function yTickFormat(val) {
-  return `${val / 1000}`
+  return `${val}`
 }
 
 export default function SegTimeChart({
-  bounds,
-  width = 800,
   height = 600,
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
   data = [],
@@ -45,8 +36,8 @@ export default function SegTimeChart({
     <ChartWrap>
       <FlexibleWidthXYPlot
         height={height}
-        yDomain={[0, 8000]}
-        xDomain={[1, cutOffX || 13]}
+        yDomain={[0, 250]}
+        xDomain={[1, cutOffX || 10]}
         margin={margin}
         stackBy="y"
       >
@@ -58,8 +49,9 @@ export default function SegTimeChart({
             },
           }}
           tickFormat={yTickFormat}
+          tickTotal={5}
         />
-        <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={13} />
+        <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={10} />
 
         <VerticalBarSeries
           data={getFormattedData({ data: data[0], cutOffX })}
@@ -83,7 +75,7 @@ export default function SegTimeChart({
         <br />
         Cost
         <br />
-        ($B)
+        ($K)
       </YAxisLabel>
     </ChartWrap>
   )

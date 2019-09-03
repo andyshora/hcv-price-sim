@@ -36,7 +36,7 @@ function createLineData(data) {
   return arr
 }
 function yTickFormat(val) {
-  return `${val / 1000}`
+  return `${val}`
 }
 
 export default function PriceTimeChart({
@@ -52,8 +52,8 @@ export default function PriceTimeChart({
     <ChartWrap>
       <FlexibleWidthXYPlot
         height={height}
-        yDomain={[0, 8000]}
-        xDomain={[1, cutOffX || 13]}
+        yDomain={[0, 250]}
+        xDomain={[1, cutOffX || 10]}
         margin={margin}
         stackBy="y"
       >
@@ -65,8 +65,9 @@ export default function PriceTimeChart({
             },
           }}
           tickFormat={yTickFormat}
+          tickTotal={5}
         />
-        <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={13} />
+        <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={10} />
 
         <VerticalBarSeries data={seriesData.drug} color={colors[2]} />
         <VerticalBarSeries data={seriesData.hospital} color={colors[1]} />
@@ -83,7 +84,7 @@ export default function PriceTimeChart({
         <br />
         Cost
         <br />
-        ($B)
+        ($K)
       </YAxisLabel>
     </ChartWrap>
   )

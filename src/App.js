@@ -215,7 +215,7 @@ function createSeriesData({ cutOffX, data, perc }) {
     const hospitalElm = { x: i + 1, y: hospital }
     const drugElm = {
       x: i + 1,
-      y: i > 9 ? data.drugEnd[i - 10] / 1e6 : perc * total,
+      y: perc * total,
     }
     const savingsElm = { x: i + 1, y: total - (hospitalElm.y + drugElm.y) }
     res.hospital.push(hospitalElm)
@@ -237,7 +237,7 @@ function calculateTimeBreakdown({ bounds, cutOffX, data, y }) {
   for (let i = 0; i < maxLen; i++) {
     const total = data.total[i]
     const hospital = data.hospital[i]
-    const drug = i > 9 ? data.drugEnd[i - 10] : y * total
+    const drug = y * total
     const saving = total - (hospital + drug)
     areas.hospital += hospital
     areas.drug += drug
@@ -691,12 +691,12 @@ export default function App() {
               <VerticalSlider
                 min={0}
                 step={1}
-                max={65}
+                max={72}
                 valueLabelDisplay={'off'}
                 defaultValue={yVal}
                 bounds={bounds}
-                height={height / 2 - (margin.top + margin.bottom)}
-                margin={`auto 0 ${-40 + margin.bottom}px 0`}
+                height={height * 0.7 - (margin.top + margin.bottom)}
+                margin={`auto 0 ${-15 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
                   if (savingPreset) {
