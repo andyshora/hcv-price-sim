@@ -775,7 +775,7 @@ export default function App() {
                     align={breakdownColumns === 1 ? 'center' : 'right'}
                     title={
                       view === 'price/patient' && xVal
-                        ? 'Without uneconomical patients'
+                        ? 'Without Uneconomical Patients'
                         : 'Total Health Care Cost'
                     }
                   />
@@ -788,7 +788,7 @@ export default function App() {
                       items={breakdown2}
                       colors={breakdownColorsPrice2}
                       align="left"
-                      title={'With uneconomical patients'}
+                      title={'With Uneconomical Patients'}
                       enabled={view === 'price/patient' && xVal && breakdown2}
                     />
                   )}

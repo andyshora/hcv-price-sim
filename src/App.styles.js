@@ -27,7 +27,7 @@ const debugBg = css`
 
 export const LayoutHeader = styled.header`
   grid-area: top;
-  padding: 3rem 1rem 0 2rem;
+  padding: 3rem 1rem 0 9.5rem;
   ${debugBg}
 `
 export const LayoutSidebar = styled.aside`

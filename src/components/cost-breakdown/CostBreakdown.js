@@ -235,7 +235,7 @@ export default function CostBreakdown({
       </svg>
       {!!title && (
         <TitleWrap width={width} align={align}>
-          <Typography variant="h4">{title}</Typography>
+          <Typography variant="h5">{title}</Typography>
         </TitleWrap>
       )}
     </BreakdownWrap>
