@@ -860,6 +860,9 @@ export default function App() {
                 <Switch
                   checked={subscriptionEnabled}
                   onChange={(e, checked) => {
+                    if (e && e.target) {
+                      e.target.blur()
+                    }
                     setSubscriptionEnabled(checked)
                   }}
                   value="enabled"
