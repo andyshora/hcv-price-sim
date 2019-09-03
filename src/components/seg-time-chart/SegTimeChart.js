@@ -36,7 +36,7 @@ export default function SegTimeChart({
     <ChartWrap>
       <FlexibleWidthXYPlot
         height={height}
-        yDomain={[0, 250]}
+        yDomain={[0, 400]}
         xDomain={[1, cutOffX || 10]}
         margin={margin}
         stackBy="y"
@@ -51,7 +51,7 @@ export default function SegTimeChart({
           tickFormat={yTickFormat}
           tickTotal={5}
         />
-        <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={10} />
+        <XAxis title="Year" {...reactVizTheme.XAxis} tickTotal={10} />
 
         <VerticalBarSeries
           data={getFormattedData({ data: data[0], cutOffX })}

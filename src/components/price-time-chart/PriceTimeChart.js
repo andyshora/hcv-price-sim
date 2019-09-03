@@ -40,19 +40,18 @@ function yTickFormat(val) {
 }
 
 export default function PriceTimeChart({
-  bounds,
   colors,
-  width = 800,
   height = 600,
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
   cutOffX = null,
   seriesData = null,
+  subscriptionEnabled = false,
 }) {
   return (
     <ChartWrap>
       <FlexibleWidthXYPlot
         height={height}
-        yDomain={[0, 250]}
+        yDomain={[0, 400]}
         xDomain={[1, cutOffX || 10]}
         margin={margin}
         stackBy="y"
@@ -67,17 +66,19 @@ export default function PriceTimeChart({
           tickFormat={yTickFormat}
           tickTotal={5}
         />
-        <XAxis title="Years" {...reactVizTheme.XAxis} tickTotal={10} />
+        <XAxis title="Year" {...reactVizTheme.XAxis} tickTotal={10} />
 
         <VerticalBarSeries data={seriesData.drug} color={colors[2]} />
         <VerticalBarSeries data={seriesData.hospital} color={colors[1]} />
         <VerticalBarSeries data={seriesData.savings} color={colors[0]} />
 
-        <LineSeries
-          color="white"
-          data={createLineData(seriesData.drug)}
-          strokeStyle="dashed"
-        />
+        {subscriptionEnabled && (
+          <LineSeries
+            color="white"
+            data={createLineData(seriesData.drug)}
+            strokeStyle="dashed"
+          />
+        )}
       </FlexibleWidthXYPlot>
       <YAxisLabel>
         Total

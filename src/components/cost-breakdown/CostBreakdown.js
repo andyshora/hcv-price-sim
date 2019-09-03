@@ -53,9 +53,9 @@ const TotalLabel = styled.text`
   }
 `
 
-function getRoundedCurrency(val) {
+function getRoundedCurrency({ val, billionsBeforeCapping = 10 }) {
   const valInBillions = val / 1e9
-  let precision = valInBillions < 10 ? 1 : 0
+  let precision = valInBillions < billionsBeforeCapping ? 1 : 0
   if (valInBillions < 0.2) {
     precision = 2
   }
@@ -65,7 +65,7 @@ function getRoundedCurrency(val) {
     separator: '',
   })
 
-  return `$${valAsCurrency.format()}bn`
+  return `$${valAsCurrency.format()}B`
 }
 
 function getFormattedLabel({ text, style, x }) {
@@ -141,8 +141,10 @@ export default function CostBreakdown({
 
   let barPosX = align === 'left' ? 20 : width / 2
 
-  // const totalCost = getRoundedCurrency(_.sum(items.areas))
-  const totalCost = getRoundedCurrency(items.total)
+  const totalCost = getRoundedCurrency({
+    val: items.total,
+    billionsBeforeCapping: 1.9,
+  })
   const barWidth = Math.min(80, width * 0.35)
 
   return (
@@ -171,7 +173,7 @@ export default function CostBreakdown({
                 <ValueLabel
                   width={100}
                   x={labelPosX}
-                  y={Math.min(height, p.yLabel) - 20}
+                  y={Math.min(height, p.yLabel) - 25}
                   val={items.bars[i].ratio}
                   dy={0}
                 >
@@ -200,7 +202,7 @@ export default function CostBreakdown({
                         textAnchor: align === 'left' ? 'start' : 'end',
                       }}
                     >
-                      {getRoundedCurrency(items.bars[i].area)}
+                      {getRoundedCurrency({ val: items.bars[i].area })}
                     </tspan>
                   </ValueLabel>
                 )}

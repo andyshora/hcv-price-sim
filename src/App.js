@@ -4,7 +4,8 @@ import _ from 'lodash'
 
 import { useHotkeys } from 'react-hotkeys-hook'
 import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
@@ -39,13 +40,8 @@ import {
   PresetsWrap,
   VerticalControls,
   HorizontalControls,
-  GraphWrap,
-  SimpleGraphWrap,
-  BreakdownWrap,
-  ViewNav,
-  VerticalCenter,
-  CuredWrap,
   ChartWrap,
+  SwitchWrap,
 } from './App.styles'
 
 // data
@@ -202,31 +198,46 @@ function calculateBreakdown2({
   return res
 }
 
-function createSeriesData({ cutOffX, data, perc }) {
+function createSeriesData({ cutOffX, data, perc, dynamic = false }) {
   const res = {
     hospital: [],
     drug: [],
     savings: [],
   }
-  const maxLen = cutOffX || data.total.length
-  for (let i = 0; i < maxLen; i++) {
-    const total = data.total[i] / 1e6
-    const hospital = data.hospital[i] / 1e6
-    const hospitalElm = { x: i + 1, y: hospital }
-    const drugElm = {
-      x: i + 1,
-      y: perc * total,
-    }
-    const savingsElm = { x: i + 1, y: total - (hospitalElm.y + drugElm.y) }
-    res.hospital.push(hospitalElm)
-    res.drug.push(drugElm)
-    res.savings.push(savingsElm)
-  }
+  if (!dynamic) {
+    const maxLen = cutOffX || data.savings.length
+    for (let i = 0; i < maxLen; i++) {
+      const hospitalElm = { x: i + 1, y: data.hospital[i] / 1e6 }
 
+      const drugElm = {
+        x: i + 1,
+        y: data.drug[i] / 1e6,
+      }
+      const savingsElm = { x: i + 1, y: data.savings[i] / 1e6 }
+      res.hospital.push(hospitalElm)
+      res.drug.push(drugElm)
+      res.savings.push(savingsElm)
+    }
+  } else {
+    const maxLen = cutOffX || data.total.length
+    for (let i = 0; i < maxLen; i++) {
+      const total = data.total[i] / 1e6
+      const hospital = data.hospital[i] / 1e6
+      const hospitalElm = { x: i + 1, y: hospital }
+      const drugElm = {
+        x: i + 1,
+        y: perc * total,
+      }
+      const savingsElm = { x: i + 1, y: total - (hospitalElm.y + drugElm.y) }
+      res.hospital.push(hospitalElm)
+      res.drug.push(drugElm)
+      res.savings.push(savingsElm)
+    }
+  }
   return res
 }
 
-function calculateTimeBreakdown({ bounds, cutOffX, data, y }) {
+function calculateTimeBreakdown({ dynamic = true, cutOffX, data, y }) {
   const areas = {
     hospital: 0,
     drug: 0,
@@ -237,7 +248,7 @@ function calculateTimeBreakdown({ bounds, cutOffX, data, y }) {
   for (let i = 0; i < maxLen; i++) {
     const total = data.total[i]
     const hospital = data.hospital[i]
-    const drug = y * total
+    const drug = dynamic ? y * total : data.drug[i]
     const saving = total - (hospital + drug)
     areas.hospital += hospital
     areas.drug += drug
@@ -314,6 +325,7 @@ export default function App() {
   const classes = useStyles()
   const [xVal, setXVal] = useState(0)
   const [yVal, setYVal] = useState(20)
+  const [subscriptionEnabled, setSubscriptionEnabled] = useState(false)
   const [savingPreset, setSavingPreset] = useState(false)
   const [breakdown1, setBreakdown1] = useState(null)
   const [breakdown2, setBreakdown2] = useState(null)
@@ -413,8 +425,10 @@ export default function App() {
         break
       case 'price/time':
         newBreakdown1 = calculateTimeBreakdown({
-          data: priceTimeData,
-          bounds,
+          dynamic: subscriptionEnabled,
+          data: subscriptionEnabled
+            ? priceTimeData.dynamic
+            : priceTimeData.static,
           y: yVal * 0.01,
           totalArea: bounds.totalSegArea,
           cutOffX: null,
@@ -456,7 +470,7 @@ export default function App() {
       setCost2(newBreakdown2.totalCost)
       setTotalCostAsPerc(_.sumBy(newBreakdown2.bars, d => d.ratio))
     }
-  }, [xVal, yVal, view, totalArea])
+  }, [xVal, yVal, view, totalArea, subscriptionEnabled])
 
   useEffect(() => {
     const persistedPatientPresets = getFromLocalStorage('presets')
@@ -591,7 +605,7 @@ export default function App() {
     })
   }
 
-  function getMainView({ view, dims }) {
+  function getMainView({ dims }) {
     const { width, height } = dims
     switch (view) {
       case 'price/patient': {
@@ -616,7 +630,7 @@ export default function App() {
                   }
                 }}
                 defaultValue={yVal}
-                valueLabelSuffix="K"
+                valueLabelSuffix=""
               />
             </VerticalControls>
             <HorizontalControls>
@@ -664,7 +678,6 @@ export default function App() {
             />
           </StaticChartView>
         )
-        break
       case 'seg/time':
         return (
           <StaticChartView title={view} {...dims}>
@@ -677,12 +690,14 @@ export default function App() {
             />
           </StaticChartView>
         )
-        break
       case 'price/time': {
         const margin = { top: 10, left: 50, right: 30, bottom: 120 }
         const seriesData = createSeriesData({
+          dynamic: subscriptionEnabled,
           cutOffX: null,
-          data: priceTimeData,
+          data: subscriptionEnabled
+            ? priceTimeData.dynamic
+            : priceTimeData.static,
           perc: yVal * 0.01,
         })
         return (
@@ -695,7 +710,7 @@ export default function App() {
                 valueLabelDisplay={'off'}
                 defaultValue={yVal}
                 bounds={bounds}
-                height={height * 0.7 - (margin.top + margin.bottom)}
+                height={height * 0.5 - (margin.top + margin.bottom)}
                 margin={`auto 0 ${-15 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
@@ -704,6 +719,7 @@ export default function App() {
                   }
                 }}
                 valueLabelSuffix="%"
+                enabled={subscriptionEnabled}
               />
             </VerticalControls>
             <HorizontalControls>
@@ -712,10 +728,11 @@ export default function App() {
             <ChartWrap>
               <PriceTimeChart
                 margin={margin}
+                height={height}
                 seriesData={seriesData}
-                bounds={bounds}
                 colors={areaColors}
                 perc={yVal / 100}
+                subscriptionEnabled={subscriptionEnabled}
               />
             </ChartWrap>
           </DynamicChartViewWrap>
@@ -795,21 +812,21 @@ export default function App() {
           )}
           {view === 'price/time' && (
             <RadialProgress
-              values={[94]}
+              values={subscriptionEnabled ? [94] : [50]}
               max={100}
               width={200}
               height={200}
               suffix={'%'}
               title="Patients Cured"
               colors={[areaColors[2]]}
-              label={94}
+              label={subscriptionEnabled ? 94 : 50}
             />
           )}
         </LayoutDial>
       </LayoutSidebar>
       <LayoutMain>
         <ContainerDimensions>
-          {dims => getMainView({ view, dims })}
+          {dims => getMainView({ dims })}
         </ContainerDimensions>
       </LayoutMain>
       <LayoutFooter>
@@ -837,6 +854,21 @@ export default function App() {
               price/time
             </ToggleButton>
           </ToggleButtonGroup>
+          <SwitchWrap active={view === 'price/time'}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={subscriptionEnabled}
+                  onChange={(e, checked) => {
+                    setSubscriptionEnabled(checked)
+                  }}
+                  value="enabled"
+                  color="primary"
+                />
+              }
+              label="Subscription"
+            />
+          </SwitchWrap>
         </LayoutNav>
         {view === 'price/patient' && (
           <PresetsWrap>
@@ -867,7 +899,7 @@ export default function App() {
             )}
           </PresetsWrap>
         )}
-        {view === 'price/time' && (
+        {view === 'price/time' && subscriptionEnabled && (
           <PresetsWrap>
             <Presets
               storageKey="time"

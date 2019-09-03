@@ -18,7 +18,7 @@ export const LayoutWrap = styled.div`
     'main   side'
     'bottom bottom';
   grid-template-columns: 1fr 400px;
-  grid-template-rows: 120px 0.9fr 80px;
+  grid-template-rows: 120px 0.9fr 60px;
 `
 
 const debugBg = css`
@@ -37,7 +37,6 @@ export const LayoutSidebar = styled.aside`
   display: grid;
   grid-template-columns: ${props => (props.columns === 2 ? '50% 50%' : '100%')};
   margin-right: 0.5rem;
-  overflow: hidden;
 
   ${debugBg}
 `
@@ -46,7 +45,7 @@ export const LayoutDial = styled.div`
   position: absolute;
   width: 200px;
   height: 250px;
-  top: 60px;
+  top: 0px;
   left: -220px;
   z-index: 10;
 
@@ -65,7 +64,10 @@ export const LayoutFooter = styled.footer`
 `
 
 export const LayoutNav = styled.nav`
-  padding: 0 0 1rem 2rem;
+  padding: 0 0 0 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `
 
 export const DynamicChartViewWrap = styled.div`
@@ -113,51 +115,8 @@ export const HorizontalControls = styled.div`
   top: -2.5rem;
 `
 
-export const SimpleGraphWrap = styled.div`
-  grid-area: main;
-  width: 90%;
-  min-height: 500px;
-  @media (min-height: 800px) {
-    min-height: 600px;
-  }
-  @media (min-height: 1000px) {
-    min-height: 800px;
-  }
-`
-
-export const GraphWrap = styled.div`
-  grid-area: main;
-  width: 100%;
-  min-height: 500px;
-  @media (min-height: 800px) {
-    min-height: 600px;
-  }
-  @media (min-height: 1000px) {
-    min-height: 700px;
-  }
-`
-
-export const BreakdownWrap = styled.aside`
-  display: grid;
-  grid-area: side;
-  grid-template-columns: 50% 50%;
-  padding: 50px 0 0 3rem;
-`
-
-export const ViewNav = styled.nav`
-  display: flex;
-  position: relative;
-  z-index: 20;
-  justify-content: space-between;
-  margin: 0 0 2rem 0;
-`
-
-export const VerticalCenter = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  > div {
-    margin: auto;
-  }
+export const SwitchWrap = styled.div`
+  padding: 0 0 0 2rem;
+  transition: opacity 1s;
+  opacity: ${props => (props.active ? 1 : 0)};
 `
