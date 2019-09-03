@@ -711,7 +711,7 @@ export default function App() {
                 defaultValue={yVal}
                 bounds={bounds}
                 height={height * 0.5 - (margin.top + margin.bottom)}
-                margin={`auto 0 ${-15 + margin.bottom}px 0`}
+                margin={`auto 0 ${-45 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
                   if (savingPreset) {
