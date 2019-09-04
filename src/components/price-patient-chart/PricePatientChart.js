@@ -163,7 +163,6 @@ export default function PricePatientChart({
 
         <AreaSeries
           data={getFormattedData(patientData)}
-          curve="curveBasis"
           color={areaColors[1]}
           style={{ stroke: 'none', fillOpacity: 1 }}
           // onNearestXY={onNearestXY}
@@ -171,19 +170,16 @@ export default function PricePatientChart({
 
         <AreaSeries
           data={highlightedPriceAreaData}
-          curve="curveBasis"
           color={areaColors[0]}
           style={{ stroke: 'none', fillOpacity: 1 }}
         />
         <AreaSeries
           data={highlightedSquareAreaData}
-          curve="curveBasis"
           color={areaColors[2]}
           style={{ stroke: 'none', fillOpacity: 1 }}
         />
         <AreaSeries
           data={additionalCureAreaData}
-          curve="curveBasis"
           color={areaColors[3]}
           style={{ stroke: 'none', fillOpacity: 1 }}
         />

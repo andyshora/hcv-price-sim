@@ -1,4 +1,4 @@
-const data = require('../src/data/data.json')
+const data = require('../src/data/pricepatient.json')
 const _ = require('lodash')
 const fs = require('fs')
 
@@ -6,6 +6,7 @@ const filtered = data
   .filter(d => d.Xwidth > 0)
   .map(d => ({ ...d, area: d.Xwidth * d.Yval }))
 console.log('filtered.length', filtered.length)
+console.log(filtered[0])
 
 const jsonContent = JSON.stringify(filtered)
 // console.log(jsonContent)

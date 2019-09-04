@@ -66,6 +66,7 @@ export default function HorizontalSlider({
   width = 300,
   margin = '0',
   defaultValue = 1,
+  step = 1,
   enabled = true,
   value = defaultValue,
 }) {
@@ -80,7 +81,7 @@ export default function HorizontalSlider({
       min={0}
       max={100}
       value={value}
-      step={1}
+      step={step}
       defaultValue={defaultValue}
       ThumbComponent={HorizontalThumbComponent}
       style={{
