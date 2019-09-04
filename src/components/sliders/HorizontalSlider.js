@@ -63,6 +63,8 @@ const useStyles = makeStyles(theme =>
   })
 )
 
+const defaultValueLabelFormat = v => `+${v}%`
+
 export default function HorizontalSlider({
   bounds,
   onChange,
@@ -72,13 +74,14 @@ export default function HorizontalSlider({
   step = 1,
   enabled = true,
   value = defaultValue,
+  valueLabelFormat = defaultValueLabelFormat,
 }) {
   const classes = useStyles()
   return (
     <Slider
       classes={classes}
       orientation="horizontal"
-      valueLabelFormat={v => `+${v}%`}
+      valueLabelFormat={valueLabelFormat}
       valueLabelDisplay="on"
       onChange={onChange}
       min={0}

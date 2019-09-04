@@ -519,11 +519,18 @@ export default function App() {
     view === 'price/patient'
       ? getHighlightedArea(patientData, { maxY: yVal })
       : []
+
+  const lastHighlightedVal =
+    view === 'price/patient' &&
+    highlightedPriceAreaData &&
+    highlightedPriceAreaData.length
+      ? _.last(highlightedPriceAreaData).xVal
+      : 0
   const xPercOffset =
     view === 'price/patient' &&
     highlightedPriceAreaData &&
     highlightedPriceAreaData.length
-      ? _.last(highlightedPriceAreaData).xVal / bounds.maxX
+      ? lastHighlightedVal / bounds.maxX
       : 0
 
   let pie1 = null
@@ -658,6 +665,12 @@ export default function App() {
                   }
                 }}
                 defaultValue={xVal}
+                valueLabelFormat={v =>
+                  `${~~(
+                    (v * 0.01 * (bounds.maxX - lastHighlightedVal)) / 1000 +
+                    lastHighlightedVal / 1000
+                  )}K`
+                }
               />
             </HorizontalControls>
             <ChartWrap>
@@ -720,7 +733,7 @@ export default function App() {
                 valueLabelDisplay={'off'}
                 defaultValue={yVal}
                 bounds={bounds}
-                height={height * 0.526 - (margin.top + margin.bottom)}
+                height={height * 0.45 - 50}
                 margin={`auto 0 ${-45 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
