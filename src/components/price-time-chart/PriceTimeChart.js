@@ -51,7 +51,7 @@ export default function PriceTimeChart({
     <ChartWrap>
       <FlexibleWidthXYPlot
         height={height}
-        yDomain={[0, 400]}
+        yDomain={[0, 350]}
         xDomain={[1, cutOffX || 10]}
         margin={margin}
         stackBy="y"
