@@ -20,12 +20,18 @@ function getShortLabel(label) {
 const stageKeys = Object.keys(_.groupBy(data, 'Macro grouping'))
 console.log(stageKeys)
 
+let c = 0
+console.log('data count', data.length)
 const totalArea = _.sumBy(data, d => d.area)
 const areas = stageKeys.map(key => {
   const filtered = data.filter(d => d['Macro grouping'] === key)
+
   const area = _.sumBy(filtered, d => d.area)
+  c += area
   return { key: getShortLabel(key), area, ratio: area / totalArea }
 })
+
+console.log('groups count', c)
 
 const jsonContent = JSON.stringify(areas)
 
