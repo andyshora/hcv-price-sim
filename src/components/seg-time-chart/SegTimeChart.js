@@ -23,7 +23,7 @@ function getFormattedData({ cutOffX, data }) {
 }
 
 function yTickFormat(val) {
-  return `${val}M`
+  return `$${val}M`
 }
 
 export default function SegTimeChart({
@@ -75,7 +75,6 @@ export default function SegTimeChart({
         <br />
         Cost
         <br />
-        ($)
       </YAxisLabel>
     </ChartWrap>
   )

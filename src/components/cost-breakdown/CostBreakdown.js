@@ -133,7 +133,7 @@ export default function CostBreakdown({
     positions.push({
       h,
       y: yOffset - h,
-      yLabel: ratio > 0.7 ? yOffset - 50 : yOffset - h + h / 2 + 10,
+      yLabel: ratio > 0.8 ? yOffset - 50 : yOffset - h + h / 2 + 10,
       opacity: ratio < 0.02 ? 0 : 1,
     })
     yOffset -= h

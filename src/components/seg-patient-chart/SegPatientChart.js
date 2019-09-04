@@ -36,7 +36,7 @@ function getSegmentData({ data, segment }) {
 }
 
 function yTickFormat(val) {
-  return `${val}K`
+  return `$${val}K`
 }
 
 function xTickFormat(val) {
@@ -71,7 +71,7 @@ export default function SegPatientChart({
         <XAxis
           title="Number of Patients"
           {...reactVizTheme.XAxis}
-          tickTotal={5}
+          tickTotal={4}
           tickFormat={xTickFormat}
         />
 
@@ -94,7 +94,6 @@ export default function SegPatientChart({
           <br />
           Patient
           <br />
-          ($)
         </YAxisLabel>
       </FlexibleWidthXYPlot>
     </ChartWrap>

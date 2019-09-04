@@ -36,7 +36,7 @@ function createLineData(data) {
   return arr
 }
 function yTickFormat(val) {
-  return `${val}M`
+  return `$${val}M`
 }
 
 export default function PriceTimeChart({
@@ -85,7 +85,6 @@ export default function PriceTimeChart({
         <br />
         Cost
         <br />
-        ($)
       </YAxisLabel>
     </ChartWrap>
   )

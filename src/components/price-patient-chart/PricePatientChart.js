@@ -43,7 +43,7 @@ const AdditionalCureRegion = styled.div`
   left: ${props => (props.margin ? props.margin.left : 0)}px;
   bottom: ${props => (props.margin ? props.margin.bottom : 0)}px;
 
-  background: rgba(249, 219, 47, 0.6);
+  background: rgba(241, 117, 238, 0.6);
   // mix-blend-mode: saturation;
 `
 
@@ -72,7 +72,7 @@ function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
 }
 
 function yTickFormat(val) {
-  return `${val}K`
+  return `$${val}K`
 }
 
 function xTickFormat(val) {
@@ -145,7 +145,7 @@ export default function PricePatientChart({
         {...plotProps}
       >
         <YAxis
-          title="Cost Per Patient ($)"
+          title="Cost Per Patient"
           {...reactVizTheme.YAxis}
           tickFormat={yTickFormat}
           style={{
@@ -157,7 +157,7 @@ export default function PricePatientChart({
         <XAxis
           title="Number of Patients"
           {...reactVizTheme.XAxis}
-          tickTotal={5}
+          tickTotal={4}
           tickFormat={xTickFormat}
         />
 
@@ -194,7 +194,6 @@ export default function PricePatientChart({
           <br />
           Patient
           <br />
-          ($)
         </YAxisLabel>
       </FlexibleWidthXYPlot>
 

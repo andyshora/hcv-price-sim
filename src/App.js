@@ -185,14 +185,14 @@ function calculateBreakdown2({
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y - newlyCuredArea
 
   let bars = [
-    { ratio: 0, area: breakdown1.bars[0].area, key: 'Drug' },
-    { ratio: 0, area: newlyCuredArea, key: '+Drug' },
+    { ratio: 0, area: breakdown1.bars[0].area, key: 'Drug 1' },
+    { ratio: 0, area: newlyCuredArea, key: 'Drug 2' },
     {
       ratio: 0,
       area: existingUntreatedArea - newlyCuredArea,
       key: 'Hospital',
     },
-    { ratio: 0, area: additionalCostsArea, key: '+Cost' },
+    { ratio: 0, area: additionalCostsArea, key: 'Drug 3' },
   ].map(b => ({ ...b, ratio: b.area / totalArea }))
 
   const res = {
@@ -265,7 +265,7 @@ function calculateTimeBreakdown({ dynamic = true, cutOffX, data, y }) {
   const res = {
     total: totalArea,
     bars: [
-      { key: 'Drug', area: areas.drug, ratio: areas.drug / totalArea },
+      { key: 'Drug 1', area: areas.drug, ratio: areas.drug / totalArea },
       {
         key: 'Hospital',
         area: areas.hospital,
@@ -348,7 +348,7 @@ export default function App() {
   const patientPresets = useRef(defaultPatientPresets)
   const timePresets = useRef(defaultTimePresets)
 
-  const [view, setView] = React.useState('seg/patient')
+  const [view, setView] = React.useState('seg/time')
   const activeView = useRef('seg/patient')
 
   function handlePatientPresetKeyTapped(index) {
@@ -393,7 +393,7 @@ export default function App() {
     'rgba(111, 111, 111)',
     '#6c9bdc',
     'rgb(51, 229, 255)',
-    '#f9d129',
+    '#f175ee',
   ]
 
   const breakdownColorsPrice = [
@@ -405,7 +405,7 @@ export default function App() {
     '#6c9bdc',
     '#30C1D7',
     'rgba(111, 111, 111)',
-    '#f9d129',
+    '#f175ee',
   ]
   const breakdownColorsTime = [
     colorScales.jmi[3],
@@ -846,13 +846,13 @@ export default function App() {
             onChange={handleViewChange}
             className={classes.toggleButtonGroup}
           >
-            <ToggleButton value="seg/patient">
-              <DeviceHubIcon />
-              seg/patient
-            </ToggleButton>
             <ToggleButton value="seg/time">
               <ViewColumnIcon />
               seg/time
+            </ToggleButton>
+            <ToggleButton value="seg/patient">
+              <DeviceHubIcon />
+              seg/patient
             </ToggleButton>
             <ToggleButton value="price/patient">
               <TransformIcon />

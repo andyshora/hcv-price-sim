@@ -79,7 +79,7 @@ function RadialProgress({
       angle0,
       angle,
       radius: width * 0.4,
-      radius0: width * 0.4 - 12,
+      radius0: width * 0.4 - 20,
       color: colors[i],
     })
     angle0 += angle
