@@ -66,7 +66,7 @@ export default function SegPatientChart({
               display: 'none',
             },
           }}
-          tickTotal={3}
+          tickTotal={6}
           tickFormat={yTickFormat}
         />
         <XAxis

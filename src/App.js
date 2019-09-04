@@ -816,8 +816,8 @@ export default function App() {
             <RadialProgress
               values={pie1}
               max={100}
-              width={200}
-              height={200}
+              width={250}
+              height={250}
               suffix={'%'}
               title="Patients Cured"
               colors={[areaColors[2], areaColors[3]]}
@@ -828,8 +828,8 @@ export default function App() {
             <RadialProgress
               values={subscriptionEnabled ? [94] : [50]}
               max={100}
-              width={200}
-              height={200}
+              width={250}
+              height={250}
               suffix={'%'}
               title="Patients Cured"
               colors={[areaColors[2]]}

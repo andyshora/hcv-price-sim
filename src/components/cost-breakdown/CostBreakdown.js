@@ -25,10 +25,6 @@ const TitleWrap = styled.div`
   text-align: ${props => props.align};
   height: 120px;
   width: 100%;
-
-  > h4 {
-    font-size: 1.2rem;
-  }
 `
 
 const ValueLabel = styled.text`
@@ -144,7 +140,7 @@ export default function CostBreakdown({
 
   const totalCost = getRoundedCurrency({
     val: items.total,
-    billionsBeforeCapping: 1.9,
+    billionsBeforeCapping: 2,
   })
   const barWidth = Math.min(80, width * 0.35)
 

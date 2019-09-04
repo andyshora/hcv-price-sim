@@ -43,10 +43,10 @@ export const LayoutSidebar = styled.aside`
 
 export const LayoutDial = styled.div`
   position: absolute;
-  width: 200px;
-  height: 250px;
-  top: 0px;
-  left: -220px;
+  width: 250px;
+  height: 300px;
+  top: -50px;
+  left: -250px;
   z-index: 10;
 
   ${debugBg}

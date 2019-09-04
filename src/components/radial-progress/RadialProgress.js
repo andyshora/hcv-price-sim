@@ -35,11 +35,10 @@ const CenterLabel = styled.div`
 `
 
 const TitleLabel = styled.div`
-  padding: 1rem 0;
+  padding: 0;
   text-align: center;
 
-  > h4 {
-    font-size: 1.2rem;
+  > h5 {
   }
 `
 
@@ -79,7 +78,7 @@ function RadialProgress({
       angle0,
       angle,
       radius: width * 0.4,
-      radius0: width * 0.4 - 20,
+      radius0: width * 0.4 - 25,
       color: colors[i],
     })
     angle0 += angle
@@ -88,6 +87,24 @@ function RadialProgress({
     <ChartWrap>
       <PlotWrap>
         <XYPlot width={width} height={height}>
+          <ArcSeries
+            xDomain={[-5, 5]}
+            yDomain={[-5, 5]}
+            radiusType={'literal'}
+            center={{ x: 0, y: 0 }}
+            marginLeft={25}
+            marginTop={25}
+            data={[
+              {
+                angle0: 0,
+                angle: Math.PI * 2,
+                radius: width * 0.4 - 24.5,
+                radius0: width * 0.4 - 25,
+                color: '#ffffff',
+              },
+            ]}
+            colorType={'literal'}
+          />
           <ArcSeries
             xDomain={[-5, 5]}
             yDomain={[-5, 5]}
@@ -105,7 +122,7 @@ function RadialProgress({
       </PlotWrap>
       {title && (
         <TitleLabel>
-          <Typography variant="h4">{title}</Typography>
+          <Typography variant="h5">{title}</Typography>
         </TitleLabel>
       )}
     </ChartWrap>
