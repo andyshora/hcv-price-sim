@@ -109,6 +109,7 @@ export default function CostBreakdown({
   title = null,
   enabled = true,
   align = 'left',
+  showLabelValues = false,
 }) {
   if (!enabled) {
     return <Placeholder width={width} height={height} />
@@ -165,13 +166,13 @@ export default function CostBreakdown({
         </g>
         <g>
           {positions.map((p, i) => {
-            const showValue = /drug/i.test(items.bars[i].key)
             const labelPosX =
               align === 'left' ? barPosX + barWidth + 5 : barPosX - 5
 
-            const labelOffset = showValue ? -25 : 0
+            const labelOffset = showLabelValues ? -25 : 0
+            const labelText = items.bars[i].key
             return (
-              <React.Fragment key={items.bars[i].key}>
+              <React.Fragment key={labelText}>
                 <ValueLabel
                   width={100}
                   x={labelPosX}
@@ -180,7 +181,7 @@ export default function CostBreakdown({
                   dy={0}
                 >
                   {getFormattedLabel({
-                    text: items.bars[i].key,
+                    text: labelText,
                     x: labelPosX,
                     style: {
                       fontSize: '1.6rem',
@@ -190,12 +191,15 @@ export default function CostBreakdown({
                     },
                   })}
                 </ValueLabel>
-                {showValue && (
+                {showLabelValues && (
                   <ValueLabel
                     key={i}
                     width={100}
                     x={labelPosX}
-                    y={Math.min(height, p.yLabel)}
+                    y={
+                      Math.min(height, p.yLabel) +
+                      (labelText.length > 15 ? 26 : 0)
+                    }
                     val={items.bars[i].ratio}
                   >
                     <tspan

@@ -66,12 +66,13 @@ export default function SegPatientChart({
               display: 'none',
             },
           }}
+          tickTotal={3}
           tickFormat={yTickFormat}
         />
         <XAxis
           title="Number of Patients"
           {...reactVizTheme.XAxis}
-          tickTotal={4}
+          tickTotal={5}
           tickFormat={xTickFormat}
         />
 

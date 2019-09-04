@@ -147,6 +147,7 @@ export default function PricePatientChart({
         <YAxis
           title="Cost Per Patient"
           {...reactVizTheme.YAxis}
+          tickTotal={3}
           tickFormat={yTickFormat}
           style={{
             title: {
@@ -157,7 +158,7 @@ export default function PricePatientChart({
         <XAxis
           title="Number of Patients"
           {...reactVizTheme.XAxis}
-          tickTotal={4}
+          tickTotal={5}
           tickFormat={xTickFormat}
         />
 

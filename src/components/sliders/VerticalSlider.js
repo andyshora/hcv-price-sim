@@ -16,10 +16,10 @@ const VerticalThumbWrap = styled.span`
     &:hover {
       background: linear-gradient(
         0deg,
-        rgba(0, 0, 0, 0) 11px,
-        rgb(255, 255, 255) 11px,
-        #ffffff57 13px,
-        rgba(0, 0, 0, 0) 13px
+        rgba(0, 0, 0, 0) 14px,
+        rgb(255, 255, 255) 14px,
+        #ffffff57 15px,
+        rgba(0, 0, 0, 0) 15px
       );
       // mix-blend-mode: color;
     }
@@ -37,7 +37,10 @@ function VerticalThumbComponent(props) {
 
 const useStyles = makeStyles(theme =>
   createStyles({
-    root: {},
+    root: {
+      left: 92,
+      zIndex: 10,
+    },
     rail: {
       opacity: 0,
     },

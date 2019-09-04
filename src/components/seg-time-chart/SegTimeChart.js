@@ -49,7 +49,7 @@ export default function SegTimeChart({
             },
           }}
           tickFormat={yTickFormat}
-          tickTotal={5}
+          tickTotal={3}
         />
         <XAxis title="Year" {...reactVizTheme.XAxis} tickTotal={10} />
 

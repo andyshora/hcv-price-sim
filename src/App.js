@@ -640,6 +640,7 @@ export default function App() {
                 }}
                 defaultValue={yVal}
                 valueLabelSuffix=""
+                valueLabelDisplay="off"
               />
             </VerticalControls>
             <HorizontalControls>
@@ -719,7 +720,7 @@ export default function App() {
                 valueLabelDisplay={'off'}
                 defaultValue={yVal}
                 bounds={bounds}
-                height={height * 0.5 - (margin.top + margin.bottom)}
+                height={height * 0.526 - (margin.top + margin.bottom)}
                 margin={`auto 0 ${-45 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
@@ -767,10 +768,13 @@ export default function App() {
           {({ width, height }) => {
             const breakdownWidth =
               view === 'price/patient' ? width * 0.5 : width
+            const showLabelValues =
+              view === 'price/patient' || view === 'price/time'
             return (
               breakdown1 && (
                 <>
                   <CostBreakdown
+                    showLabelValues={showLabelValues}
                     offsetForComplete={40}
                     height={height}
                     width={breakdownWidth}
@@ -790,6 +794,7 @@ export default function App() {
                   />
                   {view === 'price/patient' && (
                     <CostBreakdown
+                      showLabelValues={showLabelValues}
                       offsetForComplete={40}
                       height={height}
                       width={breakdownWidth}

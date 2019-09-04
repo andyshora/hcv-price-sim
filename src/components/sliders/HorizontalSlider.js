@@ -37,7 +37,10 @@ function HorizontalThumbComponent(props) {
 
 const useStyles = makeStyles(theme =>
   createStyles({
-    root: {},
+    root: {
+      bottom: 41,
+      zIndex: 10,
+    },
     rail: {
       opacity: 0,
     },

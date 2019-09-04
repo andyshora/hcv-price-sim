@@ -64,7 +64,7 @@ export default function PriceTimeChart({
             },
           }}
           tickFormat={yTickFormat}
-          tickTotal={5}
+          tickTotal={3}
         />
         <XAxis title="Year" {...reactVizTheme.XAxis} tickTotal={10} />
 
