@@ -14,7 +14,8 @@ const BreakdownWrap = styled.div`
 const Placeholder = styled.div`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
-  opacity: 0;
+  opacity: 0.5;
+  background: red;
 `
 
 const TitleWrap = styled.div`

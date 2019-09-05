@@ -52,12 +52,13 @@ const useStyles = makeStyles(theme =>
       borderRadius: '50%',
     },
     valueLabel: {
-      top: 50,
+      top: 46,
       '& *': {
         background: 'transparent',
         color: '#fff',
         fontStyle: 'normal',
-        fontSize: '1.4rem',
+        fontSize: '1.3rem',
+        color: 'rgb(51, 229, 255)',
       },
     },
   })
@@ -92,7 +93,6 @@ export default function HorizontalSlider({
       max={max}
       value={value}
       step={marks && Array.isArray(marks) ? null : step}
-      marks={marks}
       defaultValue={defaultValue}
       ThumbComponent={HorizontalThumbComponent}
       style={{

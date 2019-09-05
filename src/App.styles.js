@@ -34,9 +34,16 @@ export const LayoutSidebar = styled.aside`
   grid-area: side;
   position: relative;
   min-height: 640px;
+
+  margin-right: 0.5rem;
+
+  ${debugBg}
+`
+
+export const CostBreakdownWrap = styled.div`
   display: grid;
   grid-template-columns: ${props => (props.columns === 2 ? '50% 50%' : '100%')};
-  margin-right: 0.5rem;
+  position: relative;
 
   ${debugBg}
 `
@@ -127,6 +134,8 @@ export const SwitchWrap = styled.div`
       text-align: right;
       opacity: ${props => (props.on ? 0.6 : 1)};
     }
+    user-select: none;
+    cursor: pointer;
     margin: 0 0.5rem;
     font-size: 1rem;
     transition: opacity 0.6s;

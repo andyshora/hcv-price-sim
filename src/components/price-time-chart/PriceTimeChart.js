@@ -1,17 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
-import {
-  FlexibleWidthXYPlot,
-  XAxis,
-  YAxis,
-  AreaSeries,
-  DiscreteColorLegend,
-  VerticalBarSeries,
-  LineSeries,
-} from 'react-vis'
+import { FlexibleWidthXYPlot, XAxis, YAxis, LineSeries } from 'react-vis'
 
-import { colorScales, reactVizTheme } from '../../theme'
+import VerticalBarSeries from '../bar-series/VerticalBarSeries'
+
+import { reactVizTheme } from '../../theme'
 
 const ChartWrap = styled.div`
   position: relative;

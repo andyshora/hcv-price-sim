@@ -29,6 +29,7 @@ import PricePatientChart from './components/price-patient-chart'
 import StaticChartView from './views/static-chart-view'
 
 import {
+  CostBreakdownWrap,
   LayoutWrap,
   LayoutHeader,
   LayoutSidebar,
@@ -655,6 +656,7 @@ export default function App() {
             <HorizontalControls>
               <HorizontalSlider
                 bounds={bounds}
+                step={0.5}
                 width={
                   (width - (100 + margin.left + margin.right)) *
                   (1 - xPercOffset)
@@ -735,8 +737,8 @@ export default function App() {
                 valueLabelDisplay={'off'}
                 defaultValue={yVal}
                 bounds={bounds}
-                height={height * 0.46 - 58}
-                margin={`auto 0 ${-45 + margin.bottom}px 0`}
+                height={height * 0.375}
+                margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
                   if (savingPreset) {
@@ -769,7 +771,8 @@ export default function App() {
     }
   }
 
-  const breakdownColumns = view === 'price/patient' ? 2 : 1
+  const breakdownColumns =
+    view === 'price/patient' && breakdown2 && xVal ? 2 : 1
 
   return (
     <LayoutWrap>
@@ -778,16 +781,15 @@ export default function App() {
           {getTitle({ view, subscriptionEnabled })}
         </Typography>
       </LayoutHeader>
-      <LayoutSidebar columns={breakdownColumns}>
+      <LayoutSidebar>
         <ContainerDimensions>
           {({ width, height }) => {
-            const breakdownWidth =
-              view === 'price/patient' ? width * 0.5 : width
+            const breakdownWidth = width / breakdownColumns
             const showLabelValues =
               view === 'price/patient' || view === 'price/time'
             return (
               breakdown1 && (
-                <>
+                <CostBreakdownWrap columns={breakdownColumns}>
                   <CostBreakdown
                     showLabelValues={showLabelValues}
                     offsetForComplete={40}
@@ -807,7 +809,7 @@ export default function App() {
                         : 'Total Health Care Cost'
                     }
                   />
-                  {view === 'price/patient' && (
+                  {breakdownColumns === 2 && (
                     <CostBreakdown
                       showLabelValues={showLabelValues}
                       offsetForComplete={40}
@@ -821,7 +823,7 @@ export default function App() {
                       enabled={view === 'price/patient' && xVal && breakdown2}
                     />
                   )}
-                </>
+                </CostBreakdownWrap>
               )
             )
           }}

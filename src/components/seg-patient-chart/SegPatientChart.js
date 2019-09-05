@@ -28,10 +28,10 @@ const YAxisLabel = styled.p`
 function getSegmentData({ data, segment }) {
   const filtered = data.filter(d => d['Macro grouping'] === segment)
 
-  const res = filtered.map(d => ({
-    x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
-    y: d.Yval / 1000,
-  }))
+  // const res = filtered.map(d => ({
+  //   x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+  //   y: d.Yval / 1000,
+  // }))
 
   const series = []
 

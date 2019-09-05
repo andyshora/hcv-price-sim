@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
-import { FlexibleWidthXYPlot, XAxis, YAxis, VerticalBarSeries } from 'react-vis'
+import { FlexibleWidthXYPlot, XAxis, YAxis } from 'react-vis'
+import VerticalBarSeries from '../bar-series/VerticalBarSeries'
 
 import { colorScales, reactVizTheme } from '../../theme'
 
