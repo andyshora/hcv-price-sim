@@ -72,9 +72,13 @@ export default function HorizontalSlider({
   margin = '0',
   defaultValue = 1,
   step = 1,
+  min = 0,
+  max = 100,
   enabled = true,
   value = defaultValue,
   valueLabelFormat = defaultValueLabelFormat,
+  valueLabelDisplay = 'on',
+  marks = true,
 }) {
   const classes = useStyles()
   return (
@@ -82,12 +86,13 @@ export default function HorizontalSlider({
       classes={classes}
       orientation="horizontal"
       valueLabelFormat={valueLabelFormat}
-      valueLabelDisplay="on"
+      valueLabelDisplay={valueLabelDisplay}
       onChange={onChange}
-      min={0}
-      max={100}
+      min={min}
+      max={max}
       value={value}
-      step={step}
+      step={marks && Array.isArray(marks) ? null : step}
+      marks={marks}
       defaultValue={defaultValue}
       ThumbComponent={HorizontalThumbComponent}
       style={{

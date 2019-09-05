@@ -47,6 +47,7 @@ import {
 // data
 import areaData from './data/areas.json'
 import patientData from './data/cleaned.json'
+import pricePatientMarks from './data/marks.json'
 import segTimeData from './data/segtime.json'
 import priceTimeData from './data/pricetime.json'
 
@@ -626,6 +627,7 @@ export default function App() {
     switch (view) {
       case 'price/patient': {
         const margin = { top: 10, left: 80, right: 30, bottom: 120 }
+        const marks = pricePatientMarks.marks
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
@@ -733,7 +735,7 @@ export default function App() {
                 valueLabelDisplay={'off'}
                 defaultValue={yVal}
                 bounds={bounds}
-                height={height * 0.45 - 50}
+                height={height * 0.46 - 58}
                 margin={`auto 0 ${-45 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
@@ -881,23 +883,29 @@ export default function App() {
               price/time
             </ToggleButton>
           </ToggleButtonGroup>
-          <SwitchWrap active={view === 'price/time'}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={subscriptionEnabled}
-                  onChange={(e, checked) => {
-                    if (e && e.target) {
-                      e.target.blur()
-                    }
-                    setSubscriptionEnabled(checked)
-                  }}
-                  value="enabled"
-                  color="primary"
-                />
-              }
-              label="Subscription"
+          <SwitchWrap active={view === 'price/time'} on={subscriptionEnabled}>
+            <label htmlFor="subscription">
+              Product
+              <br />
+              per Patient
+            </label>
+            <Switch
+              id="subscription"
+              checked={subscriptionEnabled}
+              onChange={(e, checked) => {
+                if (e && e.target) {
+                  e.target.blur()
+                }
+                setSubscriptionEnabled(checked)
+              }}
+              value="enabled"
+              color="primary"
             />
+            <label htmlFor="subscription">
+              Subscription
+              <br />
+              per Population
+            </label>
           </SwitchWrap>
         </LayoutNav>
         {view === 'price/patient' && (

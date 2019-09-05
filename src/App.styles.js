@@ -119,4 +119,17 @@ export const SwitchWrap = styled.div`
   padding: 0 0 0 2rem;
   transition: opacity 1s;
   opacity: ${props => (props.active ? 1 : 0)};
+  display: flex;
+  flex-direction: row;
+
+  > label {
+    &:first-child {
+      text-align: right;
+      opacity: ${props => (props.on ? 0.6 : 1)};
+    }
+    margin: 0 0.5rem;
+    font-size: 1rem;
+    transition: opacity 0.6s;
+    opacity: ${props => (props.on ? 1 : 0.6)};
+  }
 `

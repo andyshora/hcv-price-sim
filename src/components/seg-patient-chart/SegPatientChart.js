@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
+import currency from 'currency.js'
 import {
   FlexibleWidthXYPlot,
   XAxis,
@@ -25,14 +26,26 @@ const YAxisLabel = styled.p`
 `
 
 function getSegmentData({ data, segment }) {
-  const res = data
-    .filter(d => d['Macro grouping'] === segment)
-    .map(d => ({
-      x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
-      y: d.Yval / 1000,
-    }))
+  const filtered = data.filter(d => d['Macro grouping'] === segment)
 
-  return res
+  const res = filtered.map(d => ({
+    x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+    y: d.Yval / 1000,
+  }))
+
+  const series = []
+
+  for (let i = 0; i < filtered.length; i++) {
+    const d = filtered[i]
+    const y = d.Yval / 1000
+    const x = (d.Xcumsumleft + 1e-6) / 1000
+
+    // push start and end points so we have a flat bar
+    series.push({ x, y })
+    series.push({ x: d.Xcumsum / 1000, y })
+  }
+
+  return series
 }
 
 function yTickFormat(val) {
