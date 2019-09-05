@@ -12,17 +12,6 @@ const VerticalThumbWrap = styled.span`
     left: 0;
     bottom: -7px;
     cursor: row-resize;
-
-    &:hover {
-      background: linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0) 14px,
-        rgb(255, 255, 255) 14px,
-        #ffffff57 15px,
-        rgba(0, 0, 0, 0) 15px
-      );
-      // mix-blend-mode: color;
-    }
   }
 `
 

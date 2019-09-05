@@ -22,7 +22,11 @@ const YAxisLabel = styled.p`
 function createLineData(data) {
   let arr = []
   for (let i = 0; i < data.length; i++) {
-    arr.push({ x: data[i].x - 0.2, y: data[i].y })
+    if (!i) {
+      arr.push({ x: 0.5, y: data[i].y })
+    } else {
+      arr.push({ x: data[i].x - 0.2, y: data[i].y })
+    }
     arr.push({ x: data[i].x, y: data[i].y })
     arr.push({ x: data[i].x + 0.2, y: data[i].y })
   }
