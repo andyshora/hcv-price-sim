@@ -118,10 +118,10 @@ function getTitle({ view, subscriptionEnabled }) {
       }
 
     case 'seg/time':
-      return 'Hepatitis health care cost per year for 100K patients'
+      return 'Hepatitis C health care cost per year for 100K patients'
 
     default:
-      return 'Hepatitis health care cost per patient for 100K patients'
+      return 'Hepatitis C health care cost per patient for 100K patients'
   }
 }
 
