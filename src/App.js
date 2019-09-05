@@ -112,7 +112,7 @@ function getTitle({ view, subscriptionEnabled }) {
       return 'Price per patient simulation'
     case 'price/time':
       if (subscriptionEnabled) {
-        return 'Price per year simulation over 10 year contract'
+        return 'Annual price per population over 10 year contract'
       } else {
         return 'Price per patient simulation over 10 years'
       }
