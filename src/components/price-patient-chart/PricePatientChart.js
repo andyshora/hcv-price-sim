@@ -76,7 +76,7 @@ function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
   const fract = maxX / 100
   const absMaxX = minX + (bounds.maxX - minX) * fract
   const filtered = data.filter(
-    d => d.Xcumsum >= minX && d.Xcumsumleft <= absMaxX
+    d => d.Xcumsumleft > minX && d.Xcumsumleft <= absMaxX
   )
 
   const series = []
