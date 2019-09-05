@@ -738,7 +738,7 @@ export default function App() {
                 valueLabelDisplay={'off'}
                 defaultValue={yVal}
                 bounds={bounds}
-                height={height * 0.375}
+                height={(height - (margin.bottom + margin.top)) * 0.475}
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
