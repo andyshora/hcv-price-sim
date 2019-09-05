@@ -52,23 +52,50 @@ function getSquareHighlightedArea(data, { maxY }) {
 }
 
 function getFormattedData(data) {
-  return data.map(d => ({
-    x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
-    y: d.Yval / 1000,
-  }))
+  // return data.map(d => ({
+  //   x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+  //   y: d.Yval / 1000,
+  // }))
+
+  const series = []
+
+  for (let i = 0; i < data.length; i++) {
+    const d = data[i]
+    const y = d.Yval / 1000
+    const x = d.Xcumsumleft / 1000
+
+    // push start and end points so we have a flat bar
+    series.push({ x, y })
+    series.push({ x: d.Xcumsum / 1000, y })
+  }
+
+  return series
 }
 
 function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
   const fract = maxX / 100
   const absMaxX = minX + (bounds.maxX - minX) * fract
-  const res = data
-    .filter(d => d.Xcumsum > minX && d.Xcumsumleft <= absMaxX)
-    .map(d => ({
-      x: d.Xcumsum / 1000,
-      y: d.Yval / 1000,
-    }))
+  const filtered = data.filter(
+    d => d.Xcumsum >= minX && d.Xcumsumleft <= absMaxX
+  )
 
-  return res
+  const series = []
+
+  for (let i = 0; i < filtered.length; i++) {
+    const d = filtered[i]
+    const y = d.Yval / 1000
+    const x = d.Xcumsumleft / 1000
+
+    // push start and end points so we have a flat bar
+    series.push({ x, y })
+    series.push({ x: d.Xcumsum / 1000, y })
+  }
+  // .map(d => ({
+  //   x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
+  //   y: d.Yval / 1000,
+  // }))
+
+  return series
 }
 
 function yTickFormat(val) {
@@ -170,7 +197,7 @@ export default function PricePatientChart({
         />
 
         <AreaSeries
-          data={highlightedPriceAreaData}
+          data={getFormattedData(highlightedPriceAreaData)}
           color={areaColors[0]}
           style={{ stroke: 'none', fillOpacity: 1 }}
         />
