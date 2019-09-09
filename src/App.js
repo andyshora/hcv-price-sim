@@ -61,7 +61,7 @@ const sliderBounds = {
       min: 0,
       max: 51,
       step: 1,
-      keyStep: 5,
+      keyStep: 0.4,
     },
   },
   pricePatient: {
@@ -69,13 +69,13 @@ const sliderBounds = {
       min: 0,
       max: 100,
       step: 0.5,
-      keyStep: 5,
+      keyStep: 0.8,
     },
     y: {
       min: 0.5,
       max: bounds.maxYInput / 1000,
       step: 0.5,
-      keyStep: 5,
+      keyStep: 0.5,
     },
   },
 }
@@ -201,16 +201,6 @@ const navSteps = [
     },
     PageDown: {
       view: 'price/time',
-      subscription: false,
-    },
-  },
-  {
-    name: 'price/time:subscription-off',
-    PageUp: {
-      view: 'price/patient',
-      preset: 6,
-    },
-    PageDown: {
       subscription: true,
       preset: 1,
     },
@@ -218,7 +208,8 @@ const navSteps = [
   {
     name: 'price/time:subscription-on-1',
     PageUp: {
-      subscription: false,
+      view: 'price/patient',
+      preset: 6,
     },
     PageDown: {
       preset: 2,
@@ -237,6 +228,16 @@ const navSteps = [
     name: 'price/time:subscription-on-3',
     PageUp: {
       preset: 2,
+    },
+    PageDown: {
+      subscription: false,
+    },
+  },
+  {
+    name: 'price/time:subscription-off',
+    PageUp: {
+      subscription: true,
+      preset: 3,
     },
     PageDown: {},
   },
@@ -600,27 +601,22 @@ export default function App() {
       const subscription =
         'subscription' in activeStepData ? activeStepData.subscription : null
       if (newView) {
-        // console.log('triggering view', newView)
-        setNewActiveNavStep(activeNavStepIndex + dir)
         handleViewChange(null, newView)
-      }
-      if (!isNaN(preset)) {
-        // console.log('triggering preset', preset)
-        setNewActiveNavStep(activeNavStepIndex + dir)
-        handleHotkeyTapped({ key: preset })
       }
       if (typeof subscription === 'boolean') {
         setSubscriptionEnabled(subscription)
-        setNewActiveNavStep(activeNavStepIndex + dir)
       }
+      if (!isNaN(preset)) {
+        handleHotkeyTapped({ key: preset })
+      }
+      setNewActiveNavStep(activeNavStepIndex + dir)
 
       return false
     },
-    [view, activeNavStepIndex, subscriptionEnabled]
+    [activeView.current, activeNavStepIndex, subscriptionEnabled]
   )
 
   function handleHotkeyTapped({ key }) {
-    // console.log('handleHotkeyTapped', key, activeView.current)
     if (activeView.current === 'price/patient') {
       handlePatientPresetKeyTapped(Number.parseInt(key) - 1)
     } else if (activeView.current === 'price/time') {
@@ -790,7 +786,6 @@ export default function App() {
 
   function handleViewChange(event, newView) {
     if (newView) {
-      // todo - set setActiveNavStepIndex
       activeView.current = newView
       setView(newView)
     }
@@ -810,7 +805,7 @@ export default function App() {
       newPresets[i] = {
         label: null,
         x: xVal,
-        y: view === 'price/patient' ? yVal1 : yVal2,
+        y: activeView.current === 'price/patient' ? yVal1 : yVal2,
       }
       if (storageKey === 'presets') {
         setPatientPresets(newPresets)
@@ -823,7 +818,7 @@ export default function App() {
     } else {
       setXVal(x)
 
-      if (view === 'price/patient') {
+      if (activeView.current === 'price/patient') {
         setYVal1(y)
       } else {
         setYVal2(y)
@@ -887,6 +882,9 @@ export default function App() {
                 }
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
+                  if (e && e.target) {
+                    e.target.blur()
+                  }
                   setYVal1(val)
                   if (savingPreset) {
                     setSavingPreset(false)
@@ -909,6 +907,9 @@ export default function App() {
                 }
                 margin={`0 ${margin.right}px 0 0`}
                 onChange={(e, val) => {
+                  if (e && e.target) {
+                    e.target.blur()
+                  }
                   setXVal(val)
                   if (savingPreset) {
                     setSavingPreset(false)
@@ -986,6 +987,9 @@ export default function App() {
                 height={(height - (margin.bottom + margin.top)) * 0.335}
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
+                  if (e && e.target) {
+                    e.target.blur()
+                  }
                   setYVal2(val)
                   if (savingPreset) {
                     setSavingPreset(false)
@@ -1121,7 +1125,7 @@ export default function App() {
                   setNewActiveNavStep(2)
                   break
                 case 'price/time':
-                  setNewActiveNavStep(8)
+                  setNewActiveNavStep(11)
                   break
                 case 'seg/time':
                   setNewActiveNavStep(0)
@@ -1167,9 +1171,9 @@ export default function App() {
 
                 // try to keep keyboard nav state in sync with manual interactions
                 if (checked) {
-                  setActiveNavStepIndex(9)
+                  setNewActiveNavStep(8)
                 } else {
-                  setActiveNavStepIndex(8)
+                  setNewActiveNavStep(11)
                 }
               }}
               value="enabled"
