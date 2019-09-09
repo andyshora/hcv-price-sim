@@ -1164,6 +1164,13 @@ export default function App() {
                   e.target.blur()
                 }
                 setSubscriptionEnabled(checked)
+
+                // try to keep keyboard nav state in sync with manual interactions
+                if (checked) {
+                  setActiveNavStepIndex(9)
+                } else {
+                  setActiveNavStepIndex(8)
+                }
               }}
               value="enabled"
               color="primary"
