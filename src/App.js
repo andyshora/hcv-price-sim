@@ -473,7 +473,7 @@ export default function App() {
           data: subscriptionEnabled
             ? priceTimeData.dynamic
             : priceTimeData.static,
-          y: yVal1 * 0.01,
+          y: yVal2 * 0.01,
           totalArea: bounds.totalSegArea,
           cutOffX: null,
         })
@@ -515,7 +515,7 @@ export default function App() {
       setCost2(newBreakdown2.totalCost)
       setTotalCostAsPerc(_.sumBy(newBreakdown2.bars, d => d.ratio))
     }
-  }, [xVal, yVal1, view, totalArea, subscriptionEnabled])
+  }, [xVal, yVal1, yVal2, view, totalArea, subscriptionEnabled])
 
   useEffect(() => {
     const persistedPatientPresets = getFromLocalStorage('presets')
