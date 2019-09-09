@@ -131,6 +131,117 @@ const defaultTimePresets = [
   },
 ]
 
+const navSteps = [
+  {
+    name: 'seg/time',
+    PageUp: {},
+    PageDown: {
+      view: 'seg/patient',
+    },
+  },
+  {
+    name: 'seg/patient',
+    PageUp: {
+      view: 'seg/time',
+    },
+    PageDown: {
+      view: 'price/patient',
+      preset: 1,
+    },
+  },
+  {
+    name: 'price/patient-1',
+    PageUp: {
+      view: 'seg/patient',
+    },
+    PageDown: {
+      preset: 2,
+    },
+  },
+  {
+    name: 'price/patient-2',
+    PageUp: {
+      preset: 1,
+    },
+    PageDown: {
+      preset: 3,
+    },
+  },
+  {
+    name: 'price/patient-3',
+    PageUp: {
+      preset: 2,
+    },
+    PageDown: {
+      preset: 4,
+    },
+  },
+  {
+    name: 'price/patient-4',
+    PageUp: {
+      preset: 3,
+    },
+    PageDown: {
+      preset: 5,
+    },
+  },
+  {
+    name: 'price/patient-5',
+    PageUp: {
+      preset: 4,
+    },
+    PageDown: {
+      preset: 6,
+    },
+  },
+  {
+    name: 'price/patient-6',
+    PageUp: {
+      preset: 5,
+    },
+    PageDown: {
+      view: 'price/time',
+      subscription: false,
+    },
+  },
+  {
+    name: 'price/time:subscription-off',
+    PageUp: {
+      view: 'price/patient',
+      preset: 6,
+    },
+    PageDown: {
+      subscription: true,
+      preset: 1,
+    },
+  },
+  {
+    name: 'price/time:subscription-on-1',
+    PageUp: {
+      subscription: false,
+    },
+    PageDown: {
+      preset: 2,
+    },
+  },
+  {
+    name: 'price/time:subscription-on-2',
+    PageUp: {
+      preset: 1,
+    },
+    PageDown: {
+      preset: 3,
+    },
+  },
+  {
+    name: 'price/time:subscription-on-3',
+    PageUp: {
+      preset: 2,
+    },
+    PageDown: {},
+  },
+]
+
 function getTitle({ view, subscriptionEnabled }) {
   switch (view) {
     case 'price/patient':
@@ -361,6 +472,8 @@ export default function App() {
   const [yVal1, setYVal1] = useState(35)
   const [yVal2, setYVal2] = useState(50)
 
+  const [activeNavStepIndex, setActiveNavStepIndex] = useState(0)
+
   const [subscriptionEnabled, setSubscriptionEnabled] = useState(false)
   const [savingPreset, setSavingPreset] = useState(false)
   const [breakdown1, setBreakdown1] = useState(null)
@@ -403,10 +516,12 @@ export default function App() {
     }
   }
 
+  // hotkeys used to load preset slider values
   useHotkeys('1, 2, 3, 4, 5, 6', params => {
     handleHotkeyTapped(params)
   })
 
+  // hotkeys used to navigate charts
   useHotkeys(
     'up, down, left, right',
     e => {
@@ -465,31 +580,47 @@ export default function App() {
     [view, yVal1, yVal2, xVal, subscriptionEnabled]
   )
 
+  function setNewActiveNavStep(step) {
+    if (step < navSteps.length && step >= 0) {
+      setActiveNavStepIndex(step)
+    }
+  }
+
   useHotkeys(
     'pageup, pagedown',
-    e => {
-      const up = e.key === 'PageUp'
+    ({ key }) => {
+      const dir = key === 'PageUp' ? -1 : 1
 
-      switch (view) {
-        case 'seg/time':
-          break
-        case 'seg/patient':
-          break
-        case 'price/patient':
-          break
-        case 'price/time':
-          break
-
-        default:
-          break
+      if (!(activeNavStepIndex in navSteps)) {
+        return false
+      }
+      const activeStepData = navSteps[activeNavStepIndex][key]
+      const newView = 'view' in activeStepData ? activeStepData.view : null
+      const preset = 'preset' in activeStepData ? activeStepData.preset : null
+      const subscription =
+        'subscription' in activeStepData ? activeStepData.subscription : null
+      if (newView) {
+        // console.log('triggering view', newView)
+        setNewActiveNavStep(activeNavStepIndex + dir)
+        handleViewChange(null, newView)
+      }
+      if (!isNaN(preset)) {
+        // console.log('triggering preset', preset)
+        setNewActiveNavStep(activeNavStepIndex + dir)
+        handleHotkeyTapped({ key: preset })
+      }
+      if (typeof subscription === 'boolean') {
+        setSubscriptionEnabled(subscription)
+        setNewActiveNavStep(activeNavStepIndex + dir)
       }
 
       return false
     },
-    [view]
+    [view, activeNavStepIndex, subscriptionEnabled]
   )
 
   function handleHotkeyTapped({ key }) {
+    // console.log('handleHotkeyTapped', key, activeView.current)
     if (activeView.current === 'price/patient') {
       handlePatientPresetKeyTapped(Number.parseInt(key) - 1)
     } else if (activeView.current === 'price/time') {
@@ -659,6 +790,7 @@ export default function App() {
 
   function handleViewChange(event, newView) {
     if (newView) {
+      // todo - set setActiveNavStepIndex
       activeView.current = newView
       setView(newView)
     }
@@ -979,7 +1111,26 @@ export default function App() {
           <ToggleButtonGroup
             value={view}
             exclusive
-            onChange={handleViewChange}
+            onChange={(e, newView) => {
+              handleViewChange(e, newView)
+
+              // when changing view via toggle, ensure a nearby nav step is activated
+              // so pageup/pagedown navigation can continue from here
+              switch (newView) {
+                case 'price/patient':
+                  setNewActiveNavStep(2)
+                  break
+                case 'price/time':
+                  setNewActiveNavStep(8)
+                  break
+                case 'seg/time':
+                  setNewActiveNavStep(0)
+                  break
+                case 'seg/patient':
+                  setNewActiveNavStep(1)
+                  break
+              }
+            }}
             className={classes.toggleButtonGroup}
           >
             <ToggleButton value="seg/time">
