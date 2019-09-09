@@ -55,6 +55,31 @@ import priceTimeData from './data/pricetime.json'
 import bounds from './data/bounds.json'
 import { colorScales } from './theme'
 
+const sliderBounds = {
+  priceTime: {
+    y: {
+      min: 0,
+      max: 51,
+      step: 1,
+      keyStep: 5,
+    },
+  },
+  pricePatient: {
+    x: {
+      min: 0,
+      max: 100,
+      step: 0.5,
+      keyStep: 5,
+    },
+    y: {
+      min: 0.5,
+      max: bounds.maxYInput / 1000,
+      step: 0.5,
+      keyStep: 5,
+    },
+  },
+}
+
 const defaultPatientPresets = [
   {
     label: '',
@@ -385,12 +410,59 @@ export default function App() {
   useHotkeys(
     'up, down, left, right',
     e => {
+      const { key } = e
       if (view === 'price/patient') {
-        console.log(e.key)
+        switch (key) {
+          case 'ArrowUp': {
+            const { min, max, keyStep } = sliderBounds.pricePatient.y
+            const newVal = yVal1 + keyStep > max ? max : yVal1 + keyStep
+            setYVal1(newVal)
+            break
+          }
+          case 'ArrowDown': {
+            const { min, max, keyStep } = sliderBounds.pricePatient.y
+            const newVal = yVal1 - keyStep < min ? min : yVal1 - keyStep
+            setYVal1(newVal)
+            break
+          }
+          case 'ArrowLeft': {
+            const { min, max, keyStep } = sliderBounds.pricePatient.x
+            const newVal = xVal - keyStep < min ? min : xVal - keyStep
+            setXVal(newVal)
+            break
+          }
+          case 'ArrowRight': {
+            const { min, max, keyStep } = sliderBounds.pricePatient.x
+            const newVal = xVal + keyStep > max ? max : xVal + keyStep
+            setXVal(newVal)
+            break
+          }
+
+          default:
+            break
+        }
+      } else if (view === 'price/time' && subscriptionEnabled) {
+        switch (key) {
+          case 'ArrowUp': {
+            const { min, max, keyStep } = sliderBounds.priceTime.y
+            const newVal = yVal2 + keyStep > max ? max : yVal2 + keyStep
+            setYVal2(newVal)
+            break
+          }
+          case 'ArrowDown': {
+            const { min, max, keyStep } = sliderBounds.priceTime.y
+            const newVal = yVal2 - keyStep < min ? min : yVal2 - keyStep
+            setYVal2(newVal)
+            break
+          }
+
+          default:
+            break
+        }
       }
       return false
     },
-    [view]
+    [view, yVal1, yVal2, xVal, subscriptionEnabled]
   )
 
   useHotkeys(
@@ -399,13 +471,15 @@ export default function App() {
       const up = e.key === 'PageUp'
 
       switch (view) {
+        case 'seg/time':
+          break
+        case 'seg/patient':
+          break
         case 'price/patient':
           break
         case 'price/time':
           break
-        case 'seg/time': {
-          break
-        }
+
         default:
           break
       }
@@ -671,9 +745,9 @@ export default function App() {
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
-                min={0.5}
-                step={0.5}
-                max={bounds.maxYInput / 1000}
+                min={sliderBounds.pricePatient.y.min}
+                max={sliderBounds.pricePatient.y.max}
+                step={sliderBounds.pricePatient.y.step}
                 bounds={bounds}
                 height={
                   ((height - (margin.top + margin.bottom)) * bounds.maxYInput) /
@@ -693,8 +767,10 @@ export default function App() {
             </VerticalControls>
             <HorizontalControls>
               <HorizontalSlider
+                min={sliderBounds.pricePatient.x.min}
+                max={sliderBounds.pricePatient.x.max}
+                step={sliderBounds.pricePatient.x.step}
                 bounds={bounds}
-                step={0.5}
                 width={
                   (width - (100 + margin.left + margin.right)) *
                   (1 - xPercOffset)
@@ -769,9 +845,9 @@ export default function App() {
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
-                min={0}
-                step={1}
-                max={51}
+                min={sliderBounds.priceTime.y.min}
+                max={sliderBounds.priceTime.y.max}
+                step={sliderBounds.priceTime.y.step}
                 valueLabelDisplay={'off'}
                 defaultValue={yVal2}
                 bounds={bounds}
