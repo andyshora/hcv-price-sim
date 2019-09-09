@@ -833,7 +833,7 @@ export default function App() {
                     offsetForComplete={40}
                     height={height}
                     width={breakdownWidth}
-                    scaleToBounds={totalCostAsPerc}
+                    scaleToBounds={breakdownColumns === 2 ? totalCostAsPerc : 1}
                     items={breakdown1}
                     colors={
                       view === 'price/patient' || view === 'price/time'
