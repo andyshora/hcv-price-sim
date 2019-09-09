@@ -379,6 +379,24 @@ export default function App() {
     handleHotkeyTapped(params)
   })
 
+  useHotkeys('pageup,pagedown', e => {
+    const up = e.key === 'PageUp'
+
+    switch (view) {
+      case 'price/patient':
+        break
+      case 'price/time':
+        break
+      case 'seg/time': {
+        break
+      }
+      default:
+        break
+    }
+
+    return false
+  })
+
   function handleHotkeyTapped({ key }) {
     if (activeView.current === 'price/patient') {
       handlePatientPresetKeyTapped(Number.parseInt(key) - 1)
@@ -447,6 +465,7 @@ export default function App() {
           total: bounds.totalSegArea,
           bars: areaData,
         }
+        break
       }
       default:
         newBreakdown1 = {
@@ -734,11 +753,11 @@ export default function App() {
               <VerticalSlider
                 min={0}
                 step={1}
-                max={72}
+                max={51}
                 valueLabelDisplay={'off'}
                 defaultValue={yVal}
                 bounds={bounds}
-                height={(height - (margin.bottom + margin.top)) * 0.475}
+                height={(height - (margin.bottom + margin.top)) * 0.335}
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   setYVal(val)
