@@ -1,16 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
-import {
-  FlexibleWidthXYPlot,
-  XAxis,
-  YAxis,
-  AreaSeries,
-  DiscreteColorLegend,
-  VerticalBarSeries,
-} from 'react-vis'
+import { FlexibleWidthXYPlot, XAxis, YAxis, AreaSeries } from 'react-vis'
 
-import { colorScales, reactVizTheme } from '../../theme'
+import { reactVizTheme } from '../../theme'
 
 const ChartWrap = styled.div`
   position: relative;
@@ -45,7 +38,6 @@ const AdditionalCureRegion = styled.div`
   bottom: ${props => (props.margin ? props.margin.bottom : 0)}px;
 
   background: rgba(241, 117, 238, 0.6);
-  // mix-blend-mode: saturation;
 `
 
 function getSquareHighlightedArea(data, { maxY }) {
@@ -53,11 +45,6 @@ function getSquareHighlightedArea(data, { maxY }) {
 }
 
 function getFormattedData(data) {
-  // return data.map(d => ({
-  //   x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
-  //   y: d.Yval / 1000,
-  // }))
-
   const series = []
 
   for (let i = 0; i < data.length; i++) {
@@ -74,11 +61,48 @@ function getFormattedData(data) {
 }
 
 function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
+  if (!maxX) {
+    return []
+  }
   const fract = maxX / 100
   const absMaxX = minX + (bounds.maxX - minX) * fract
-  const filtered = data.filter(
+  let filtered = data.filter(
     d => d.Xcumsumleft > minX && d.Xcumsumleft <= absMaxX
   )
+
+  if (!filtered.length) {
+    return []
+  }
+
+  // todo - if xWidth is large, this is causing the highlight overflow problem, as value tested is the left (start) value of the block
+  // consider adding artificial values to split this up, as long as it doesnt affect breakdown calculation
+  // split one rectange into 5
+
+  const last = _.last(filtered)
+  const diff = Math.abs(absMaxX - last.Xcumsum)
+  const mightBeProtruding = last.Xwidth > 2000 && diff > 1200
+  if (mightBeProtruding) {
+    const largeEnd = filtered.pop()
+
+    const numDivisions = 5
+    const left = largeEnd.Xcumsumleft
+    const distanceBetween = largeEnd.Xwidth
+    const sliceWidth = distanceBetween / numDivisions
+
+    const fractionBetween = (absMaxX - left) / distanceBetween
+    const includeThreshold = _.round(fractionBetween / 2, 1) * 2
+
+    _.times(numDivisions, i => {
+      const elm = {
+        Xcumsumleft: left,
+        Xcumsum: left + (i + 1) * sliceWidth,
+        Yval: largeEnd.Yval,
+      }
+      if (i / numDivisions <= includeThreshold) {
+        filtered.push(elm)
+      }
+    })
+  }
 
   const series = []
 
