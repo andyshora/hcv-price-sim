@@ -26,6 +26,7 @@ const TitleWrap = styled.div`
   text-align: ${props => props.align};
   height: 120px;
   width: 100%;
+  user-select: none;
 `
 
 const ValueLabel = styled.text`
@@ -34,6 +35,7 @@ const ValueLabel = styled.text`
   font-size: 1.4rem;
   fill: white;
   width: ${props => props.width}px;
+  user-select: none;
 
   > tspan {
     
@@ -47,6 +49,7 @@ const TotalLabel = styled.text`
 
   > tspan {
     text-anchor: middle;
+    user-select: none;
   }
 `
 

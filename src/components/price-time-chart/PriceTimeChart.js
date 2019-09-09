@@ -17,6 +17,7 @@ const YAxisLabel = styled.p`
   left: -70px;
   color: white;
   font-size: 1.4rem;
+  user-select: none;
 `
 
 function createLineData(data) {

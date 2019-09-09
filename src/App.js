@@ -332,7 +332,10 @@ const useStyles = makeStyles(theme => ({
 export default function App() {
   const classes = useStyles()
   const [xVal, setXVal] = useState(0)
-  const [yVal, setYVal] = useState(20)
+
+  const [yVal1, setYVal1] = useState(35)
+  const [yVal2, setYVal2] = useState(50)
+
   const [subscriptionEnabled, setSubscriptionEnabled] = useState(false)
   const [savingPreset, setSavingPreset] = useState(false)
   const [breakdown1, setBreakdown1] = useState(null)
@@ -379,23 +382,38 @@ export default function App() {
     handleHotkeyTapped(params)
   })
 
-  useHotkeys('pageup,pagedown', e => {
-    const up = e.key === 'PageUp'
-
-    switch (view) {
-      case 'price/patient':
-        break
-      case 'price/time':
-        break
-      case 'seg/time': {
-        break
+  useHotkeys(
+    'up, down, left, right',
+    e => {
+      if (view === 'price/patient') {
+        console.log(e.key)
       }
-      default:
-        break
-    }
+      return false
+    },
+    [view]
+  )
 
-    return false
-  })
+  useHotkeys(
+    'pageup, pagedown',
+    e => {
+      const up = e.key === 'PageUp'
+
+      switch (view) {
+        case 'price/patient':
+          break
+        case 'price/time':
+          break
+        case 'seg/time': {
+          break
+        }
+        default:
+          break
+      }
+
+      return false
+    },
+    [view]
+  )
 
   function handleHotkeyTapped({ key }) {
     if (activeView.current === 'price/patient') {
@@ -445,7 +463,7 @@ export default function App() {
         newBreakdown1 = calculateBreakdown1({
           data: patientData,
           bounds,
-          y: yVal * 1000,
+          y: yVal1 * 1000,
           totalArea, // todo - wrong
         })
         break
@@ -455,7 +473,7 @@ export default function App() {
           data: subscriptionEnabled
             ? priceTimeData.dynamic
             : priceTimeData.static,
-          y: yVal * 0.01,
+          y: yVal1 * 0.01,
           totalArea: bounds.totalSegArea,
           cutOffX: null,
         })
@@ -489,7 +507,7 @@ export default function App() {
         data: patientData,
         bounds,
         x: xVal,
-        y: yVal * 1000,
+        y: yVal1 * 1000,
         totalArea,
         breakdown1: newBreakdown1,
       })
@@ -497,7 +515,7 @@ export default function App() {
       setCost2(newBreakdown2.totalCost)
       setTotalCostAsPerc(_.sumBy(newBreakdown2.bars, d => d.ratio))
     }
-  }, [xVal, yVal, view, totalArea, subscriptionEnabled])
+  }, [xVal, yVal1, view, totalArea, subscriptionEnabled])
 
   useEffect(() => {
     const persistedPatientPresets = getFromLocalStorage('presets')
@@ -539,7 +557,7 @@ export default function App() {
 
   const highlightedPriceAreaData =
     view === 'price/patient'
-      ? getHighlightedArea(patientData, { maxY: yVal })
+      ? getHighlightedArea(patientData, { maxY: yVal1 })
       : []
 
   const lastHighlightedVal =
@@ -566,11 +584,6 @@ export default function App() {
   }
 
   function handleViewChange(event, newView) {
-    if (newView === 'price/time') {
-      setYVal(42)
-    } else if (newView === 'price/patient') {
-      setYVal(20)
-    }
     if (newView) {
       activeView.current = newView
       setView(newView)
@@ -591,7 +604,7 @@ export default function App() {
       newPresets[i] = {
         label: null,
         x: xVal,
-        y: yVal,
+        y: view === 'price/patient' ? yVal1 : yVal2,
       }
       if (storageKey === 'presets') {
         setPatientPresets(newPresets)
@@ -603,7 +616,12 @@ export default function App() {
       saveToLocalStorage(storageKey, newPresets)
     } else {
       setXVal(x)
-      setYVal(y)
+
+      if (view === 'price/patient') {
+        setYVal1(y)
+      } else {
+        setYVal2(y)
+      }
     }
   }
 
@@ -663,12 +681,12 @@ export default function App() {
                 }
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
-                  setYVal(val)
+                  setYVal1(val)
                   if (savingPreset) {
                     setSavingPreset(false)
                   }
                 }}
-                defaultValue={yVal}
+                defaultValue={yVal1}
                 valueLabelSuffix=""
                 valueLabelDisplay="off"
               />
@@ -703,7 +721,7 @@ export default function App() {
                 view={view}
                 bounds={bounds}
                 patientData={patientData}
-                highlightValues={{ x: xVal, y: yVal }}
+                highlightValues={{ x: xVal, y: yVal1 }}
                 highlightedPriceAreaData={highlightedPriceAreaData}
                 width={width}
                 height={height}
@@ -745,7 +763,7 @@ export default function App() {
           data: subscriptionEnabled
             ? priceTimeData.dynamic
             : priceTimeData.static,
-          perc: yVal * 0.01,
+          perc: yVal2 * 0.01,
         })
         return (
           <DynamicChartViewWrap>
@@ -755,12 +773,12 @@ export default function App() {
                 step={1}
                 max={51}
                 valueLabelDisplay={'off'}
-                defaultValue={yVal}
+                defaultValue={yVal2}
                 bounds={bounds}
                 height={(height - (margin.bottom + margin.top)) * 0.335}
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
-                  setYVal(val)
+                  setYVal2(val)
                   if (savingPreset) {
                     setSavingPreset(false)
                   }
@@ -778,7 +796,7 @@ export default function App() {
                 height={height}
                 seriesData={seriesData}
                 colors={areaColors}
-                perc={yVal / 100}
+                perc={yVal2 / 100}
                 subscriptionEnabled={subscriptionEnabled}
               />
             </ChartWrap>

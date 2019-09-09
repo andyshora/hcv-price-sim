@@ -16,6 +16,7 @@ const YAxisLabel = styled.p`
   left: 40px;
   color: white;
   font-size: 1.4rem;
+  user-select: none;
 `
 
 function getFormattedData({ cutOffX, data }) {

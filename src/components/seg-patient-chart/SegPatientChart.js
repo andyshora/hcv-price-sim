@@ -23,6 +23,7 @@ const YAxisLabel = styled.p`
   left: 30px;
   color: white;
   font-size: 1.4rem;
+  user-select: none;
 `
 
 function getSegmentData({ data, segment }) {
