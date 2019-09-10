@@ -1,34 +1,31 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import styled from 'styled-components'
 import List from '@material-ui/core/List'
-import Paper from '@material-ui/core/Paper'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 
-import LooksOneIcon from '@material-ui/icons/LooksOne'
-import LooksTwoIcon from '@material-ui/icons/LooksTwo'
-import LooksThreeIcon from '@material-ui/icons/Looks3'
-import LooksFourIcon from '@material-ui/icons/Looks4'
-import LooksFiveIcon from '@material-ui/icons/Looks5'
-import LooksSixIcon from '@material-ui/icons/Looks6'
-
-const icons = [
-  LooksOneIcon,
-  LooksTwoIcon,
-  LooksThreeIcon,
-  LooksFourIcon,
-  LooksFiveIcon,
-  LooksSixIcon,
-]
+const NumberedIcon = styled.div`
+  display: inline-flex;
+  color: white;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-right: 3px;
+  box-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
+`
 
 const useStyles = makeStyles(theme => ({
   root: {
     maxWidth: 800,
     padding: 0,
-    backgroundColor: theme.palette.background.paper,
     display: 'flex',
     whiteSpace: 'nowrap',
+  },
+  listItem: {
+    padding: '0 8px 0 0',
   },
 }))
 
@@ -39,6 +36,7 @@ export default function InsetList({
   storageKey = 'presets',
   labelFormatter = l => l,
 }) {
+  console.log('items', items)
   const classes = useStyles()
 
   function handleItemSelected(i, item) {
@@ -56,10 +54,11 @@ export default function InsetList({
     : { border: '1px solid transparent', marginRight: 1 }
 
   return (
-    <Paper style={{ position: 'relative', zIndex: 11 }}>
+    <div style={{ position: 'relative', zIndex: 11 }}>
       <List component="nav" className={classes.root} aria-label="Presets">
         {items.map((item, i) => (
           <ListItem
+            className={classes.listItem}
             key={`item-${item.x}-${item.y}-${i}`}
             button={true}
             onClick={e => {
@@ -68,13 +67,13 @@ export default function InsetList({
             dense={true}
             style={itemStyles}
           >
-            {i < icons.length && (
-              <ListItemIcon>{React.createElement(icons[i])}</ListItemIcon>
-            )}
+            <NumberedIcon>
+              <span>{i + 1}</span>
+            </NumberedIcon>
             <ListItemText primary={item.label || labelFormatter(item)} />
           </ListItem>
         ))}
       </List>
-    </Paper>
+    </div>
   )
 }

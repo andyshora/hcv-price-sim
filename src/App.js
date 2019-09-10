@@ -111,6 +111,11 @@ const defaultPatientPresets = [
     x: 70,
     y: 32,
   },
+  {
+    label: '',
+    x: 100,
+    y: 32,
+  },
 ]
 
 const defaultTimePresets = [
@@ -200,6 +205,15 @@ const navSteps = [
       preset: 5,
     },
     PageDown: {
+      preset: 7,
+    },
+  },
+  {
+    name: 'price/patient-7',
+    PageUp: {
+      preset: 6,
+    },
+    PageDown: {
       view: 'price/time',
       subscription: true,
       preset: 1,
@@ -209,7 +223,7 @@ const navSteps = [
     name: 'price/time:subscription-on-1',
     PageUp: {
       view: 'price/patient',
-      preset: 6,
+      preset: 7,
     },
     PageDown: {
       preset: 2,
@@ -518,7 +532,7 @@ export default function App() {
   }
 
   // hotkeys used to load preset slider values
-  useHotkeys('1, 2, 3, 4, 5, 6', params => {
+  useHotkeys('1, 2, 3, 4, 5, 6, 7', params => {
     handleHotkeyTapped(params)
   })
 
