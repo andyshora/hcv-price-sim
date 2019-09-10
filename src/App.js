@@ -257,6 +257,34 @@ const navSteps = [
   },
 ]
 
+const areaColors = [
+  'rgb(116, 222, 147)',
+  'rgba(111, 111, 111)',
+  '#6c9bdc',
+  'rgb(51, 229, 255)',
+  '#f175ee',
+]
+
+const breakdownColorsPrice = [
+  '#6c9bdc',
+  'rgba(111, 111, 111)',
+  'rgb(116, 222, 147)',
+]
+const breakdownColorsPrice2 = [
+  '#6c9bdc',
+  '#30C1D7',
+  'rgba(111, 111, 111)',
+  '#f175ee',
+]
+const breakdownColorsTime = [
+  colorScales.jmi[3],
+  colorScales.jmi[2],
+  colorScales.jmi[1],
+  colorScales.jmi[0],
+]
+
+const { totalArea } = bounds
+
 function getTitle({ view, subscriptionEnabled }) {
   switch (view) {
     case 'price/patient':
@@ -448,16 +476,26 @@ function calculatePie1({ x = 0, xPerc = 0, data, bounds }) {
 }
 
 function getHighlightedArea(data, { maxY }) {
-  const res = data
-    .filter(d => d.Yval / 1000 >= maxY)
-    .map(d => ({
-      ...d,
+  let i = 0
+  const res = []
+  for (i = 0; i < data.length; i++) {
+    const d = data[i]
+    if (d.Yval / 1000 < maxY) {
+      break
+    }
+    res.push({
+      Yval: d.Yval,
+      area: d.area,
+      Xwidth: d.Xwidth,
       xLeft: d.Xcumsumleft,
       xVal: d.Xcumsumleft + d.Xwidth / 2,
       x: (d.Xcumsumleft + d.Xwidth) / 1000,
       xRight: d.Xcumsum,
+      Xcumsumleft: d.Xcumsumleft,
+      Xcumsum: d.Xcumsum,
       y: d.Yval / 1000,
-    }))
+    })
+  }
 
   return res
 }
@@ -642,34 +680,6 @@ export default function App() {
     setSavingPreset(true)
   }
 
-  const areaColors = [
-    'rgb(116, 222, 147)',
-    'rgba(111, 111, 111)',
-    '#6c9bdc',
-    'rgb(51, 229, 255)',
-    '#f175ee',
-  ]
-
-  const breakdownColorsPrice = [
-    '#6c9bdc',
-    'rgba(111, 111, 111)',
-    'rgb(116, 222, 147)',
-  ]
-  const breakdownColorsPrice2 = [
-    '#6c9bdc',
-    '#30C1D7',
-    'rgba(111, 111, 111)',
-    '#f175ee',
-  ]
-  const breakdownColorsTime = [
-    colorScales.jmi[3],
-    colorScales.jmi[2],
-    colorScales.jmi[1],
-    colorScales.jmi[0],
-  ]
-
-  const { totalArea } = bounds
-
   useEffect(() => {
     let newBreakdown1 = null
 
@@ -679,8 +689,9 @@ export default function App() {
           data: patientData,
           bounds,
           y: yVal1 * 1000,
-          totalArea, // todo - wrong
+          totalArea,
         })
+
         break
       case 'price/time':
         newBreakdown1 = calculateTimeBreakdown({

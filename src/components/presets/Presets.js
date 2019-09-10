@@ -36,7 +36,6 @@ export default function InsetList({
   storageKey = 'presets',
   labelFormatter = l => l,
 }) {
-  console.log('items', items)
   const classes = useStyles()
 
   function handleItemSelected(i, item) {
