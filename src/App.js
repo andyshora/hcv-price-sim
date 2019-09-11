@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import ContainerDimensions from 'react-container-dimensions'
 import _ from 'lodash'
 
@@ -475,11 +475,11 @@ function calculatePie1({ x = 0, xPerc = 0, data, bounds }) {
   return slicesArr
 }
 
-function getHighlightedArea(data, { maxY }) {
+function getHighlightedArea(maxY) {
   let i = 0
   const res = []
-  for (i = 0; i < data.length; i++) {
-    const d = data[i]
+  for (i = 0; i < patientData.length; i++) {
+    const d = patientData[i]
     if (d.Yval / 1000 < maxY) {
       break
     }
@@ -499,6 +499,8 @@ function getHighlightedArea(data, { maxY }) {
 
   return res
 }
+
+// // const getHighlightedArea = useMemo(() => _getHighlightedArea(data, maxY), [maxY])
 
 function saveToLocalStorage(key, value) {
   if (typeof window !== 'undefined' && 'localStorage' in window) {
@@ -531,15 +533,14 @@ export default function App() {
   const [savingPreset, setSavingPreset] = useState(false)
   const [breakdown1, setBreakdown1] = useState(null)
   const [breakdown2, setBreakdown2] = useState(null)
-
-  const [cost1, setCost1] = useState(null)
-  const [cost2, setCost2] = useState(null)
   const [totalCostAsPerc, setTotalCostAsPerc] = useState(null)
   function setPatientPresets(p) {
     patientPresets.current = p
+    console.log('todo - call momoizing functions')
   }
   function setTimePresets(p) {
     timePresets.current = p
+    console.log('todo - call momoizing functions')
   }
 
   const patientPresets = useRef(defaultPatientPresets)
@@ -569,6 +570,20 @@ export default function App() {
     }
   }
 
+  function handleArrowUpTapped() {
+    console.log('handleArrowDownTapped')
+    const { min, max, keyStep } = sliderBounds.pricePatient.y
+    const newVal = yVal1 + keyStep > max ? max : yVal1 + keyStep
+    setYVal1(newVal)
+  }
+
+  function handleArrowDownTapped() {
+    console.log('handleArrowDownTapped')
+    const { min, max, keyStep } = sliderBounds.pricePatient.y
+    const newVal = yVal1 - keyStep < min ? min : yVal1 - keyStep
+    setYVal1(newVal)
+  }
+
   // hotkeys used to load preset slider values
   useHotkeys('1, 2, 3, 4, 5, 6, 7', params => {
     handleHotkeyTapped(params)
@@ -582,15 +597,11 @@ export default function App() {
       if (view === 'price/patient') {
         switch (key) {
           case 'ArrowUp': {
-            const { min, max, keyStep } = sliderBounds.pricePatient.y
-            const newVal = yVal1 + keyStep > max ? max : yVal1 + keyStep
-            setYVal1(newVal)
+            handleArrowUpTapped()
             break
           }
           case 'ArrowDown': {
-            const { min, max, keyStep } = sliderBounds.pricePatient.y
-            const newVal = yVal1 - keyStep < min ? min : yVal1 - keyStep
-            setYVal1(newVal)
+            handleArrowDownTapped()
             break
           }
           case 'ArrowLeft': {
@@ -640,14 +651,27 @@ export default function App() {
   }
 
   useHotkeys(
-    'pageup, pagedown',
+    'pageup, pagedown, enter, esc',
     ({ key }) => {
-      const dir = key === 'PageUp' ? -1 : 1
-
       if (!(activeNavStepIndex in navSteps)) {
         return false
       }
-      const activeStepData = navSteps[activeNavStepIndex][key]
+      let dir = 1
+      let baseKey = 'PageUp'
+      if (/Escape|PageUp/.test(key)) {
+        dir = -1
+        // allow escape through if at beginning
+        if (!activeNavStepIndex) {
+          return true
+        }
+      } else if (/Enter|PageDown/.test(key)) {
+        baseKey = 'PageDown'
+        dir = 1
+      } else {
+        return false
+      }
+
+      const activeStepData = navSteps[activeNavStepIndex][baseKey]
       const newView = 'view' in activeStepData ? activeStepData.view : null
       const preset = 'preset' in activeStepData ? activeStepData.preset : null
       const subscription =
@@ -719,7 +743,6 @@ export default function App() {
         break
     }
     setBreakdown1(newBreakdown1)
-    setCost1(newBreakdown1.totalCost)
 
     if (view === 'price/patient' && xVal) {
       const x0 =
@@ -738,7 +761,6 @@ export default function App() {
         breakdown1: newBreakdown1,
       })
       setBreakdown2(newBreakdown2)
-      setCost2(newBreakdown2.totalCost)
       setTotalCostAsPerc(_.sumBy(newBreakdown2.bars, d => d.ratio))
     }
   }, [xVal, yVal1, yVal2, view, totalArea, subscriptionEnabled])
@@ -779,12 +801,36 @@ export default function App() {
     if (persistedTimePresets) {
       setTimePresets(persistedTimePresets)
     }
+
+    // todo - add scrollwheel event handlers
+    // if (typeof window !== 'undefined') {
+    //   window.addEventListener(
+    //     'wheel',
+    //     e => {
+    //       const down = e.deltaY > 0
+    //       console.log()
+    //       if (down) {
+    //         handleArrowDownTapped()
+    //       } else {
+    //         handleArrowUpTapped()
+    //       }
+
+    //       return false
+    //     },
+    //     false
+    //   )
+    // }
+
+    return () => {
+      // if (typeof window !== 'undefined') {
+      //   // remove event handlers
+      //   window.removeEventListener('wheel')
+      // }
+    }
   }, [])
 
   const highlightedPriceAreaData =
-    view === 'price/patient'
-      ? getHighlightedArea(patientData, { maxY: yVal1 })
-      : []
+    view === 'price/patient' ? getHighlightedArea(yVal1) : []
 
   const lastHighlightedVal =
     view === 'price/patient' &&
@@ -892,7 +938,6 @@ export default function App() {
     switch (view) {
       case 'price/patient': {
         const margin = { top: 10, left: 80, right: 30, bottom: 120 }
-        const marks = pricePatientMarks.marks
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
