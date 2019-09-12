@@ -121,10 +121,10 @@ export default function CostBreakdown({
   let yOffset = SVGHeight
 
   let extraHeightOffsetForExcessScaling =
-    200 * (Math.max(1.1, scaleToBounds) - 1.1)
+    300 * (Math.max(1.1, scaleToBounds) - 1.1)
   let adjustedHeight =
     SVGHeight -
-    (offsetForComplete + Math.min(150, extraHeightOffsetForExcessScaling))
+    (offsetForComplete + Math.min(250, extraHeightOffsetForExcessScaling))
 
   // calculate label and bar positions
   for (let i = 0; i < items.bars.length; i++) {
