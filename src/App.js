@@ -1334,7 +1334,7 @@ export default function App() {
             <Presets
               storageKey="presets"
               items={patientPresets.current}
-              labelFormatter={item => `+${item.x}, ${item.y}k`}
+              labelFormatter={item => `$${item.y}k,+${item.x}%`}
               onItemSelected={handlePresetSelected}
               replaceMode={savingPreset}
             />
