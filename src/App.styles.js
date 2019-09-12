@@ -143,6 +143,7 @@ export const SwitchWrap = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-left: 2rem;
 
   > label {
     &:first-child {
@@ -153,7 +154,7 @@ export const SwitchWrap = styled.div`
     user-select: none;
     cursor: pointer;
     margin: 0 0.5rem;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     transition: opacity 0.6s;
     opacity: ${props => (props.on ? 1 : 0.6)};
   }
