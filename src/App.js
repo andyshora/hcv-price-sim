@@ -54,7 +54,7 @@ import segTimeData from './data/segtime.json'
 import priceTimeData from './data/pricetime.json'
 
 import bounds from './data/bounds.json'
-import { colorScales } from './theme'
+import theme, { colorScales } from './theme'
 
 const sliderBounds = {
   priceTime: {
@@ -142,24 +142,15 @@ const navSteps = [
     name: 'black1',
     PageUp: {},
     PageDown: {
-      view: 'seg/time',
+      view: 'seg/patient',
       showOverlay: false,
     },
   },
-  {
-    name: 'seg/time',
-    PageUp: {
-      view: 'black1',
-      showOverlay: true,
-    },
-    PageDown: {
-      view: 'seg/patient',
-    },
-  },
+
   {
     name: 'seg/patient',
     PageUp: {
-      view: 'seg/time',
+      showOverlay: true,
     },
     PageDown: {
       view: 'price/patient',
@@ -224,6 +215,16 @@ const navSteps = [
     name: 'price/patient-7',
     PageUp: {
       preset: 6,
+    },
+    PageDown: {
+      view: 'seg/time',
+    },
+  },
+  {
+    name: 'seg/time',
+    PageUp: {
+      view: 'price/patient',
+      preset: 7,
     },
     PageDown: {
       view: 'price/time',
@@ -549,7 +550,13 @@ function getFromLocalStorage(key) {
 }
 
 const useStyles = makeStyles(theme => ({
-  toggleButtonGroup: {},
+  toggleButtonGroup: {
+    width: 300,
+    display: 'grid',
+    gridTemplateRows: '50% 50%',
+    gridTemplateColumns: '50% 50%',
+    marginLeft: 140,
+  },
 }))
 
 export default function App() {
@@ -578,7 +585,7 @@ export default function App() {
   const patientPresets = useRef(defaultPatientPresets)
   const timePresets = useRef(defaultTimePresets)
 
-  const [view, setView] = React.useState('seg/time')
+  const [view, setView] = React.useState('seg/patient')
   const activeView = useRef('seg/patient')
 
   function handlePatientPresetKeyTapped(index) {
@@ -1257,13 +1264,13 @@ export default function App() {
               // so pageup/pagedown navigation can continue from here
               switch (newView) {
                 case 'price/patient':
-                  setNewActiveNavStep(3)
+                  setNewActiveNavStep(2)
                   break
                 case 'price/time':
-                  setNewActiveNavStep(11)
+                  setNewActiveNavStep(10)
                   break
                 case 'seg/time':
-                  setNewActiveNavStep(1)
+                  setNewActiveNavStep(9)
                   break
                 case 'seg/patient':
                   setNewActiveNavStep(1)
@@ -1272,19 +1279,19 @@ export default function App() {
             }}
             className={classes.toggleButtonGroup}
           >
-            <ToggleButton value="seg/time">
-              <ViewColumnIcon />
-              seg/time
-            </ToggleButton>
-            <ToggleButton value="seg/patient">
+            <ToggleButton size="small" value="seg/patient">
               <DeviceHubIcon />
               seg/patient
             </ToggleButton>
-            <ToggleButton value="price/patient">
+            <ToggleButton size="small" value="price/patient">
               <TransformIcon />
               price/patient
             </ToggleButton>
-            <ToggleButton value="price/time">
+            <ToggleButton size="small" value="seg/time">
+              <ViewColumnIcon />
+              seg/time
+            </ToggleButton>
+            <ToggleButton size="small" value="price/time">
               <VerticalAlignCenterIcon />
               price/time
             </ToggleButton>
@@ -1310,7 +1317,16 @@ export default function App() {
               value="enabled"
               color="primary"
             />
-            <label htmlFor="subscription">Subscription Per Population</label>
+            <label
+              htmlFor="subscription"
+              style={{
+                color: subscriptionEnabled
+                  ? theme.palette.primary.light
+                  : theme.palette.text.primary,
+              }}
+            >
+              Subscription Per Population
+            </label>
           </SwitchWrap>
         </LayoutNav>
         {view === 'price/patient' && (

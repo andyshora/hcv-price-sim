@@ -79,7 +79,7 @@ export const LayoutMain = styled.div`
 `
 export const LayoutFooter = styled.footer`
   grid-area: bottom;
-  min-height: 50px;
+  min-height: 100px;
   ${debugBg}
 `
 
@@ -148,7 +148,7 @@ export const SwitchWrap = styled.div`
   > label {
     &:first-child {
       text-align: right;
-      opacity: ${props => (props.on ? 0.6 : 1)};
+      opacity: ${props => (props.on ? 0.4 : 1)};
     }
     white-space: nowrap;
     user-select: none;
@@ -156,6 +156,6 @@ export const SwitchWrap = styled.div`
     margin: 0 0.5rem;
     font-size: 1.6rem;
     transition: opacity 0.6s;
-    opacity: ${props => (props.on ? 1 : 0.6)};
+    opacity: ${props => (props.on ? 1 : 0.4)};
   }
 `
