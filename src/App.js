@@ -146,7 +146,6 @@ const navSteps = [
       showOverlay: false,
     },
   },
-
   {
     name: 'seg/patient',
     PageUp: {
@@ -235,7 +234,7 @@ const navSteps = [
   {
     name: 'price/time:subscription-on-1',
     PageUp: {
-      view: 'price/patient',
+      view: 'seg/time',
       preset: 7,
     },
     PageDown: {
