@@ -1290,11 +1290,7 @@ export default function App() {
             </ToggleButton>
           </ToggleButtonGroup>
           <SwitchWrap active={view === 'price/time'} on={subscriptionEnabled}>
-            <label htmlFor="subscription">
-              Product
-              <br />
-              per Patient
-            </label>
+            <label htmlFor="subscription">Product Per Patient</label>
             <Switch
               id="subscription"
               checked={subscriptionEnabled}
@@ -1314,11 +1310,7 @@ export default function App() {
               value="enabled"
               color="primary"
             />
-            <label htmlFor="subscription">
-              Subscription
-              <br />
-              per Population
-            </label>
+            <label htmlFor="subscription">Subscription Per Population</label>
           </SwitchWrap>
         </LayoutNav>
         {view === 'price/patient' && (
