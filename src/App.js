@@ -239,13 +239,24 @@ const navSteps = [
       preset: 7,
     },
     PageDown: {
+      subscription: false,
+    },
+  },
+  {
+    name: 'price/time:subscription-off',
+    PageUp: {
+      preset: 1,
+      subscription: true,
+    },
+    PageDown: {
       preset: 2,
+      subscription: true,
     },
   },
   {
     name: 'price/time:subscription-on-2',
     PageUp: {
-      preset: 1,
+      subscription: false,
     },
     PageDown: {
       preset: 3,
@@ -257,16 +268,6 @@ const navSteps = [
       preset: 2,
     },
     PageDown: {
-      subscription: false,
-    },
-  },
-  {
-    name: 'price/time:subscription-off',
-    PageUp: {
-      subscription: true,
-      preset: 3,
-    },
-    PageDown: {
       showOverlay: true,
     },
   },
@@ -275,7 +276,8 @@ const navSteps = [
     PageUp: {
       view: 'price/time',
       showOverlay: false,
-      subscription: false,
+      subscription: true,
+      preset: 3,
     },
     PageDown: {},
   },
