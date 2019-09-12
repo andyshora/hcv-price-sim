@@ -1198,7 +1198,7 @@ export default function App() {
                     title={
                       view === 'price/patient' && xVal
                         ? 'Without Uneconomical Patients'
-                        : 'Total Health Care Cost'
+                        : 'Total 10 Year Cost'
                     }
                   />
                   {breakdownColumns === 2 && (
