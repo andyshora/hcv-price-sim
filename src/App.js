@@ -536,11 +536,11 @@ export default function App() {
   const [totalCostAsPerc, setTotalCostAsPerc] = useState(null)
   function setPatientPresets(p) {
     patientPresets.current = p
-    console.log('todo - call momoizing functions')
+    // console.log('todo - call momoizing functions')
   }
   function setTimePresets(p) {
     timePresets.current = p
-    console.log('todo - call momoizing functions')
+    // console.log('todo - call momoizing functions')
   }
 
   const patientPresets = useRef(defaultPatientPresets)
@@ -570,18 +570,25 @@ export default function App() {
     }
   }
 
-  function handleArrowUpTapped() {
-    console.log('handleArrowDownTapped')
+  function movePricePatientYUp() {
     const { min, max, keyStep } = sliderBounds.pricePatient.y
-    const newVal = yVal1 + keyStep > max ? max : yVal1 + keyStep
-    setYVal1(newVal)
+    setYVal1(v => (v + keyStep > max ? max : v + keyStep))
   }
 
-  function handleArrowDownTapped() {
-    console.log('handleArrowDownTapped')
+  function movePricePatientYDown() {
     const { min, max, keyStep } = sliderBounds.pricePatient.y
     const newVal = yVal1 - keyStep < min ? min : yVal1 - keyStep
-    setYVal1(newVal)
+    setYVal1(v => (v - keyStep < min ? min : v - keyStep))
+  }
+
+  function movePriceTimeYUp() {
+    const { min, max, keyStep } = sliderBounds.priceTime.y
+    setYVal2(v => (v + keyStep > max ? max : v + keyStep))
+  }
+
+  function movePriceTimeYDown() {
+    const { min, max, keyStep } = sliderBounds.priceTime.y
+    setYVal2(v => (v - keyStep < min ? min : v - keyStep))
   }
 
   // hotkeys used to load preset slider values
@@ -597,23 +604,21 @@ export default function App() {
       if (view === 'price/patient') {
         switch (key) {
           case 'ArrowUp': {
-            handleArrowUpTapped()
+            movePricePatientYUp()
             break
           }
           case 'ArrowDown': {
-            handleArrowDownTapped()
+            movePricePatientYDown()
             break
           }
           case 'ArrowLeft': {
             const { min, max, keyStep } = sliderBounds.pricePatient.x
-            const newVal = xVal - keyStep < min ? min : xVal - keyStep
-            setXVal(newVal)
+            setXVal(v => (v - keyStep < min ? min : v - keyStep))
             break
           }
           case 'ArrowRight': {
             const { min, max, keyStep } = sliderBounds.pricePatient.x
-            const newVal = xVal + keyStep > max ? max : xVal + keyStep
-            setXVal(newVal)
+            setXVal(v => (v + keyStep > max ? max : v + keyStep))
             break
           }
 
@@ -623,15 +628,11 @@ export default function App() {
       } else if (view === 'price/time' && subscriptionEnabled) {
         switch (key) {
           case 'ArrowUp': {
-            const { min, max, keyStep } = sliderBounds.priceTime.y
-            const newVal = yVal2 + keyStep > max ? max : yVal2 + keyStep
-            setYVal2(newVal)
+            movePriceTimeYUp()
             break
           }
           case 'ArrowDown': {
-            const { min, max, keyStep } = sliderBounds.priceTime.y
-            const newVal = yVal2 - keyStep < min ? min : yVal2 - keyStep
-            setYVal2(newVal)
+            movePriceTimeYDown()
             break
           }
 
@@ -651,20 +652,21 @@ export default function App() {
   }
 
   useHotkeys(
-    'pageup, pagedown, enter, esc',
+    'pageup, pagedown, enter, esc, e, ctrl+p',
     ({ key }) => {
       if (!(activeNavStepIndex in navSteps)) {
         return false
       }
       let dir = 1
       let baseKey = 'PageUp'
-      if (/Escape|PageUp/.test(key)) {
+
+      if (/Escape|PageUp|p/.test(key)) {
         dir = -1
         // allow escape through if at beginning
         if (!activeNavStepIndex) {
           return true
         }
-      } else if (/Enter|PageDown/.test(key)) {
+      } else if (/Enter|PageDown|e|E/.test(key)) {
         baseKey = 'PageDown'
         dir = 1
       } else {
@@ -765,6 +767,30 @@ export default function App() {
     }
   }, [xVal, yVal1, yVal2, view, totalArea, subscriptionEnabled])
 
+  const scrollHandler = useCallback(
+    e => {
+      const down = e.deltaY > 0
+      if (activeView.current === 'price/patient') {
+        e.preventDefault()
+        if (down) {
+          movePricePatientYDown()
+        } else {
+          movePricePatientYUp()
+        }
+      } else if (activeView.current === 'price/time') {
+        e.preventDefault()
+        if (down) {
+          movePriceTimeYDown()
+        } else {
+          movePriceTimeYUp()
+        }
+      }
+
+      return false
+    },
+    [yVal1, yVal2, activeView.current, subscriptionEnabled]
+  )
+
   useEffect(() => {
     const persistedPatientPresets = getFromLocalStorage('presets')
     // new default presets might be longer
@@ -803,29 +829,18 @@ export default function App() {
     }
 
     // todo - add scrollwheel event handlers
-    // if (typeof window !== 'undefined') {
-    //   window.addEventListener(
-    //     'wheel',
-    //     e => {
-    //       const down = e.deltaY > 0
-    //       console.log()
-    //       if (down) {
-    //         handleArrowDownTapped()
-    //       } else {
-    //         handleArrowUpTapped()
-    //       }
-
-    //       return false
-    //     },
-    //     false
-    //   )
-    // }
+    if (typeof window !== 'undefined' && typeof scrollHandler === 'function') {
+      window.addEventListener('wheel', scrollHandler, { passive: false })
+    }
 
     return () => {
-      // if (typeof window !== 'undefined') {
-      //   // remove event handlers
-      //   window.removeEventListener('wheel')
-      // }
+      if (
+        typeof window !== 'undefined' &&
+        typeof scrollHandler === 'function'
+      ) {
+        // remove event handlers
+        window.removeEventListener('wheel', scrollHandler)
+      }
     }
   }, [])
 
