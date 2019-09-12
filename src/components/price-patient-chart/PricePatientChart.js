@@ -81,7 +81,7 @@ function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
   const last = _.last(filtered)
   const diff = Math.abs(absMaxX - last.Xcumsum)
   const mightBeProtruding = last.Xwidth > 2000 && diff > 1200
-  if (mightBeProtruding) {
+  if (mightBeProtruding && false) {
     const largeEnd = filtered.pop()
 
     const numDivisions = 5
