@@ -43,7 +43,7 @@ const ValueLabel = styled.text`
 `
 
 const TotalLabel = styled.text`
-  font-size: 1.8rem;
+  font-size: 2rem;
   fill: white;
   width: 120px;
 

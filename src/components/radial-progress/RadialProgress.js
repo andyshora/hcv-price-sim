@@ -19,7 +19,7 @@ const CenterLabel = styled.div`
   height: 100%;
   width: 100%;
   color: ${theme.palette.text.primary};
-  font-size: 2rem;
+  font-size: 2.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,6 +42,7 @@ const TitleLabel = styled.div`
     margin: 0;
     position: relative;
     top: -20px;
+    font-size: 1.8rem;
   }
 `
 

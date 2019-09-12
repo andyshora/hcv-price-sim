@@ -17,7 +17,7 @@ export const LayoutWrap = styled.div`
     'top   top'
     'main   side'
     'bottom bottom';
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 1fr 420px;
   grid-template-rows: 120px 0.9fr 60px;
 `
 
