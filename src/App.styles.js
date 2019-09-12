@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components'
-import { Paper } from '@material-ui/core'
 
 // grid-template-areas:
 //     't t'
@@ -19,6 +18,19 @@ export const LayoutWrap = styled.div`
     'bottom bottom';
   grid-template-columns: 1fr 420px;
   grid-template-rows: 120px 0.9fr 60px;
+`
+
+export const Overlay = styled.div`
+  position: fixed;
+  background: black;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  transition: opacity 1s linear;
+  opacity: ${props => (props.show ? 1 : 0)};
+  pointer-events: ${props => (props.show ? 'all' : 'none')};
 `
 
 const debugBg = css`

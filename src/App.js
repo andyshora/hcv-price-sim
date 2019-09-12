@@ -30,6 +30,7 @@ import StaticChartView from './views/static-chart-view'
 
 import {
   CostBreakdownWrap,
+  Overlay,
   LayoutWrap,
   LayoutHeader,
   LayoutSidebar,
@@ -138,8 +139,19 @@ const defaultTimePresets = [
 
 const navSteps = [
   {
-    name: 'seg/time',
+    name: 'black1',
     PageUp: {},
+    PageDown: {
+      view: 'seg/time',
+      showOverlay: false,
+    },
+  },
+  {
+    name: 'seg/time',
+    PageUp: {
+      view: 'black1',
+      showOverlay: true,
+    },
     PageDown: {
       view: 'seg/patient',
     },
@@ -253,9 +265,24 @@ const navSteps = [
       subscription: true,
       preset: 3,
     },
+    PageDown: {
+      showOverlay: true,
+    },
+  },
+  {
+    name: 'black2',
+    PageUp: {
+      view: 'price/time',
+      showOverlay: false,
+      subscription: false,
+    },
     PageDown: {},
   },
 ]
+
+// navSteps.map(step => {
+//   console.log(step.name)
+// })
 
 const areaColors = [
   'rgb(116, 222, 147)',
@@ -528,7 +555,7 @@ const useStyles = makeStyles(theme => ({
 export default function App() {
   const classes = useStyles()
   const [xVal, setXVal] = useState(0)
-
+  const [showOverlay, setShowOverlay] = useState(true)
   const [yVal1, setYVal1] = useState(35)
   const [yVal2, setYVal2] = useState(50)
 
@@ -681,6 +708,9 @@ export default function App() {
       const activeStepData = navSteps[activeNavStepIndex][baseKey]
       const newView = 'view' in activeStepData ? activeStepData.view : null
       const preset = 'preset' in activeStepData ? activeStepData.preset : null
+      const overlay =
+        'showOverlay' in activeStepData ? activeStepData.showOverlay : null
+
       const subscription =
         'subscription' in activeStepData ? activeStepData.subscription : null
       if (newView) {
@@ -688,6 +718,9 @@ export default function App() {
       }
       if (typeof subscription === 'boolean') {
         setSubscriptionEnabled(subscription)
+      }
+      if (typeof overlay === 'boolean') {
+        setShowOverlay(overlay)
       }
       if (!isNaN(preset)) {
         handleHotkeyTapped({ key: preset })
@@ -873,6 +906,13 @@ export default function App() {
       data: patientData,
       bounds,
     })
+  }
+
+  function handleOverlayTapped() {
+    if (!activeNavStepIndex) {
+      setShowOverlay(false)
+      setActiveNavStepIndex(1)
+    }
   }
 
   function handleViewChange(event, newView) {
@@ -1212,13 +1252,13 @@ export default function App() {
               // so pageup/pagedown navigation can continue from here
               switch (newView) {
                 case 'price/patient':
-                  setNewActiveNavStep(2)
+                  setNewActiveNavStep(3)
                   break
                 case 'price/time':
                   setNewActiveNavStep(11)
                   break
                 case 'seg/time':
-                  setNewActiveNavStep(0)
+                  setNewActiveNavStep(1)
                   break
                 case 'seg/patient':
                   setNewActiveNavStep(1)
@@ -1335,6 +1375,7 @@ export default function App() {
           </PresetsWrap>
         )}
       </LayoutFooter>
+      <Overlay show={showOverlay} onClick={handleOverlayTapped} />
     </LayoutWrap>
   )
 }
