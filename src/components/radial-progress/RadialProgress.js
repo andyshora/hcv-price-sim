@@ -39,6 +39,9 @@ const TitleLabel = styled.div`
   text-align: center;
 
   > h5 {
+    margin: 0;
+    position: relative;
+    top: -20px;
   }
 `
 

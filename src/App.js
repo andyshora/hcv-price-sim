@@ -59,7 +59,7 @@ const sliderBounds = {
   priceTime: {
     y: {
       min: 0,
-      max: 51,
+      max: 66,
       step: 1,
       keyStep: 0.4,
     },
@@ -406,13 +406,15 @@ function createSeriesData({ cutOffX, data, perc, dynamic = false }) {
     }
   } else {
     const maxLen = cutOffX || data.total.length
+    // only year 1 drug price is dynamic
+    const year1DrugVal = perc * (data.total[0] / 1e6)
     for (let i = 0; i < maxLen; i++) {
       const total = data.total[i] / 1e6
       const hospital = data.hospital[i] / 1e6
       const hospitalElm = { x: i + 1, y: hospital }
       const drugElm = {
         x: i + 1,
-        y: perc * total,
+        y: year1DrugVal,
       }
       const savingsElm = { x: i + 1, y: total - (hospitalElm.y + drugElm.y) }
       res.hospital.push(hospitalElm)
@@ -431,10 +433,13 @@ function calculateTimeBreakdown({ dynamic = true, cutOffX, data, y }) {
   }
 
   const maxLen = cutOffX || data.total.length
+
+  // only year 1 drug price is dynamic
+  const year1DrugVal = dynamic ? y * data.total[0] : 0
   for (let i = 0; i < maxLen; i++) {
     const total = data.total[i]
     const hospital = data.hospital[i]
-    const drug = dynamic ? y * total : data.drug[i]
+    const drug = dynamic ? year1DrugVal : data.drug[i]
     const saving = total - (hospital + drug)
     areas.hospital += hospital
     areas.drug += drug
@@ -1069,7 +1074,7 @@ export default function App() {
                 valueLabelDisplay={'off'}
                 defaultValue={yVal2}
                 bounds={bounds}
-                height={(height - (margin.bottom + margin.top)) * 0.335}
+                height={(height - (margin.bottom + margin.top)) * 0.325}
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
                 onChange={(e, val) => {
                   if (e && e.target) {
