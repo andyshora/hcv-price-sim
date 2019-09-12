@@ -604,13 +604,18 @@ export default function App() {
 
   function movePricePatientYUp() {
     const { min, max, keyStep } = sliderBounds.pricePatient.y
-    setYVal1(v => (v + keyStep > max ? max : v + keyStep))
+    const stepMultiplier = 2
+    setYVal1(v =>
+      v + keyStep * stepMultiplier > max ? max : v + keyStep * stepMultiplier
+    )
   }
 
   function movePricePatientYDown() {
     const { min, max, keyStep } = sliderBounds.pricePatient.y
-    const newVal = yVal1 - keyStep < min ? min : yVal1 - keyStep
-    setYVal1(v => (v - keyStep < min ? min : v - keyStep))
+    const stepMultiplier = 2
+    setYVal1(v =>
+      v - keyStep * stepMultiplier < min ? min : v - keyStep * stepMultiplier
+    )
   }
 
   function movePriceTimeYUp() {
