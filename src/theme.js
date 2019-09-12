@@ -5,32 +5,32 @@ import './fonts/stylesheet.css'
 
 const typography = {
   h1: {
-    fontFamily: 'halis_rextralight',
+    fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
-    fontSize: '4rem',
+    fontSize: '2.4rem',
   },
   h2: {
-    fontFamily: 'halis_rextralight',
+    fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
-    fontSize: '3rem',
+    fontSize: '2.4rem',
   },
   h3: {
-    fontFamily: 'halis_rextralight',
+    fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
     fontSize: '2.4rem',
   },
   h4: {
-    fontFamily: 'halis_rextralight',
+    fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
     fontSize: '1.5rem',
     textTransform: 'uppercase',
   },
   h5: {
-    fontFamily: 'halis_rextralight',
+    fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
     fontSize: '1.5rem',
   },
-  fontFamily: 'halis_rextralight',
+  fontFamily: 'halis_r_regularregular',
   fontWeightRegular: 'normal',
 }
 

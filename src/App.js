@@ -1117,7 +1117,7 @@ export default function App() {
   return (
     <LayoutWrap>
       <LayoutHeader>
-        <Typography variant="h3" gutterBottom>
+        <Typography variant="h1" gutterBottom>
           {getTitle({ view, subscriptionEnabled })}
         </Typography>
       </LayoutHeader>
