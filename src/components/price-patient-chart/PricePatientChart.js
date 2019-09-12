@@ -108,19 +108,19 @@ function getAdditionalCureAreaData(data, { minX, maxX, bounds }) {
 
   for (let i = 0; i < filtered.length; i++) {
     const d = filtered[i]
-    const y = d.Yval / 1000
-    const x = d.Xcumsumleft / 1000
+    const y = to3dp(d.Yval * 1e-3)
+    const x = to3dp(d.Xcumsumleft * 1e-3)
 
     // push start and end points so we have a flat bar
     series.push({ x, y })
-    series.push({ x: d.Xcumsum / 1000, y })
+    series.push({ x: to3dp(d.Xcumsum * 1e-3), y })
   }
-  // .map(d => ({
-  //   x: (d.Xcumsumleft + d.Xwidth / 2) / 1000,
-  //   y: d.Yval / 1000,
-  // }))
 
   return series
+}
+
+function to3dp(num) {
+  return +(Math.round(num + 'e+3') + 'e-3')
 }
 
 function yTickFormat(val) {
