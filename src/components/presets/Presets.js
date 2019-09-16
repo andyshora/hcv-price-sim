@@ -19,7 +19,6 @@ const NumberedIcon = styled.div`
 
 const useStyles = makeStyles(theme => ({
   root: {
-    maxWidth: 800,
     padding: 0,
     display: 'flex',
     whiteSpace: 'nowrap',
