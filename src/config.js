@@ -240,5 +240,6 @@ export const breakdownColorsPrice = [
 export const breakdownColorsPrice2 = [
   'rgba(106, 154, 220, 1)',
   'rgba(111, 111, 111)',
+  'url(#stripes-green)',
   'rgba(106, 154, 220, 1)',
 ]

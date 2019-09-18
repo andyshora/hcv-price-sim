@@ -175,6 +175,16 @@ function calculateBreakdown2({
   const additionalCostsArea =
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y - newlyCuredArea
 
+  const savingsArea = Math.max(
+    0,
+    totalArea -
+      (existingUntreatedArea -
+        newlyCuredArea +
+        breakdown1.bars[0].area +
+        newlyCuredArea +
+        additionalCostsArea)
+  )
+
   let bars = [
     { ratio: 0, area: breakdown1.bars[0].area + newlyCuredArea, key: 'Drug' },
     {
@@ -182,6 +192,8 @@ function calculateBreakdown2({
       area: existingUntreatedArea - newlyCuredArea,
       key: 'Hospital',
     },
+    { ratio: 0, area: savingsArea, key: 'Saving' },
+
     { ratio: 0, area: additionalCostsArea, key: 'Inc Drug Cost' },
   ].map(b => ({ ...b, ratio: b.area / totalArea }))
 
@@ -1001,6 +1013,7 @@ export default function App() {
         )
       case 'price/patient': {
         const margin = { top: 10, left: 80, right: 30, bottom: 120 }
+        // console.log('pp width', width)
         return (
           <DynamicChartViewWrap>
             <VerticalControls>

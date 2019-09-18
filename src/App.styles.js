@@ -16,10 +16,18 @@ export const LayoutWrap = styled.div`
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-areas:
-    'top   top'
-    'main   side'
-    'bottom bottom';
+
+  grid-template-areas: ${props =>
+    props.hasSidebar
+      ? `'top   top'
+  'main   side'
+  'bottom bottom'
+  `
+      : `'top'
+  'main'
+  'bottom'
+  `};
+
   grid-template-columns: ${props => (props.hasSidebar ? '1fr 420px' : '100%')};
   grid-template-rows: ${props =>
     props.hasSidebar ? '120px 0.9fr 60px' : '0px 0.9fr 60px'};
