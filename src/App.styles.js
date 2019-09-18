@@ -20,9 +20,18 @@ export const LayoutWrap = styled.div`
     'top   top'
     'main   side'
     'bottom bottom';
-  grid-template-columns: ${props => (props.hasSidebar ? '1fr 420px' : '100%')};
-  grid-template-rows: ${props =>
-    props.hasSidebar ? '120px 0.9fr 60px' : '0px 0.9fr 60px'};
+  grid-template-columns: 1fr 420px;
+  grid-template-rows: 120px 0.9fr 60px;
+`
+
+export const WideLayoutWrap = styled(LayoutWrap)`
+  display: grid;
+  grid-template-areas:
+    'top'
+    'main'
+    'bottom';
+  grid-template-columns: 100%;
+  grid-template-rows: 0px 0.9fr 60px;
 `
 
 export const Overlay = styled.div`

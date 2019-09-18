@@ -33,6 +33,7 @@ import {
   CostBreakdownWrap,
   Overlay,
   LayoutWrap,
+  WideLayoutWrap,
   LayoutHeader,
   LayoutSidebar,
   LayoutDial,
@@ -1167,92 +1168,97 @@ export default function App() {
     }
   }
 
+  const LayoutComponent = view !== 'summary' ? LayoutWrap : WideLayoutWrap
+
   // const breakdownColumns =
   //   view === 'price/patient' && breakdown2 && xVal ? 2 : 1
   const breakdownColumns = 1
   return (
-    <LayoutWrap hasSidebar={view !== 'summary'} hasHeader={view !== 'summary'}>
-      <LayoutHeader>
-        {view !== 'summary' && (
-          <Typography variant="h1" gutterBottom>
-            {getTitle({ view, subscriptionEnabled })}
-          </Typography>
-        )}
-      </LayoutHeader>
-      <LayoutSidebar>
-        <ContainerDimensions>
-          {({ width, height }) => {
-            const breakdownWidth = width / breakdownColumns
-            const showValues = view === 'price/patient' || view === 'price/time'
-            return (
-              breakdown1 && (
-                <CostBreakdownWrap columns={breakdownColumns}>
-                  {view !== 'price/patient' && view !== 'summary' && (
-                    <CostBreakdown
-                      showValues={showValues}
-                      showLabels={true}
-                      offsetForComplete={40}
-                      height={height}
-                      width={breakdownWidth}
-                      scaleToBounds={1}
-                      items={breakdown1}
-                      colors={
-                        view === 'price/time'
-                          ? breakdownColorsPrice
-                          : breakdownColorsTime
-                      }
-                      align="center"
-                      title="Total 10 Year Cost"
-                    />
-                  )}
-                  {view === 'price/patient' && breakdown2 && (
-                    <CostBreakdown
-                      showValues={showValues}
-                      showLabels={true}
-                      offsetForComplete={40}
-                      height={height}
-                      width={breakdownWidth}
-                      scaleToBounds={totalCostAsPerc}
-                      items={breakdown2}
-                      colors={breakdownColorsPrice2}
-                      align="center"
-                      title={'Total 10 Year Cost'}
-                    />
-                  )}
-                </CostBreakdownWrap>
-              )
-            )
-          }}
-        </ContainerDimensions>
-        {view !== 'summary' && (
-          <LayoutDial>
-            {pie1 && view === 'price/patient' && (
-              <RadialProgress
-                values={pie1}
-                max={100}
-                width={250}
-                height={250}
-                suffix={'%'}
-                title="Patients Cured"
-                colors={[areaColors[2], areaColors[3]]}
-                label={_.sum(pie1).toFixed(0)}
-              />
+    <LayoutComponent>
+      {view !== 'summary' && (
+        <>
+          <LayoutHeader>
+            <Typography variant="h1" gutterBottom>
+              {getTitle({ view, subscriptionEnabled })}
+            </Typography>
+          </LayoutHeader>
+          <LayoutSidebar>
+            <ContainerDimensions>
+              {({ width, height }) => {
+                const breakdownWidth = width / breakdownColumns
+                const showValues =
+                  view === 'price/patient' || view === 'price/time'
+                return (
+                  breakdown1 && (
+                    <CostBreakdownWrap columns={breakdownColumns}>
+                      {view !== 'price/patient' && view !== 'summary' && (
+                        <CostBreakdown
+                          showValues={showValues}
+                          showLabels={true}
+                          offsetForComplete={40}
+                          height={height}
+                          width={breakdownWidth}
+                          scaleToBounds={1}
+                          items={breakdown1}
+                          colors={
+                            view === 'price/time'
+                              ? breakdownColorsPrice
+                              : breakdownColorsTime
+                          }
+                          align="center"
+                          title="Total 10 Year Cost"
+                        />
+                      )}
+                      {view === 'price/patient' && breakdown2 && (
+                        <CostBreakdown
+                          showValues={showValues}
+                          showLabels={true}
+                          offsetForComplete={40}
+                          height={height}
+                          width={breakdownWidth}
+                          scaleToBounds={totalCostAsPerc}
+                          items={breakdown2}
+                          colors={breakdownColorsPrice2}
+                          align="center"
+                          title={'Total 10 Year Cost'}
+                        />
+                      )}
+                    </CostBreakdownWrap>
+                  )
+                )
+              }}
+            </ContainerDimensions>
+            {view !== 'summary' && (
+              <LayoutDial>
+                {pie1 && view === 'price/patient' && (
+                  <RadialProgress
+                    values={pie1}
+                    max={100}
+                    width={250}
+                    height={250}
+                    suffix={'%'}
+                    title="Patients Cured"
+                    colors={[areaColors[2], areaColors[3]]}
+                    label={_.sum(pie1).toFixed(0)}
+                  />
+                )}
+                {view === 'price/time' && (
+                  <RadialProgress
+                    values={subscriptionEnabled ? [94] : [50]}
+                    max={100}
+                    width={250}
+                    height={250}
+                    suffix={'%'}
+                    title="Patients Cured"
+                    colors={[areaColors[2]]}
+                    label={subscriptionEnabled ? 94 : 50}
+                  />
+                )}
+              </LayoutDial>
             )}
-            {view === 'price/time' && (
-              <RadialProgress
-                values={subscriptionEnabled ? [94] : [50]}
-                max={100}
-                width={250}
-                height={250}
-                suffix={'%'}
-                title="Patients Cured"
-                colors={[areaColors[2]]}
-                label={subscriptionEnabled ? 94 : 50}
-              />
-            )}
-          </LayoutDial>
-        )}
-      </LayoutSidebar>
+          </LayoutSidebar>
+        </>
+      )}
       <LayoutMain>
         <ContainerDimensions>
           {dims => getMainView({ dims })}
@@ -1422,6 +1428,6 @@ export default function App() {
         )}
       </LayoutFooter>
       <Overlay show={showOverlay} onClick={handleOverlayTapped} />
-    </LayoutWrap>
+    </LayoutComponent>
   )
 }
