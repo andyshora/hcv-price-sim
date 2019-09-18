@@ -14,11 +14,12 @@ import TransformIcon from '@material-ui/icons/Transform'
 import DeviceHubIcon from '@material-ui/icons/DeviceHub'
 
 import VerticalAlignCenterIcon from '@material-ui/icons/VerticalAlignCenter'
+import BarChartIcon from '@material-ui/icons/BarChart'
 import SaveIcon from '@material-ui/icons/Save'
 import { Button, Paper } from '@material-ui/core'
 
-import CostBreakdown from './components/cost-breakdown'
 import { VerticalSlider, HorizontalSlider } from './components/sliders'
+import CostBreakdown from './components/cost-breakdown'
 import RadialProgress from './components/radial-progress'
 import Presets from './components/presets'
 import SegTimeChart from './components/seg-time-chart'
@@ -44,6 +45,9 @@ import {
   HorizontalControls,
   ChartWrap,
   SwitchWrap,
+  SummaryGrid,
+  SummaryWrap,
+  SpanSVG,
 } from './App.styles'
 
 // data
@@ -65,6 +69,12 @@ import {
   breakdownColorsPrice2,
 } from './config'
 
+// console.log(
+//   navSteps.map(({ name }) => {
+//     console.log(name)
+//   })
+// )
+
 const breakdownColorsTime = [
   colorScales.jmi[3],
   colorScales.jmi[2],
@@ -73,6 +83,17 @@ const breakdownColorsTime = [
 ]
 
 const { totalArea } = bounds
+
+const SpanBracketSVG = ({ width, height }) => {
+  const pathData = ['M 0 0', 'h 100'].join(' ')
+  return (
+    <SpanSVG viewBox="0 0 100 40" width={width} height={height}>
+      <g>
+        <path stroke="white" fill="none" d={pathData} />
+      </g>
+    </SpanSVG>
+  )
+}
 
 function getTitle({ view, subscriptionEnabled }) {
   switch (view) {
@@ -155,14 +176,13 @@ function calculateBreakdown2({
     (additionalRegionBounds.x1 - additionalRegionBounds.x0) * y - newlyCuredArea
 
   let bars = [
-    { ratio: 0, area: breakdown1.bars[0].area, key: 'Drug 1' },
-    { ratio: 0, area: newlyCuredArea, key: 'Drug 2' },
+    { ratio: 0, area: breakdown1.bars[0].area + newlyCuredArea, key: 'Drug' },
     {
       ratio: 0,
       area: existingUntreatedArea - newlyCuredArea,
       key: 'Hospital',
     },
-    { ratio: 0, area: additionalCostsArea, key: 'Drug 3' },
+    { ratio: 0, area: additionalCostsArea, key: 'Inc Drug Cost' },
   ].map(b => ({ ...b, ratio: b.area / totalArea }))
 
   const res = {
@@ -312,10 +332,12 @@ function getFromLocalStorage(key) {
 
 const useStyles = makeStyles(theme => ({
   toggleButtonGroup: {
-    width: 300,
+    width: 460,
     display: 'grid',
-    gridTemplateRows: '50% 50%',
-    gridTemplateColumns: '50% 50%',
+    gridTemplateAreas: `
+    "a b c"
+    "d e c"`,
+    gridTemplateColumns: '0.5fr 0.5fr 120px',
     marginLeft: 140,
   },
 }))
@@ -557,7 +579,7 @@ export default function App() {
     }
     setBreakdown1(newBreakdown1)
 
-    if (view === 'price/patient' && xVal) {
+    if (view === 'price/patient') {
       const x0 =
         highlightedPriceAreaData && highlightedPriceAreaData.length
           ? _.last(highlightedPriceAreaData).xVal
@@ -769,6 +791,214 @@ export default function App() {
   function getMainView({ dims }) {
     const { width, height } = dims
     switch (view) {
+      case 'summary':
+        const radialWidth = 200
+        return (
+          <SummaryWrap>
+            <SummaryGrid height={height}>
+              <div style={{ gridArea: 'h1', position: 'relative' }}>
+                {false && (
+                  <ContainerDimensions>
+                    {({ width, height }) => {
+                      return <SpanBracketSVG width={width} height={height} />
+                    }}
+                  </ContainerDimensions>
+                )}
+                <Typography variant="h3">Price per patient upfront</Typography>
+              </div>
+              <div style={{ gridArea: 'h2' }}>
+                <Typography variant="h3">
+                  Price per population over time
+                </Typography>
+              </div>
+              <div style={{ gridArea: 'p1' }}>
+                <div style={{ width: 200, margin: '0 auto' }}>
+                  <RadialProgress
+                    values={[14]}
+                    max={100}
+                    width={radialWidth}
+                    height={radialWidth}
+                    suffix={'%'}
+                    title=""
+                    colors={[areaColors[2], areaColors[3]]}
+                    label={14}
+                  />
+                </div>
+              </div>
+              <div style={{ gridArea: 'p2' }}>
+                <div style={{ width: 200, margin: '0 auto' }}>
+                  <RadialProgress
+                    values={[100]}
+                    max={100}
+                    width={radialWidth}
+                    height={radialWidth}
+                    suffix={'%'}
+                    title=""
+                    colors={[areaColors[2], areaColors[3]]}
+                    label={100}
+                  />
+                </div>
+              </div>
+              <div style={{ gridArea: 'p3' }}>
+                <div style={{ width: 200, margin: '0 auto' }}>
+                  <RadialProgress
+                    values={[42]}
+                    max={100}
+                    width={radialWidth}
+                    height={radialWidth}
+                    suffix={'%'}
+                    title=""
+                    colors={[areaColors[2], areaColors[3]]}
+                    label={42}
+                  />
+                </div>
+              </div>
+              <div style={{ gridArea: 'p4', borderLeft: '2px solid white' }}>
+                <div style={{ width: 200, margin: '0 auto' }}>
+                  <RadialProgress
+                    values={[94]}
+                    max={100}
+                    width={radialWidth}
+                    height={radialWidth}
+                    suffix={'%'}
+                    title=""
+                    colors={[areaColors[2], areaColors[3]]}
+                    label={94}
+                  />
+                </div>
+              </div>
+
+              <div style={{ gridArea: 'c1' }}>
+                <CostBreakdown
+                  showLabels={true}
+                  showValues={true}
+                  align="center"
+                  offsetForComplete={40}
+                  height={height * 0.6}
+                  width={width * 0.18}
+                  scaleToBounds={1}
+                  items={{
+                    total: 2 * 1e9,
+                    bars: [
+                      {
+                        key: 'Drug',
+                        area: 1e9 * 0.5,
+                        ratio: 0.25,
+                      },
+                      {
+                        key: 'Hospital',
+                        area: 1e9 * 0.7,
+                        ratio: 0.35,
+                      },
+                      {
+                        key: 'Saving',
+                        area: 1e9 * 0.8,
+                        ratio: 0.4,
+                      },
+                    ],
+                  }}
+                  colors={breakdownColorsPrice}
+                  align="center"
+                  title="Static Economics"
+                />
+              </div>
+              <div style={{ gridArea: 'c2' }}>
+                <CostBreakdown
+                  showValues={true}
+                  align="center"
+                  offsetForComplete={40}
+                  height={height * 0.6}
+                  width={width * 0.18}
+                  scaleToBounds={1}
+                  items={{
+                    total: 2 * 1e9,
+                    bars: [
+                      {
+                        key: 'Drug',
+                        area: 1e9 * 0.13,
+                        ratio: 0.05,
+                      },
+                      {
+                        key: 'Saving',
+                        area: 1e9 * 1.9,
+                        ratio: 0.95,
+                      },
+                    ],
+                  }}
+                  colors={[breakdownColorsPrice[0], breakdownColorsPrice[2]]}
+                  align="center"
+                  title="Low Price"
+                />
+              </div>
+              <div style={{ gridArea: 'c3' }}>
+                <CostBreakdown
+                  showValues={true}
+                  align="center"
+                  offsetForComplete={40}
+                  height={height * 0.6}
+                  width={width * 0.18}
+                  scaleToBounds={1}
+                  items={{
+                    total: 2 * 1e9,
+                    bars: [
+                      {
+                        key: 'Drug',
+                        area: 1e9 * 1.6,
+                        ratio: 0.8,
+                      },
+                      {
+                        key: 'Hospital',
+                        area: 1e9 * 0.3,
+                        ratio: 0.15,
+                      },
+                      {
+                        key: 'Saving',
+                        area: 1e9 * 0.1,
+                        ratio: 0.05,
+                      },
+                    ],
+                  }}
+                  colors={breakdownColorsPrice}
+                  align="center"
+                  title="Spend to budget"
+                />
+              </div>
+              <div style={{ gridArea: 'c4', borderLeft: '2px solid white' }}>
+                <CostBreakdown
+                  showValues={true}
+                  align="center"
+                  offsetForComplete={40}
+                  height={height * 0.6}
+                  width={width * 0.18}
+                  scaleToBounds={1}
+                  items={{
+                    total: 2 * 1e9,
+                    bars: [
+                      {
+                        key: 'Drug',
+                        area: 1e9 * 0.8,
+                        ratio: 0.4,
+                      },
+                      {
+                        key: 'Hospital',
+                        area: 1e9 * 0.3,
+                        ratio: 0.15,
+                      },
+                      {
+                        key: 'Saving',
+                        area: 1e9 * 0.9,
+                        ratio: 0.45,
+                      },
+                    ],
+                  }}
+                  colors={breakdownColorsPrice}
+                  align="center"
+                  title="Netflix for drugs"
+                />
+              </div>
+            </SummaryGrid>
+          </SummaryWrap>
+        )
       case 'price/patient': {
         const margin = { top: 10, left: 80, right: 30, bottom: 120 }
         return (
@@ -924,56 +1154,56 @@ export default function App() {
     }
   }
 
-  const breakdownColumns =
-    view === 'price/patient' && breakdown2 && xVal ? 2 : 1
-
+  // const breakdownColumns =
+  //   view === 'price/patient' && breakdown2 && xVal ? 2 : 1
+  const breakdownColumns = 1
   return (
-    <LayoutWrap>
+    <LayoutWrap hasSidebar={view !== 'summary'} hasHeader={view !== 'summary'}>
       <LayoutHeader>
-        <Typography variant="h1" gutterBottom>
-          {getTitle({ view, subscriptionEnabled })}
-        </Typography>
+        {view !== 'summary' && (
+          <Typography variant="h1" gutterBottom>
+            {getTitle({ view, subscriptionEnabled })}
+          </Typography>
+        )}
       </LayoutHeader>
       <LayoutSidebar>
         <ContainerDimensions>
           {({ width, height }) => {
             const breakdownWidth = width / breakdownColumns
-            const showLabelValues =
-              view === 'price/patient' || view === 'price/time'
+            const showValues = view === 'price/patient' || view === 'price/time'
             return (
               breakdown1 && (
                 <CostBreakdownWrap columns={breakdownColumns}>
-                  <CostBreakdown
-                    showLabelValues={showLabelValues}
-                    offsetForComplete={40}
-                    height={height}
-                    width={breakdownWidth}
-                    scaleToBounds={breakdownColumns === 2 ? totalCostAsPerc : 1}
-                    items={breakdown1}
-                    colors={
-                      view === 'price/patient' || view === 'price/time'
-                        ? breakdownColorsPrice
-                        : breakdownColorsTime
-                    }
-                    align={breakdownColumns === 1 ? 'center' : 'right'}
-                    title={
-                      view === 'price/patient' && xVal
-                        ? 'Without Uneconomical Patients'
-                        : 'Total 10 Year Cost'
-                    }
-                  />
-                  {breakdownColumns === 2 && (
+                  {view !== 'price/patient' && view !== 'summary' && (
                     <CostBreakdown
-                      showLabelValues={showLabelValues}
+                      showValues={showValues}
+                      showLabels={true}
+                      offsetForComplete={40}
+                      height={height}
+                      width={breakdownWidth}
+                      scaleToBounds={1}
+                      items={breakdown1}
+                      colors={
+                        view === 'price/time'
+                          ? breakdownColorsPrice
+                          : breakdownColorsTime
+                      }
+                      align="center"
+                      title="Total 10 Year Cost"
+                    />
+                  )}
+                  {view === 'price/patient' && breakdown2 && (
+                    <CostBreakdown
+                      showValues={showValues}
+                      showLabels={true}
                       offsetForComplete={40}
                       height={height}
                       width={breakdownWidth}
                       scaleToBounds={totalCostAsPerc}
                       items={breakdown2}
                       colors={breakdownColorsPrice2}
-                      align="left"
-                      title={'With Uneconomical Patients'}
-                      enabled={view === 'price/patient' && xVal && breakdown2}
+                      align="center"
+                      title={'Total 10 Year Cost'}
                     />
                   )}
                 </CostBreakdownWrap>
@@ -981,32 +1211,34 @@ export default function App() {
             )
           }}
         </ContainerDimensions>
-        <LayoutDial>
-          {pie1 && view === 'price/patient' && (
-            <RadialProgress
-              values={pie1}
-              max={100}
-              width={250}
-              height={250}
-              suffix={'%'}
-              title="Patients Cured"
-              colors={[areaColors[2], areaColors[3]]}
-              label={_.sum(pie1).toFixed(0)}
-            />
-          )}
-          {view === 'price/time' && (
-            <RadialProgress
-              values={subscriptionEnabled ? [94] : [50]}
-              max={100}
-              width={250}
-              height={250}
-              suffix={'%'}
-              title="Patients Cured"
-              colors={[areaColors[2]]}
-              label={subscriptionEnabled ? 94 : 50}
-            />
-          )}
-        </LayoutDial>
+        {view !== 'summary' && (
+          <LayoutDial>
+            {pie1 && view === 'price/patient' && (
+              <RadialProgress
+                values={pie1}
+                max={100}
+                width={250}
+                height={250}
+                suffix={'%'}
+                title="Patients Cured"
+                colors={[areaColors[2], areaColors[3]]}
+                label={_.sum(pie1).toFixed(0)}
+              />
+            )}
+            {view === 'price/time' && (
+              <RadialProgress
+                values={subscriptionEnabled ? [94] : [50]}
+                max={100}
+                width={250}
+                height={250}
+                suffix={'%'}
+                title="Patients Cured"
+                colors={[areaColors[2]]}
+                label={subscriptionEnabled ? 94 : 50}
+              />
+            )}
+          </LayoutDial>
+        )}
       </LayoutSidebar>
       <LayoutMain>
         <ContainerDimensions>
@@ -1025,36 +1257,63 @@ export default function App() {
               // so pageup/pagedown navigation can continue from here
               switch (newView) {
                 case 'price/patient':
-                  setNewActiveNavStep(2)
+                  setNewActiveNavStep(1)
                   break
                 case 'price/time':
-                  setNewActiveNavStep(10)
+                  setNewActiveNavStep(11)
                   break
                 case 'seg/time':
-                  setNewActiveNavStep(9)
+                  setNewActiveNavStep(10)
                   break
                 case 'seg/patient':
                   setNewActiveNavStep(1)
+                  break
+                case 'summary':
+                  setNewActiveNavStep(12)
                   break
               }
             }}
             className={classes.toggleButtonGroup}
           >
-            <ToggleButton size="small" value="seg/patient">
+            <ToggleButton
+              size="small"
+              value="seg/patient"
+              style={{ height: 40, gridArea: 'a' }}
+            >
               <DeviceHubIcon />
               seg/patient
             </ToggleButton>
-            <ToggleButton size="small" value="price/patient">
+            <ToggleButton
+              size="small"
+              value="price/patient"
+              style={{ height: 40, gridArea: 'b' }}
+            >
               <TransformIcon />
               price/patient
             </ToggleButton>
-            <ToggleButton size="small" value="seg/time">
+            <ToggleButton
+              size="small"
+              value="seg/time"
+              style={{ height: 40, gridArea: 'd' }}
+            >
               <ViewColumnIcon />
               seg/time
             </ToggleButton>
-            <ToggleButton size="small" value="price/time">
+            <ToggleButton
+              size="small"
+              value="price/time"
+              style={{ height: 40, gridArea: 'e' }}
+            >
               <VerticalAlignCenterIcon />
               price/time
+            </ToggleButton>
+            <ToggleButton
+              size="small"
+              value="summary"
+              style={{ height: 80, gridArea: 'c', height: '100%' }}
+            >
+              <BarChartIcon />
+              summary
             </ToggleButton>
           </ToggleButtonGroup>
           <SwitchWrap active={view === 'price/time'} on={subscriptionEnabled}>

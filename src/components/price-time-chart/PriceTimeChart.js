@@ -1,7 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
-import { FlexibleWidthXYPlot, XAxis, YAxis, LineSeries } from 'react-vis'
+import {
+  FlexibleWidthXYPlot,
+  XAxis,
+  YAxis,
+  LineSeries,
+  GradientDefs,
+} from 'react-vis'
 
 import VerticalBarSeries from '../bar-series/VerticalBarSeries'
 
@@ -69,7 +75,7 @@ export default function PriceTimeChart({
 
         <VerticalBarSeries data={seriesData.drug} color={colors[2]} />
         <VerticalBarSeries data={seriesData.hospital} color={colors[1]} />
-        <VerticalBarSeries data={seriesData.savings} color={colors[0]} />
+        <VerticalBarSeries data={seriesData.savings} color="url(#stripes-pt)" />
 
         {subscriptionEnabled && (
           <LineSeries
@@ -78,6 +84,12 @@ export default function PriceTimeChart({
             strokeStyle="dashed"
           />
         )}
+        <GradientDefs>
+          {reactVizTheme.SVG.patterns.createStripePattern({
+            fill: colors[0],
+            id: `stripes-pt`,
+          })}
+        </GradientDefs>
       </FlexibleWidthXYPlot>
       <YAxisLabel>
         Total

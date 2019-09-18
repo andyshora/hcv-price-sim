@@ -5,6 +5,10 @@ import styled, { css } from 'styled-components'
 //     'v c'
 //     '. h';
 
+const debugBg = css`
+  // background: linear-gradient(45deg, hotpink, black);
+`
+
 export const LayoutWrap = styled.div`
   position: absolute;
   left: 0;
@@ -16,8 +20,9 @@ export const LayoutWrap = styled.div`
     'top   top'
     'main   side'
     'bottom bottom';
-  grid-template-columns: 1fr 420px;
-  grid-template-rows: 120px 0.9fr 60px;
+  grid-template-columns: ${props => (props.hasSidebar ? '1fr 420px' : '100%')};
+  grid-template-rows: ${props =>
+    props.hasSidebar ? '120px 0.9fr 60px' : '0px 0.9fr 60px'};
 `
 
 export const Overlay = styled.div`
@@ -31,10 +36,6 @@ export const Overlay = styled.div`
   transition: opacity 1s linear;
   opacity: ${props => (props.show ? 1 : 0)};
   pointer-events: ${props => (props.show ? 'all' : 'none')};
-`
-
-const debugBg = css`
-  // background: linear-gradient(45deg, hotpink, black);
 `
 
 export const LayoutHeader = styled.header`
@@ -157,5 +158,43 @@ export const SwitchWrap = styled.div`
     font-size: 1.6rem;
     transition: opacity 0.6s;
     opacity: ${props => (props.on ? 1 : 0.4)};
+  }
+`
+
+export const SpanSVG = styled.svg`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: red;
+  z-index: -1;
+`
+
+export const SummaryWrap = styled.div`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 2rem 4rem 2rem;
+`
+export const SummaryGrid = styled.div`
+  display: grid;
+  grid-template-columns: 0.25fr 0.25fr 0.25fr 0.25fr;
+  grid-template-rows: 120px 200px 1fr;
+  padding: 1rem 0;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  grid-template-areas:
+    'h1 h1 h1 h2'
+    'p1 p2 p3 p4'
+    'c1 c2 c3 c4'
+    'f1 f2 f3 f4';
+
+  > div {
+    width: 100%;
+    min-height: 10px;
+    text-align: center;
+    ${debugBg}
   }
 `

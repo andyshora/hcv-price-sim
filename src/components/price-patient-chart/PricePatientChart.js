@@ -1,7 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
-import { FlexibleWidthXYPlot, XAxis, YAxis, AreaSeries } from 'react-vis'
+import {
+  FlexibleWidthXYPlot,
+  XAxis,
+  YAxis,
+  AreaSeries,
+  GradientDefs,
+} from 'react-vis'
 
 import { reactVizTheme } from '../../theme'
 
@@ -37,7 +43,7 @@ const AdditionalCureRegion = styled.div`
   left: ${props => (props.margin ? props.margin.left : 0)}px;
   bottom: ${props => (props.margin ? props.margin.bottom : 0)}px;
 
-  background: rgba(241, 117, 238, 0.6);
+  background: rgba(106, 154, 220, 0.4);
 `
 
 function getSquareHighlightedArea(data, { maxY }) {
@@ -223,7 +229,7 @@ export default function PricePatientChart({
 
         <AreaSeries
           data={getFormattedData(highlightedPriceAreaData)}
-          color={areaColors[0]}
+          color="url(#stripes-pp)"
           style={{ stroke: 'none', fillOpacity: 1 }}
         />
         <AreaSeries
@@ -244,6 +250,12 @@ export default function PricePatientChart({
           Patient
           <br />
         </YAxisLabel>
+        <GradientDefs>
+          {reactVizTheme.SVG.patterns.createStripePattern({
+            fill: areaColors[0],
+            id: `stripes-pp`,
+          })}
+        </GradientDefs>
       </FlexibleWidthXYPlot>
 
       <HighlightedPriceRegion

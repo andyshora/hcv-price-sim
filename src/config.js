@@ -79,6 +79,15 @@ export const navSteps = [
       preset: 6,
     },
     PageDown: {
+      preset: 8,
+    },
+  },
+  {
+    name: 'price/patient-8',
+    PageUp: {
+      preset: 7,
+    },
+    PageDown: {
       view: 'seg/time',
     },
   },
@@ -86,7 +95,7 @@ export const navSteps = [
     name: 'seg/time',
     PageUp: {
       view: 'price/patient',
-      preset: 7,
+      preset: 8,
     },
     PageDown: {
       view: 'price/time',
@@ -101,33 +110,15 @@ export const navSteps = [
       preset: 7,
     },
     PageDown: {
-      subscription: false,
+      view: 'summary',
     },
   },
   {
-    name: 'price/time:subscription-off',
+    name: 'summary',
     PageUp: {
+      view: 'price/time',
+      subscription: true,
       preset: 1,
-      subscription: true,
-    },
-    PageDown: {
-      preset: 2,
-      subscription: true,
-    },
-  },
-  {
-    name: 'price/time:subscription-on-2',
-    PageUp: {
-      subscription: false,
-    },
-    PageDown: {
-      preset: 3,
-    },
-  },
-  {
-    name: 'price/time:subscription-on-3',
-    PageUp: {
-      preset: 2,
     },
     PageDown: {
       showOverlay: true,
@@ -136,10 +127,8 @@ export const navSteps = [
   {
     name: 'black2',
     PageUp: {
-      view: 'price/time',
+      view: 'summary',
       showOverlay: false,
-      subscription: true,
-      preset: 3,
     },
     PageDown: {},
   },
@@ -238,19 +227,18 @@ export const defaultTimePresets = [
 export const areaColors = [
   'rgb(116, 222, 147)',
   'rgba(111, 111, 111)',
-  '#6c9bdc',
-  '#6c9bdc',
+  'rgba(106, 154, 220, 1)',
+  'rgba(106, 154, 220, 1)',
   '#f175ee',
 ]
 
 export const breakdownColorsPrice = [
-  '#6c9bdc',
+  'rgba(106, 154, 220, 1)',
   'rgba(111, 111, 111)',
-  'rgb(116, 222, 147)',
+  'url(#stripes-green)',
 ]
 export const breakdownColorsPrice2 = [
-  '#6c9bdc',
-  '#6c9bdc',
+  'rgba(106, 154, 220, 1)',
   'rgba(111, 111, 111)',
-  '#f175ee',
+  'rgba(106, 154, 220, 1)',
 ]

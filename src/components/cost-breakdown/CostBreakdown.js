@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 import currency from 'currency.js'
 import _ from 'lodash'
+import { reactVizTheme } from '../../theme'
 
 const BreakdownWrap = styled.div`
   height: ${props => props.height}px;
@@ -109,11 +110,14 @@ export default function CostBreakdown({
   title = null,
   enabled = true,
   align = 'left',
-  showLabelValues = false,
+  showLabels = false,
+  showValues = false,
 }) {
   if (!enabled) {
     return <Placeholder width={width} height={height} />
   }
+
+  // console.log('scaleToBounds', scaleToBounds)
 
   const SVGHeight = height - 150
 
@@ -121,7 +125,7 @@ export default function CostBreakdown({
   let yOffset = SVGHeight
 
   let extraHeightOffsetForExcessScaling =
-    300 * (Math.max(1.1, scaleToBounds) - 1.1)
+    300 * (Math.max(1.5, scaleToBounds) - 1.5)
   let adjustedHeight =
     SVGHeight -
     (offsetForComplete + Math.min(250, extraHeightOffsetForExcessScaling))
@@ -134,7 +138,7 @@ export default function CostBreakdown({
     positions.push({
       h,
       y: yOffset - h,
-      yLabel: ratio > 0.8 ? yOffset - 50 : yOffset - h + h / 2 + 10,
+      yLabel: ratio > 0.5 ? yOffset - 50 : yOffset - h + h / 2,
       opacity: ratio < 0.02 ? 0 : 1,
     })
     yOffset -= h
@@ -144,7 +148,7 @@ export default function CostBreakdown({
 
   const totalCost = getRoundedCurrency({
     val: items.total,
-    billionsBeforeCapping: 2,
+    billionsBeforeCapping: 10,
   })
   const barWidth = Math.min(80, width * 0.35)
 
@@ -160,38 +164,40 @@ export default function CostBreakdown({
               x={barPosX}
               y={p.y}
               fill={colors[i]}
-              mask={`url(#topFade)`}
+              mask={scaleToBounds > 1 ? `url(#topFade)` : 'none'}
             />
           ))}
         </g>
         <g>
           {positions.map((p, i) => {
             const labelPosX =
-              align === 'left' ? barPosX + barWidth + 5 : barPosX - 5
+              align === 'left' ? barPosX + barWidth + 5 : barPosX - 10
 
-            const labelOffset = showLabelValues ? -25 : 0
+            const labelOffset = showValues ? -25 : 0
             const labelText = items.bars[i].key
             return (
               <React.Fragment key={labelText}>
-                <ValueLabel
-                  width={100}
-                  x={labelPosX}
-                  y={Math.min(height, p.yLabel) + labelOffset}
-                  val={items.bars[i].ratio}
-                  dy={0}
-                >
-                  {getFormattedLabel({
-                    text: labelText,
-                    x: labelPosX,
-                    style: {
-                      fontSize: '1.6rem',
-                      fillOpacity: p.opacity,
-                      textAnchor: align === 'left' ? 'start' : 'end',
-                      fill: getAdjustedLabelColor(colors[i]),
-                    },
-                  })}
-                </ValueLabel>
-                {showLabelValues && (
+                {showLabels && (
+                  <ValueLabel
+                    width={100}
+                    x={labelPosX}
+                    y={Math.min(height, p.yLabel) + labelOffset}
+                    val={items.bars[i].ratio}
+                    dy={0}
+                  >
+                    {getFormattedLabel({
+                      text: labelText,
+                      x: labelPosX,
+                      style: {
+                        fontSize: '1.6rem',
+                        fillOpacity: p.opacity,
+                        textAnchor: align === 'left' ? 'start' : 'end',
+                        fill: getAdjustedLabelColor(colors[i]),
+                      },
+                    })}
+                  </ValueLabel>
+                )}
+                {showValues && (
                   <ValueLabel
                     key={i}
                     width={100}
@@ -221,7 +227,7 @@ export default function CostBreakdown({
             x={barPosX + barWidth * 0.5}
             y={Math.max(30, _.last(positions).y - 15)}
           >
-            <tspan>{totalCost}</tspan>
+            <tspan>{`${totalCost.replace(/\.0B$/, 'B')}`}</tspan>
           </TotalLabel>
         </g>
         <defs>
@@ -229,7 +235,7 @@ export default function CostBreakdown({
             <rect fill="white" width={width} height={height} x={0} y={0} />
             <path
               fill="black"
-              d={`M 20 50 v -50 h ${barWidth} v 50 l ${-barWidth *
+              d={`M 206 50 v -50 h ${barWidth} v 50 l ${-barWidth *
                 0.5} -18 l ${-barWidth * 0.5} 18 z`}
             />
           </mask>
@@ -237,6 +243,10 @@ export default function CostBreakdown({
             <stop offset="0%" stopColor="black" />
             <stop offset="100%" stopColor="white" />
           </linearGradient>
+          {reactVizTheme.SVG.patterns.createStripePattern({
+            fill: 'rgb(116, 222, 147)',
+            id: 'stripes-green',
+          })}
         </defs>
       </svg>
       {!!title && (
