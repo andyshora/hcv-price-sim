@@ -15,11 +15,29 @@ const VerticalThumbWrap = styled.span`
   }
 `
 
+const LineLabel = styled.div`
+  position: absolute;
+  left: 600px;
+  top: -25px;
+  font-size: 1.4rem;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+
+  @media (min-width: 1200px) {
+    left: 800px;
+  }
+
+  @media (min-width: 1400px) {
+    left: 925px;
+  }
+`
+
 function VerticalThumbComponent(props) {
   return (
     <VerticalThumbWrap {...props}>
       <span />
       <em>{props.children}</em>
+      <LineLabel>Price</LineLabel>
     </VerticalThumbWrap>
   )
 }
@@ -53,6 +71,7 @@ const useStyles = makeStyles(theme =>
 )
 
 export default function VerticalSlider({
+  lineLabel = null,
   onChange,
   height = 300,
   defaultValue = 1,

@@ -111,7 +111,7 @@ function getTitle({ view, subscriptionEnabled }) {
       return 'Hepatitis C health care cost per year for 100K patients'
 
     default:
-      return 'Hepatitis C health care cost per patient for 100K patients'
+      return 'Hepatitis C 10 year health care costs for 100K patients'
   }
 }
 
@@ -432,7 +432,7 @@ export default function App() {
   }
 
   // hotkeys used to load preset slider values
-  useHotkeys('1, 2, 3, 4, 5, 6, 7, 8', params => {
+  useHotkeys('1, 2, 3, 4, 5, 6, 7, 8, 9, 0', params => {
     handleHotkeyTapped(params)
   })
 
@@ -541,10 +541,14 @@ export default function App() {
   )
 
   function handleHotkeyTapped({ key }) {
+    let presetNumber = Number.parseInt(key) - 1
+    if (presetNumber === -1) {
+      presetNumber = 9
+    }
     if (activeView.current === 'price/patient') {
-      handlePatientPresetKeyTapped(Number.parseInt(key) - 1)
+      handlePatientPresetKeyTapped(presetNumber)
     } else if (activeView.current === 'price/time') {
-      handleTimePresetKeyTapped(Number.parseInt(key) - 1)
+      handleTimePresetKeyTapped(presetNumber)
     }
   }
 
@@ -1276,19 +1280,19 @@ export default function App() {
               // so pageup/pagedown navigation can continue from here
               switch (newView) {
                 case 'price/patient':
-                  setNewActiveNavStep(1)
+                  setNewActiveNavStep(2)
                   break
                 case 'price/time':
-                  setNewActiveNavStep(11)
+                  setNewActiveNavStep(13)
                   break
                 case 'seg/time':
-                  setNewActiveNavStep(10)
+                  setNewActiveNavStep(12)
                   break
                 case 'seg/patient':
                   setNewActiveNavStep(1)
                   break
                 case 'summary':
-                  setNewActiveNavStep(12)
+                  setNewActiveNavStep(14)
                   break
               }
             }}
