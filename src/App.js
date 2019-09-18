@@ -198,7 +198,7 @@ function calculateBreakdown2({
   ].map(b => ({ ...b, ratio: b.area / totalArea }))
 
   const res = {
-    total: totalArea + additionalCostsArea - existingSavingArea,
+    total: totalArea + savingsArea + additionalCostsArea - existingSavingArea,
     bars,
   }
 
