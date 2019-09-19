@@ -164,7 +164,8 @@ export default function CostBreakdown({
               x={barPosX}
               y={p.y}
               fill={colors[i]}
-              mask={scaleToBounds > 1.05 ? `url(#topFade)` : 'none'}
+              mask="none"
+              // mask={scaleToBounds > 1.05 ? `url(#topFade)` : 'none'}
             />
           ))}
         </g>

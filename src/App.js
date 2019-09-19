@@ -186,8 +186,19 @@ function calculateBreakdown2({
         additionalCostsArea)
   )
 
+  // this will mean total bar size will be confined
+  const newTotalArea =
+    breakdown1.bars[0].area +
+    additionalCostsArea +
+    existingUntreatedArea +
+    savingsArea
+
   let bars = [
-    { ratio: 0, area: breakdown1.bars[0].area + newlyCuredArea, key: 'Drug' },
+    {
+      ratio: 0,
+      area: breakdown1.bars[0].area + newlyCuredArea + additionalCostsArea,
+      key: 'Drug',
+    },
     {
       ratio: 0,
       area: existingUntreatedArea - newlyCuredArea,
@@ -195,8 +206,8 @@ function calculateBreakdown2({
     },
     { ratio: 0, area: savingsArea, key: 'Saving' },
 
-    { ratio: 0, area: additionalCostsArea, key: 'Inc Drug Cost' },
-  ].map(b => ({ ...b, ratio: b.area / totalArea }))
+    // { ratio: 0, area: additionalCostsArea, key: 'Inc Drug Cost' },
+  ].map(b => ({ ...b, ratio: b.area / newTotalArea }))
 
   const res = {
     total: totalArea + savingsArea + additionalCostsArea - existingSavingArea,
@@ -1220,7 +1231,7 @@ export default function App() {
                           offsetForComplete={40}
                           height={height}
                           width={breakdownWidth}
-                          scaleToBounds={totalCostAsPerc}
+                          scaleToBounds={1}
                           items={breakdown2}
                           colors={breakdownColorsPrice2}
                           align="center"
