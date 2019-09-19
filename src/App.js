@@ -102,7 +102,7 @@ function getTitle({ view, subscriptionEnabled }) {
       return 'Price per patient simulation'
     case 'price/time':
       if (subscriptionEnabled) {
-        return 'Annual price per population over 10 year contract'
+        return 'Price per population, 10 year contract simulation'
       } else {
         return 'Price per patient simulation over 10 years'
       }
@@ -284,7 +284,7 @@ function calculateTimeBreakdown({ dynamic = true, cutOffX, data, y }) {
   const res = {
     total: totalArea,
     bars: [
-      { key: 'Drug 1', area: areas.drug, ratio: areas.drug / totalArea },
+      { key: 'Drug', area: areas.drug, ratio: areas.drug / totalArea },
       {
         key: 'Hospital',
         area: areas.hospital,
@@ -1021,7 +1021,7 @@ export default function App() {
                   }}
                   colors={breakdownColorsPrice}
                   align="center"
-                  title="Netflix for drugs"
+                  title="Netflix model"
                 />
               </div>
             </SummaryGrid>
