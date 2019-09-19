@@ -125,7 +125,6 @@ export const navSteps = [
     name: 'price/time:subscription-on-1',
     PageUp: {
       view: 'seg/time',
-      preset: 7,
     },
     PageDown: {
       view: 'summary',
