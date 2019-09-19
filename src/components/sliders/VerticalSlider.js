@@ -17,27 +17,28 @@ const VerticalThumbWrap = styled.span`
 
 const LineLabel = styled.div`
   position: absolute;
-  left: 600px;
   top: -25px;
   font-size: 1.4rem;
   color: white;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-
-  @media (min-width: 1200px) {
-    left: 800px;
-  }
-
-  @media (min-width: 1400px) {
-    left: 925px;
-  }
 `
 
-function VerticalThumbComponent(props) {
+function VerticalThumbComponentPT(props) {
   return (
     <VerticalThumbWrap {...props}>
       <span />
       <em>{props.children}</em>
-      <LineLabel>Price</LineLabel>
+      <LineLabel style={{ left: 83 }}>Price</LineLabel>
+    </VerticalThumbWrap>
+  )
+}
+
+function VerticalThumbComponentPP(props) {
+  return (
+    <VerticalThumbWrap {...props}>
+      <span />
+      <em>{props.children}</em>
+      <LineLabel style={{ left: 260 }}>Price</LineLabel>
     </VerticalThumbWrap>
   )
 }
@@ -83,6 +84,7 @@ export default function VerticalSlider({
   value = defaultValue,
   valueLabelSuffix = '',
   valueLabelDisplay = 'on',
+  thumbLabelType = 0,
 }) {
   const classes = useStyles()
   return (
@@ -97,7 +99,9 @@ export default function VerticalSlider({
       step={step}
       value={value}
       defaultValue={defaultValue}
-      ThumbComponent={VerticalThumbComponent}
+      ThumbComponent={
+        thumbLabelType ? VerticalThumbComponentPT : VerticalThumbComponentPP
+      }
       style={{
         height: `${height}px`,
         margin,

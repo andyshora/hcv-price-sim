@@ -1034,6 +1034,7 @@ export default function App() {
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
+                thumbLabelType={0}
                 min={sliderBounds.pricePatient.y.min}
                 max={sliderBounds.pricePatient.y.max}
                 step={sliderBounds.pricePatient.y.step}
@@ -1140,6 +1141,7 @@ export default function App() {
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
+                thumbLabelType={1}
                 min={sliderBounds.priceTime.y.min}
                 max={sliderBounds.priceTime.y.max}
                 step={sliderBounds.priceTime.y.step}
