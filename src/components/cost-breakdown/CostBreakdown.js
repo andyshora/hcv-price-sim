@@ -130,15 +130,19 @@ export default function CostBreakdown({
     SVGHeight -
     (offsetForComplete + Math.min(250, extraHeightOffsetForExcessScaling))
 
+  const extraLabelOffset = showValues ? 20 : 0
+
   // calculate label and bar positions
   for (let i = 0; i < items.bars.length; i++) {
     const ratio = items.bars[i].ratio
 
     const h = Math.max(0, adjustedHeight * ratio)
+
     positions.push({
       h,
       y: yOffset - h,
-      yLabel: ratio > 0.5 ? yOffset - 50 : yOffset - h + h / 2,
+      yLabel:
+        ratio > 0.5 ? yOffset - 50 : yOffset + extraLabelOffset - h + h / 2,
       opacity: ratio < 0.02 ? 0 : 1,
     })
     yOffset -= h

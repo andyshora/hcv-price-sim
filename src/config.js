@@ -127,24 +127,34 @@ export const navSteps = [
       view: 'seg/time',
     },
     PageDown: {
-      view: 'summary',
-    },
-  },
-  {
-    name: 'summary',
-    PageUp: {
-      view: 'price/time',
-      subscription: true,
-      preset: 1,
-    },
-    PageDown: {
       showOverlay: true,
     },
   },
   {
     name: 'black2',
     PageUp: {
+      view: 'price/time',
+      showOverlay: false,
+      subscription: true,
+      preset: 1,
+    },
+    PageDown: {
       view: 'summary',
+      showOverlay: false,
+    },
+  },
+  {
+    name: 'summary',
+    PageUp: {
+      showOverlay: true,
+    },
+    PageDown: {
+      showOverlay: true,
+    },
+  },
+  {
+    name: 'black3',
+    PageUp: {
       showOverlay: false,
     },
     PageDown: {},
