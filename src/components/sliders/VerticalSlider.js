@@ -38,7 +38,7 @@ function VerticalThumbComponentPP(props) {
     <VerticalThumbWrap {...props}>
       <span />
       <em>{props.children}</em>
-      <LineLabel style={{ left: 260 }}>Price</LineLabel>
+      <LineLabel style={{ left: 265, top: -32 }}>Price</LineLabel>
     </VerticalThumbWrap>
   )
 }
