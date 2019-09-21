@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Slider from '@material-ui/core/Slider'
 import { makeStyles, createStyles } from '@material-ui/styles'
+import useWindowSize from '@rehooks/window-size'
 
 const VerticalThumbWrap = styled.span`
   > span {
@@ -24,11 +25,26 @@ const LineLabel = styled.div`
 `
 
 function VerticalThumbComponentPT(props) {
+  const { innerWidth } = useWindowSize()
+  let left = 50
+  if (innerWidth < 1500) {
+    left = 70
+  } else if (innerWidth < 1600) {
+    left = 78
+  } else if (innerWidth < 1700) {
+    left = 84
+  } else if (innerWidth < 1800) {
+    left = 94
+  } else if (innerWidth < 1900) {
+    left = 104
+  } else {
+    left = 115
+  }
   return (
     <VerticalThumbWrap {...props}>
       <span />
       <em>{props.children}</em>
-      <LineLabel style={{ left: 100 }}>Price</LineLabel>
+      <LineLabel style={{ left }}>Price</LineLabel>
     </VerticalThumbWrap>
   )
 }
