@@ -57,7 +57,9 @@ const TotalLabel = styled.text`
 function getRoundedCurrency({ val, billionsBeforeCapping = 10 }) {
   const valInBillions = val / 1e9
   let precision = valInBillions < billionsBeforeCapping ? 1 : 0
-  if (valInBillions < 0.2) {
+  if (valInBillions <= 0.1) {
+    precision = 1
+  } else if (valInBillions < 0.2) {
     precision = 2
   }
   const valAsCurrency = currency(valInBillions, {
@@ -66,7 +68,9 @@ function getRoundedCurrency({ val, billionsBeforeCapping = 10 }) {
     separator: '',
   })
 
-  return `$${valAsCurrency.format()}B`
+  const formatted = valAsCurrency.format()
+
+  return `$${formatted}B`
 }
 
 function getFormattedLabel({ text, style, x }) {
