@@ -50,11 +50,20 @@ function VerticalThumbComponentPT(props) {
 }
 
 function VerticalThumbComponentPP(props) {
+  const { innerWidth } = useWindowSize()
+  let left = 265
+  if (innerWidth < 1500) {
+    left = 265
+  } else if (innerWidth < 1700) {
+    left = 380
+  } else {
+    left = 400
+  }
   return (
     <VerticalThumbWrap {...props}>
       <span />
       <em>{props.children}</em>
-      <LineLabel style={{ left: 265, top: -32 }}>Price</LineLabel>
+      <LineLabel style={{ left, top: -32 }}>Price</LineLabel>
     </VerticalThumbWrap>
   )
 }
