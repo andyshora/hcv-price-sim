@@ -88,24 +88,6 @@ export const navSteps = [
       preset: 7,
     },
     PageDown: {
-      preset: 9,
-    },
-  },
-  {
-    name: 'price/patient-9',
-    PageUp: {
-      preset: 8,
-    },
-    PageDown: {
-      preset: 10,
-    },
-  },
-  {
-    name: 'price/patient-10',
-    PageUp: {
-      preset: 9,
-    },
-    PageDown: {
       view: 'seg/time',
     },
   },
@@ -113,7 +95,7 @@ export const navSteps = [
     name: 'seg/time',
     PageUp: {
       view: 'price/patient',
-      preset: 10,
+      preset: 8,
     },
     PageDown: {
       view: 'price/time',

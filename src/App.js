@@ -1296,16 +1296,16 @@ export default function App() {
                   setNewActiveNavStep(2)
                   break
                 case 'price/time':
-                  setNewActiveNavStep(13)
+                  setNewActiveNavStep(11)
                   break
                 case 'seg/time':
-                  setNewActiveNavStep(12)
+                  setNewActiveNavStep(10)
                   break
                 case 'seg/patient':
                   setNewActiveNavStep(1)
                   break
                 case 'summary':
-                  setNewActiveNavStep(15)
+                  setNewActiveNavStep(13)
                   break
               }
             }}
