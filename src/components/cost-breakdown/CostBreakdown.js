@@ -116,7 +116,6 @@ export default function CostBreakdown({
   align = 'left',
   showLabels = false,
   showValues = false,
-  valueLabelColor = '#ffffff',
 }) {
   if (!enabled) {
     return <Placeholder width={width} height={height} />
@@ -222,7 +221,6 @@ export default function CostBreakdown({
                       style={{
                         fillOpacity: p.opacity,
                         textAnchor: align === 'left' ? 'start' : 'end',
-                        fill: valueLabelColor,
                       }}
                     >
                       {getRoundedCurrency({ val: items.bars[i].area })}
@@ -238,10 +236,7 @@ export default function CostBreakdown({
             x={barPosX + barWidth * 0.5}
             y={Math.max(30, _.last(positions).y - 15)}
           >
-            <tspan style={{ fill: valueLabelColor }}>{`${totalCost.replace(
-              /\.0B$/,
-              'B'
-            )}`}</tspan>
+            <tspan>{`${totalCost.replace(/\.0B$/, 'B')}`}</tspan>
           </TotalLabel>
         </g>
         <defs>

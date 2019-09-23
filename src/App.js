@@ -966,24 +966,23 @@ export default function App() {
                   height={height * 0.6}
                   width={width * 0.18}
                   scaleToBounds={1}
-                  valueLabelColor="rgb(243, 13, 59)"
                   items={{
                     total: 2 * 1e9,
                     bars: [
                       {
                         key: 'Drug',
                         area: 1e9 * 0.8,
-                        ratio: 0.8,
+                        ratio: 0.4,
                       },
                       {
                         key: 'Hospital',
                         area: 1e9 * 1.0,
-                        ratio: 0.15,
+                        ratio: 0.5,
                       },
                       {
                         key: 'Saving',
                         area: 1e9 * 0.2,
-                        ratio: 0.05,
+                        ratio: 0.1,
                       },
                     ],
                   }}
