@@ -870,14 +870,14 @@ export default function App() {
               <div style={{ gridArea: 'p3' }}>
                 <div style={{ width: 200, margin: '0 auto' }}>
                   <RadialProgress
-                    values={[42]}
+                    values={[50]}
                     max={100}
                     width={radialWidth}
                     height={radialWidth}
                     suffix={'%'}
                     title=""
                     colors={[areaColors[2], areaColors[3]]}
-                    label={42}
+                    label={50}
                   />
                 </div>
               </div>
@@ -966,29 +966,30 @@ export default function App() {
                   height={height * 0.6}
                   width={width * 0.18}
                   scaleToBounds={1}
+                  valueLabelColor="rgb(243, 13, 59)"
                   items={{
                     total: 2 * 1e9,
                     bars: [
                       {
                         key: 'Drug',
-                        area: 1e9 * 1.6,
+                        area: 1e9 * 0.8,
                         ratio: 0.8,
                       },
                       {
                         key: 'Hospital',
-                        area: 1e9 * 0.3,
+                        area: 1e9 * 1.0,
                         ratio: 0.15,
                       },
                       {
                         key: 'Saving',
-                        area: 1e9 * 0.1,
+                        area: 1e9 * 0.2,
                         ratio: 0.05,
                       },
                     ],
                   }}
                   colors={breakdownColorsPrice}
                   align="center"
-                  title="Spend to budget"
+                  title="Current Trajectory"
                 />
               </div>
               <div style={{ gridArea: 'c4', borderLeft: '2px solid white' }}>
@@ -1021,7 +1022,7 @@ export default function App() {
                   }}
                   colors={breakdownColorsPrice}
                   align="center"
-                  title="Netflix model"
+                  title="Netflix Model"
                 />
               </div>
             </SummaryGrid>
