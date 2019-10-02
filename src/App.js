@@ -373,7 +373,7 @@ export default function App() {
   const [yVal1, setYVal1] = useState(35)
   const [yVal2, setYVal2] = useState(50)
 
-  const [activeNavStepIndex, setActiveNavStepIndex] = useState(0)
+  const [activeNavStepIndex, setActiveNavStepIndex] = useState(4)
 
   const [subscriptionEnabled, setSubscriptionEnabled] = useState(false)
   const [savingPreset, setSavingPreset] = useState(false)
@@ -392,8 +392,8 @@ export default function App() {
   const patientPresets = useRef(defaultPatientPresets)
   const timePresets = useRef(defaultTimePresets)
 
-  const [view, setView] = React.useState('seg/patient')
-  const activeView = useRef('seg/patient')
+  const [view, setView] = React.useState('price/patient')
+  const activeView = useRef('price/patient')
 
   function handlePatientPresetKeyTapped(index) {
     if (index < patientPresets.current.length) {
@@ -442,114 +442,11 @@ export default function App() {
     setYVal2(v => (v - keyStep < min ? min : v - keyStep))
   }
 
-  // hotkeys used to load preset slider values
-  useHotkeys('1, 2, 3, 4, 5, 6, 7, 8, 9, 0', params => {
-    handleHotkeyTapped(params)
-  })
-
-  // hotkeys used to navigate charts
-  useHotkeys(
-    'up, down, left, right',
-    e => {
-      const { key } = e
-      if (view === 'price/patient') {
-        switch (key) {
-          case 'ArrowUp': {
-            movePricePatientYUp()
-            break
-          }
-          case 'ArrowDown': {
-            movePricePatientYDown()
-            break
-          }
-          case 'ArrowLeft': {
-            const { min, max, keyStep } = sliderBounds.pricePatient.x
-            setXVal(v => (v - keyStep < min ? min : v - keyStep))
-            break
-          }
-          case 'ArrowRight': {
-            const { min, max, keyStep } = sliderBounds.pricePatient.x
-            setXVal(v => (v + keyStep > max ? max : v + keyStep))
-            break
-          }
-
-          default:
-            break
-        }
-      } else if (view === 'price/time' && subscriptionEnabled) {
-        switch (key) {
-          case 'ArrowUp': {
-            movePriceTimeYUp()
-            break
-          }
-          case 'ArrowDown': {
-            movePriceTimeYDown()
-            break
-          }
-
-          default:
-            break
-        }
-      }
-      return false
-    },
-    [view, yVal1, yVal2, xVal, subscriptionEnabled]
-  )
-
   function setNewActiveNavStep(step) {
     if (step < navSteps.length && step >= 0) {
       setActiveNavStepIndex(step)
     }
   }
-
-  useHotkeys(
-    'pageup, pagedown, enter, esc, e, ctrl+p',
-    ({ key }) => {
-      if (!(activeNavStepIndex in navSteps)) {
-        return false
-      }
-      let dir = 1
-      let baseKey = 'PageUp'
-
-      if (/Escape|PageUp|p/.test(key)) {
-        dir = -1
-        // allow escape through if at beginning
-        if (!activeNavStepIndex) {
-          return true
-        }
-      } else if (/Enter|PageDown|e|E/.test(key)) {
-        baseKey = 'PageDown'
-        dir = 1
-      } else {
-        return false
-      }
-
-      const activeStepData = navSteps[activeNavStepIndex][baseKey]
-      const newView = 'view' in activeStepData ? activeStepData.view : null
-      const preset = 'preset' in activeStepData ? activeStepData.preset : null
-      const overlay =
-        'showOverlay' in activeStepData ? activeStepData.showOverlay : null
-
-      const subscription =
-        'subscription' in activeStepData ? activeStepData.subscription : null
-      if (newView) {
-        handleViewChange(null, newView)
-      }
-      if (typeof subscription === 'boolean') {
-        setSubscriptionEnabled(subscription)
-      }
-      if (typeof overlay === 'boolean') {
-        setShowOverlay(overlay)
-      }
-      if (!isNaN(preset)) {
-        handleHotkeyTapped({ key: preset })
-      }
-      setNewActiveNavStep(activeNavStepIndex + dir)
-
-      return false
-    },
-    [activeView.current, activeNavStepIndex, subscriptionEnabled]
-  )
 
   function handleHotkeyTapped({ key }) {
     let presetNumber = Number.parseInt(key) - 1
@@ -1281,170 +1178,7 @@ export default function App() {
           {dims => getMainView({ dims })}
         </ContainerDimensions>
       </LayoutMain>
-      <LayoutFooter>
-        <LayoutNav>
-          <ToggleButtonGroup
-            value={view}
-            exclusive
-            onChange={(e, newView) => {
-              handleViewChange(e, newView)
-
-              // when changing view via toggle, ensure a nearby nav step is activated
-              // so pageup/pagedown navigation can continue from here
-              switch (newView) {
-                case 'price/patient':
-                  setNewActiveNavStep(2)
-                  break
-                case 'price/time':
-                  setNewActiveNavStep(11)
-                  break
-                case 'seg/time':
-                  setNewActiveNavStep(10)
-                  break
-                case 'seg/patient':
-                  setNewActiveNavStep(1)
-                  break
-                case 'summary':
-                  setNewActiveNavStep(13)
-                  break
-              }
-            }}
-            className={classes.toggleButtonGroup}
-          >
-            <ToggleButton
-              size="small"
-              value="seg/patient"
-              style={{ height: 40, gridArea: 'a' }}
-            >
-              <DeviceHubIcon />
-              seg/patient
-            </ToggleButton>
-            <ToggleButton
-              size="small"
-              value="price/patient"
-              style={{ height: 40, gridArea: 'b' }}
-            >
-              <TransformIcon />
-              price/patient
-            </ToggleButton>
-            <ToggleButton
-              size="small"
-              value="seg/time"
-              style={{ height: 40, gridArea: 'd' }}
-            >
-              <ViewColumnIcon />
-              seg/time
-            </ToggleButton>
-            <ToggleButton
-              size="small"
-              value="price/time"
-              style={{ height: 40, gridArea: 'e' }}
-            >
-              <VerticalAlignCenterIcon />
-              price/time
-            </ToggleButton>
-            <ToggleButton
-              size="small"
-              value="summary"
-              style={{ height: 80, gridArea: 'c', height: '100%' }}
-            >
-              <BarChartIcon />
-              summary
-            </ToggleButton>
-          </ToggleButtonGroup>
-          <SwitchWrap active={view === 'price/time'} on={subscriptionEnabled}>
-            <label htmlFor="subscription">Product Per Patient</label>
-            <Switch
-              id="subscription"
-              checked={subscriptionEnabled}
-              onChange={(e, checked) => {
-                if (e && e.target) {
-                  e.target.blur()
-                }
-                setSubscriptionEnabled(checked)
-
-                // try to keep keyboard nav state in sync with manual interactions
-                if (checked) {
-                  setNewActiveNavStep(8)
-                } else {
-                  setNewActiveNavStep(11)
-                }
-              }}
-              value="enabled"
-              color="primary"
-            />
-            <label
-              htmlFor="subscription"
-              style={{
-                color: subscriptionEnabled
-                  ? theme.palette.primary.light
-                  : theme.palette.text.primary,
-              }}
-            >
-              Subscription Per Population
-            </label>
-          </SwitchWrap>
-        </LayoutNav>
-        {view === 'price/patient' && (
-          <PresetsWrap>
-            <Presets
-              storageKey="presets"
-              items={patientPresets.current}
-              labelFormatter={item => `$${item.y}k,+${item.x}%`}
-              onItemSelected={handlePresetSelected}
-              replaceMode={savingPreset}
-            />
-
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={handleSavePresetTapped}
-              title="Save current state as hotkey"
-            >
-              <SaveIcon size="small" />
-            </Button>
-            {savingPreset && (
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={() => setSavingPreset(false)}
-              >
-                Cancel
-              </Button>
-            )}
-          </PresetsWrap>
-        )}
-        {view === 'price/time' && subscriptionEnabled && (
-          <PresetsWrap>
-            <Presets
-              storageKey="time"
-              items={timePresets.current}
-              labelFormatter={item => `${item.y}%`}
-              onItemSelected={handlePresetSelected}
-              replaceMode={savingPreset}
-            />
-
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={handleSavePresetTapped}
-              title="Save current state as hotkey"
-            >
-              <SaveIcon size="small" />
-            </Button>
-            {savingPreset && (
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={() => setSavingPreset(false)}
-              >
-                Cancel
-              </Button>
-            )}
-          </PresetsWrap>
-        )}
-      </LayoutFooter>
-      <Overlay show={showOverlay} onClick={handleOverlayTapped} />
+      <LayoutFooter></LayoutFooter>
     </LayoutComponent>
   )
 }
