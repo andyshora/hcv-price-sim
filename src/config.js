@@ -80,6 +80,24 @@ export const navSteps = [
       preset: 7,
     },
     PageDown: {
+      preset: 9,
+    },
+  },
+  {
+    name: 'price/patient-9',
+    PageUp: {
+      preset: 8,
+    },
+    PageDown: {
+      preset: 0,
+    },
+  },
+  {
+    name: 'price/patient-0',
+    PageUp: {
+      preset: 9,
+    },
+    PageDown: {
       view: 'seg/time',
     },
   },
@@ -87,7 +105,7 @@ export const navSteps = [
     name: 'seg/time',
     PageUp: {
       view: 'price/patient',
-      preset: 8,
+      preset: 0,
     },
     PageDown: {
       view: 'price/time',
@@ -101,35 +119,42 @@ export const navSteps = [
       view: 'seg/time',
     },
     PageDown: {
-      showOverlay: true,
+      preset: 2,
     },
   },
   {
-    name: 'black2',
+    name: 'price/time:subscription-on-2',
     PageUp: {
-      view: 'price/time',
-      showOverlay: false,
-      subscription: true,
       preset: 1,
     },
     PageDown: {
+      preset: 3,
+    },
+  },
+  {
+    name: 'price/time:subscription-on-3',
+    PageUp: {
+      preset: 2,
+    },
+    PageDown: {
+      subscription: false,
+    },
+  },
+  {
+    name: 'price/time:subscription-off',
+    PageUp: {
+      preset: 3,
+      subscription: true,
+    },
+    PageDown: {
       view: 'summary',
-      showOverlay: false,
     },
   },
   {
     name: 'summary',
     PageUp: {
-      showOverlay: true,
-    },
-    PageDown: {
-      showOverlay: true,
-    },
-  },
-  {
-    name: 'black3',
-    PageUp: {
-      showOverlay: false,
+      view: 'price/time',
+      subscription: false,
     },
     PageDown: {},
   },

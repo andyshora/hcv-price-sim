@@ -1293,19 +1293,20 @@ export default function App() {
               // so pageup/pagedown navigation can continue from here
               switch (newView) {
                 case 'price/patient':
-                  setNewActiveNavStep(2)
-                  break
-                case 'price/time':
-                  setNewActiveNavStep(11)
-                  break
-                case 'seg/time':
-                  setNewActiveNavStep(10)
-                  break
-                case 'seg/patient':
                   setNewActiveNavStep(1)
                   break
+                case 'price/time':
+                  setNewActiveNavStep(12)
+                  setSubscriptionEnabled(true)
+                  break
+                case 'seg/time':
+                  setNewActiveNavStep(11)
+                  break
+                case 'seg/patient':
+                  setNewActiveNavStep(0)
+                  break
                 case 'summary':
-                  setNewActiveNavStep(13)
+                  setNewActiveNavStep(16)
                   break
               }
             }}
@@ -1364,11 +1365,11 @@ export default function App() {
                 setSubscriptionEnabled(checked)
 
                 // try to keep keyboard nav state in sync with manual interactions
-                if (checked) {
-                  setNewActiveNavStep(8)
-                } else {
-                  setNewActiveNavStep(11)
-                }
+                // if (checked) {
+                //   setNewActiveNavStep(8)
+                // } else {
+                //   setNewActiveNavStep(11)
+                // }
               }}
               value="enabled"
               color="primary"
@@ -1444,7 +1445,6 @@ export default function App() {
           </PresetsWrap>
         )}
       </LayoutFooter>
-      <Overlay show={showOverlay} onClick={handleOverlayTapped} />
     </LayoutComponent>
   )
 }
