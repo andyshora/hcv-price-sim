@@ -2,14 +2,6 @@ import bounds from './data/bounds.json'
 
 export const navSteps = [
   {
-    name: 'black1',
-    PageUp: {},
-    PageDown: {
-      view: 'seg/patient',
-      showOverlay: false,
-    },
-  },
-  {
     name: 'seg/patient',
     PageUp: {
       showOverlay: true,
@@ -171,53 +163,53 @@ export const sliderBounds = {
 export const defaultPatientPresets = [
   {
     label: '',
-    x: 25,
-    y: 20,
+    x: 0,
+    y: 85,
   },
   {
     label: '',
-    x: 50,
-    y: 30,
+    x: 0,
+    y: 42.5,
   },
   {
     label: '',
-    x: 70,
-    y: 32,
+    x: 0,
+    y: 21.5,
   },
   {
     label: '',
-    x: 70,
-    y: 32,
+    x: 0,
+    y: 11,
   },
   {
     label: '',
-    x: 70,
-    y: 32,
+    x: 0,
+    y: 5.5,
   },
   {
     label: '',
-    x: 70,
-    y: 32,
+    x: 0,
+    y: 1,
+  },
+  {
+    label: '',
+    x: 0,
+    y: 28.5,
+  },
+  {
+    label: '',
+    x: 9,
+    y: 28.5,
+  },
+  {
+    label: '',
+    x: 0,
+    y: 53.5,
   },
   {
     label: '',
     x: 100,
-    y: 32,
-  },
-  {
-    label: '',
-    x: 100,
-    y: 32,
-  },
-  {
-    label: '',
-    x: 100,
-    y: 32,
-  },
-  {
-    label: '',
-    x: 100,
-    y: 32,
+    y: 53.5,
   },
 ]
 
@@ -225,17 +217,17 @@ export const defaultTimePresets = [
   {
     label: '',
     x: 0,
-    y: 0,
+    y: 49,
   },
   {
     label: '',
     x: 0,
-    y: 10,
+    y: 39,
   },
   {
     label: '',
     x: 0,
-    y: 20,
+    y: 54,
   },
 ]
 

@@ -369,7 +369,7 @@ const useStyles = makeStyles(theme => ({
 export default function App() {
   const classes = useStyles()
   const [xVal, setXVal] = useState(0)
-  const [showOverlay, setShowOverlay] = useState(true)
+  const [showOverlay, setShowOverlay] = useState(false)
   const [yVal1, setYVal1] = useState(35)
   const [yVal2, setYVal2] = useState(50)
 
