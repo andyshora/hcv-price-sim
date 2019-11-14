@@ -47,10 +47,15 @@ const AdditionalCureRegion = styled.div`
 `
 
 function getSquareHighlightedArea(data, { maxY }) {
-  return data.length ? [{ x: 0, y: maxY }, { x: _.last(data).x, y: maxY }] : []
+  return data.length
+    ? [
+        { x: 0, y: maxY },
+        { x: _.last(data).x, y: maxY },
+      ]
+    : []
 }
 
-function getFormattedData(data) {
+function getFormattedData(data, scaleY = 1) {
   const series = []
 
   for (let i = 0; i < data.length; i++) {
@@ -59,8 +64,8 @@ function getFormattedData(data) {
     const x = d.Xcumsumleft / 1000
 
     // push start and end points so we have a flat bar
-    series.push({ x, y })
-    series.push({ x: d.Xcumsum / 1000, y })
+    series.push({ x, y: y * scaleY })
+    series.push({ x: d.Xcumsum / 1000, y: y * scaleY })
   }
 
   return series
@@ -150,7 +155,12 @@ export default function PricePatientChart({
   plotProps = {},
   xDomain = null,
   yDomain = null,
+  pricingModel = 'traditional',
 }) {
+  const scaleYVal =
+    pricingModel === 'traditional'
+      ? 1
+      : (highlightValues.y * 1000) / bounds.maxYInput
   const highlightedSquareAreaData =
     view === 'price/patient'
       ? getSquareHighlightedArea(highlightedPriceAreaData, {
@@ -184,17 +194,19 @@ export default function PricePatientChart({
 
   return (
     <ChartWrap>
-      <AdditionalCureRegion
-        offset={curedRegionOffset}
-        dimensions={view === 'price' ? 1 : 2}
-        highlightValues={{
-          x: highlightValues.x / 100,
-          y: (highlightValues.y * 1000) / bounds.maxY,
-        }}
-        width={additionalRegionWidth}
-        height={chartAreaHeight}
-        margin={margin}
-      />
+      {pricingModel === 'traditional' && (
+        <AdditionalCureRegion
+          offset={curedRegionOffset}
+          dimensions={view === 'price' ? 1 : 2}
+          highlightValues={{
+            x: highlightValues.x / 100,
+            y: (highlightValues.y * 1000) / bounds.maxY,
+          }}
+          width={additionalRegionWidth}
+          height={chartAreaHeight}
+          margin={margin}
+        />
+      )}
       <FlexibleWidthXYPlot
         height={height}
         yDomain={yDomain || [0, bounds.maxY / 1000]}
@@ -228,20 +240,43 @@ export default function PricePatientChart({
         />
 
         <AreaSeries
+          id="saving"
           data={getFormattedData(highlightedPriceAreaData)}
           color="url(#stripes-pp)"
-          style={{ stroke: 'none', fillOpacity: 1 }}
+          style={{
+            stroke: 'none',
+            fillOpacity: 1,
+          }}
         />
-        <AreaSeries
-          data={highlightedSquareAreaData}
-          color={areaColors[2]}
-          style={{ stroke: 'none', fillOpacity: 1 }}
-        />
-        <AreaSeries
-          data={additionalCureAreaData}
-          color={areaColors[3]}
-          style={{ stroke: 'none', fillOpacity: 1 }}
-        />
+
+        {pricingModel === 'progressive' && (
+          <AreaSeries
+            id="progressive--drug"
+            data={getFormattedData(highlightedPriceAreaData, scaleYVal)}
+            color={areaColors[2]}
+            style={{
+              stroke: 'none',
+              fillOpacity: 1,
+            }}
+            // onNearestXY={onNearestXY}
+          />
+        )}
+
+        {pricingModel === 'traditional' && (
+          <AreaSeries
+            id="traditional--drug"
+            data={highlightedSquareAreaData}
+            color={areaColors[2]}
+            style={{ stroke: 'none', fillOpacity: 1 }}
+          />
+        )}
+        {pricingModel === 'traditional' && (
+          <AreaSeries
+            data={additionalCureAreaData}
+            color={areaColors[3]}
+            style={{ stroke: 'none', fillOpacity: 1 }}
+          />
+        )}
         <YAxisLabel>
           Cost
           <br />
@@ -258,17 +293,19 @@ export default function PricePatientChart({
         </GradientDefs>
       </FlexibleWidthXYPlot>
 
-      <HighlightedPriceRegion
-        offset={curedRegionOffset}
-        dimensions={view === 'price' ? 1 : 2}
-        highlightValues={{
-          x: highlightValues.x / 100,
-          y: (highlightValues.y * 1000) / bounds.maxY,
-        }}
-        width={chartAreaWidth}
-        height={chartAreaHeight}
-        margin={margin}
-      />
+      {pricingModel === 'traditional' && (
+        <HighlightedPriceRegion
+          offset={curedRegionOffset}
+          dimensions={view === 'price' ? 1 : 2}
+          highlightValues={{
+            x: highlightValues.x / 100,
+            y: (highlightValues.y * 1000) / bounds.maxY,
+          }}
+          width={chartAreaWidth}
+          height={chartAreaHeight}
+          margin={margin}
+        />
+      )}
     </ChartWrap>
   )
 }
