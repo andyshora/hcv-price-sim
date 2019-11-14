@@ -119,33 +119,21 @@ function toSf(val, num = 2) {
   return ~~(val * Math.pow(10, num)) / Math.pow(10, num)
 }
 
-function calculateBreakdown1WithoutUntreated({ data, x, y, totalArea }) {
-  // get everything in the blue rect
-
-  const filteredData = data.filter(d => d.Xwidth > 0 && d.Yval < y)
-
-  const untreatedArea = 0
-
-  // blue rectangle - we have top left position, and it's a filled rectangle
-  const curedArea =
-    filteredData && filteredData.length
-      ? filteredData[0].Yval * filteredData[0].Xcumsum
-      : 0
-
-  // todo - ensure we calc mid point
-
-  const untreatedRatio = toSf(untreatedArea / totalArea, 3)
-  const curedRatio = toSf(curedArea / totalArea, 3)
-  const savingsRatio = 1 - (untreatedRatio + curedRatio)
-
-  const savingsArea = totalArea - (curedArea + untreatedArea)
+function calculateBreakdown2WithoutUntreated({
+  data,
+  bounds,
+  x,
+  y,
+  totalArea,
+}) {
+  const percDrug = y / bounds.maxYInput
 
   const res = {
     total: totalArea,
     bars: [
-      { ratio: curedRatio, area: curedArea, key: 'Drug' },
-      { ratio: untreatedRatio, area: untreatedArea, key: 'Hospital' },
-      { ratio: savingsRatio, area: savingsArea, key: 'Saving' },
+      { ratio: percDrug, area: totalArea * percDrug, key: 'Drug' },
+      { ratio: 0, area: 0, key: 'Hospital' },
+      { ratio: 1 - percDrug, area: totalArea * (1 - percDrug), key: 'Saving' },
     ],
   }
 
@@ -622,21 +610,12 @@ export default function App() {
 
     switch (view) {
       case 'price/patient':
-        if (subscriptionEnabled) {
-          newBreakdown1 = calculateBreakdown1WithoutUntreated({
-            data: patientData,
-            bounds,
-            y: yVal1 * 1000,
-            totalArea,
-          })
-        } else {
-          newBreakdown1 = calculateBreakdown1({
-            data: patientData,
-            bounds,
-            y: yVal1 * 1000,
-            totalArea,
-          })
-        }
+        newBreakdown1 = calculateBreakdown1({
+          data: patientData,
+          bounds,
+          y: yVal1 * 1000,
+          totalArea,
+        })
 
         break
       case 'price/time':
@@ -673,15 +652,27 @@ export default function App() {
           : 0
       const x1 = x0 + xVal * 0.01 * (bounds.maxX - x0)
 
-      const newBreakdown2 = calculateBreakdown2({
-        additionalRegionBounds: { x0, x1 },
-        data: patientData,
-        bounds,
-        x: xVal,
-        y: yVal1 * 1000,
-        totalArea,
-        breakdown1: newBreakdown1,
-      })
+      let newBreakdown2
+
+      if (subscriptionEnabled) {
+        newBreakdown2 = calculateBreakdown2WithoutUntreated({
+          data: patientData,
+          bounds,
+          y: yVal1 * 1000,
+          totalArea,
+        })
+      } else {
+        newBreakdown2 = calculateBreakdown2({
+          additionalRegionBounds: { x0, x1 },
+          data: patientData,
+          bounds,
+          x: xVal,
+          y: yVal1 * 1000,
+          totalArea,
+          breakdown1: newBreakdown1,
+        })
+      }
+
       setBreakdown2(newBreakdown2)
       setTotalCostAsPerc(_.sumBy(newBreakdown2.bars, d => d.ratio))
     }

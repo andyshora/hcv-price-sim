@@ -293,19 +293,17 @@ export default function PricePatientChart({
         </GradientDefs>
       </FlexibleWidthXYPlot>
 
-      {pricingModel === 'traditional' && (
-        <HighlightedPriceRegion
-          offset={curedRegionOffset}
-          dimensions={view === 'price' ? 1 : 2}
-          highlightValues={{
-            x: highlightValues.x / 100,
-            y: (highlightValues.y * 1000) / bounds.maxY,
-          }}
-          width={chartAreaWidth}
-          height={chartAreaHeight}
-          margin={margin}
-        />
-      )}
+      <HighlightedPriceRegion
+        offset={curedRegionOffset}
+        dimensions={view === 'price' ? 1 : 2}
+        highlightValues={{
+          x: highlightValues.x / 100,
+          y: (highlightValues.y * 1000) / bounds.maxY,
+        }}
+        width={chartAreaWidth}
+        height={chartAreaHeight}
+        margin={margin}
+      />
     </ChartWrap>
   )
 }
