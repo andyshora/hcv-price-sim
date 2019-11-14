@@ -298,7 +298,10 @@ function calculateTimeBreakdown({ dynamic = true, cutOffX, data, y }) {
 }
 
 function calculatePie1({ x = 0, xPerc = 0, data, bounds }) {
-  const sum1 = _.sumBy(data.filter(d => d.Xcumsumleft <= x), 'Xwidth')
+  const sum1 = _.sumBy(
+    data.filter(d => d.Xcumsumleft <= x),
+    'Xwidth'
+  )
   const total = bounds.maxX
   const seg1 = toSf((100 * sum1) / total, 1)
 
@@ -373,6 +376,14 @@ export default function App() {
   const [yVal1, setYVal1] = useState(35)
   const [yVal2, setYVal2] = useState(50)
 
+  let defaultKeyEventsEnabled = true
+  if (typeof window !== 'undefined') {
+    defaultKeyEventsEnabled = !/keys=off/.test(window.location.search)
+  }
+  const [keyEventsEnabled, setKeyEventsEnabled] = useState(
+    defaultKeyEventsEnabled
+  )
+
   const [activeNavStepIndex, setActiveNavStepIndex] = useState(0)
 
   const [subscriptionEnabled, setSubscriptionEnabled] = useState(false)
@@ -444,54 +455,58 @@ export default function App() {
 
   // hotkeys used to load preset slider values
   useHotkeys('1, 2, 3, 4, 5, 6, 7, 8, 9, 0', params => {
-    handleHotkeyTapped(params)
+    if (keyEventsEnabled) {
+      handleHotkeyTapped(params)
+    }
   })
 
   // hotkeys used to navigate charts
   useHotkeys(
     'up, down, left, right',
     e => {
-      const { key } = e
-      if (view === 'price/patient') {
-        switch (key) {
-          case 'ArrowUp': {
-            movePricePatientYUp()
-            break
-          }
-          case 'ArrowDown': {
-            movePricePatientYDown()
-            break
-          }
-          case 'ArrowLeft': {
-            const { min, max, keyStep } = sliderBounds.pricePatient.x
-            setXVal(v => (v - keyStep < min ? min : v - keyStep))
-            break
-          }
-          case 'ArrowRight': {
-            const { min, max, keyStep } = sliderBounds.pricePatient.x
-            setXVal(v => (v + keyStep > max ? max : v + keyStep))
-            break
-          }
+      if (keyEventsEnabled) {
+        const { key } = e
+        if (view === 'price/patient') {
+          switch (key) {
+            case 'ArrowUp': {
+              movePricePatientYUp()
+              break
+            }
+            case 'ArrowDown': {
+              movePricePatientYDown()
+              break
+            }
+            case 'ArrowLeft': {
+              const { min, max, keyStep } = sliderBounds.pricePatient.x
+              setXVal(v => (v - keyStep < min ? min : v - keyStep))
+              break
+            }
+            case 'ArrowRight': {
+              const { min, max, keyStep } = sliderBounds.pricePatient.x
+              setXVal(v => (v + keyStep > max ? max : v + keyStep))
+              break
+            }
 
-          default:
-            break
-        }
-      } else if (view === 'price/time' && subscriptionEnabled) {
-        switch (key) {
-          case 'ArrowUp': {
-            movePriceTimeYUp()
-            break
+            default:
+              break
           }
-          case 'ArrowDown': {
-            movePriceTimeYDown()
-            break
-          }
+        } else if (view === 'price/time' && subscriptionEnabled) {
+          switch (key) {
+            case 'ArrowUp': {
+              movePriceTimeYUp()
+              break
+            }
+            case 'ArrowDown': {
+              movePriceTimeYDown()
+              break
+            }
 
-          default:
-            break
+            default:
+              break
+          }
         }
+        return false
       }
-      return false
     },
     [view, yVal1, yVal2, xVal, subscriptionEnabled]
   )
@@ -508,45 +523,47 @@ export default function App() {
       if (!(activeNavStepIndex in navSteps)) {
         return false
       }
-      let dir = 1
-      let baseKey = 'PageUp'
+      if (keyEventsEnabled) {
+        let dir = 1
+        let baseKey = 'PageUp'
 
-      if (/Escape|PageUp|p/.test(key)) {
-        dir = -1
-        // allow escape through if at beginning
-        if (!activeNavStepIndex) {
-          return true
+        if (/Escape|PageUp|p/.test(key)) {
+          dir = -1
+          // allow escape through if at beginning
+          if (!activeNavStepIndex) {
+            return true
+          }
+        } else if (/Enter|PageDown|e|E/.test(key)) {
+          baseKey = 'PageDown'
+          dir = 1
+        } else {
+          return false
         }
-      } else if (/Enter|PageDown|e|E/.test(key)) {
-        baseKey = 'PageDown'
-        dir = 1
-      } else {
+
+        const activeStepData = navSteps[activeNavStepIndex][baseKey]
+        const newView = 'view' in activeStepData ? activeStepData.view : null
+        const preset = 'preset' in activeStepData ? activeStepData.preset : null
+        const overlay =
+          'showOverlay' in activeStepData ? activeStepData.showOverlay : null
+
+        const subscription =
+          'subscription' in activeStepData ? activeStepData.subscription : null
+        if (newView) {
+          handleViewChange(null, newView)
+        }
+        if (typeof subscription === 'boolean') {
+          setSubscriptionEnabled(subscription)
+        }
+        if (typeof overlay === 'boolean') {
+          setShowOverlay(overlay)
+        }
+        if (!isNaN(preset)) {
+          handleHotkeyTapped({ key: preset })
+        }
+        setNewActiveNavStep(activeNavStepIndex + dir)
+
         return false
       }
-
-      const activeStepData = navSteps[activeNavStepIndex][baseKey]
-      const newView = 'view' in activeStepData ? activeStepData.view : null
-      const preset = 'preset' in activeStepData ? activeStepData.preset : null
-      const overlay =
-        'showOverlay' in activeStepData ? activeStepData.showOverlay : null
-
-      const subscription =
-        'subscription' in activeStepData ? activeStepData.subscription : null
-      if (newView) {
-        handleViewChange(null, newView)
-      }
-      if (typeof subscription === 'boolean') {
-        setSubscriptionEnabled(subscription)
-      }
-      if (typeof overlay === 'boolean') {
-        setShowOverlay(overlay)
-      }
-      if (!isNaN(preset)) {
-        handleHotkeyTapped({ key: preset })
-      }
-      setNewActiveNavStep(activeNavStepIndex + dir)
-
-      return false
     },
     [activeView.current, activeNavStepIndex, subscriptionEnabled]
   )
@@ -690,12 +707,17 @@ export default function App() {
     }
 
     // todo - add scrollwheel event handlers
-    if (typeof window !== 'undefined' && typeof scrollHandler === 'function') {
+    if (
+      keyEventsEnabled &&
+      typeof window !== 'undefined' &&
+      typeof scrollHandler === 'function'
+    ) {
       window.addEventListener('wheel', scrollHandler, { passive: false })
     }
 
     return () => {
       if (
+        keyEventsEnabled &&
         typeof window !== 'undefined' &&
         typeof scrollHandler === 'function'
       ) {
@@ -825,13 +847,6 @@ export default function App() {
           <SummaryWrap>
             <SummaryGrid height={height}>
               <div style={{ gridArea: 'h1', position: 'relative' }}>
-                {false && (
-                  <ContainerDimensions>
-                    {({ width, height }) => {
-                      return <SpanBracketSVG width={width} height={height} />
-                    }}
-                  </ContainerDimensions>
-                )}
                 <Typography variant="h3">Price per patient upfront</Typography>
               </div>
               <div style={{ gridArea: 'h2' }}>
