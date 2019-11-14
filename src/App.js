@@ -1365,7 +1365,7 @@ export default function App() {
                   setNewActiveNavStep(1)
                   break
                 case 'summary':
-                  setNewActiveNavStep(13)
+                  setNewActiveNavStep(14)
                   break
               }
             }}
