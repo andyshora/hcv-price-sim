@@ -109,16 +109,28 @@ export const navSteps = [
       view: 'seg/time',
     },
     PageDown: {
+      view: 'price/patient',
+      showOverlay: false,
+      subscription: true,
+    },
+  },
+  // IN terms of page down order, this would come after the [price/time, product per patient] view and before the summary.
+  {
+    name: 'price/patient:subscription-on',
+    PageUp: {
+      view: 'price/time',
+      preset: 1,
+    },
+    PageDown: {
       showOverlay: true,
     },
   },
   {
     name: 'black2',
     PageUp: {
-      view: 'price/time',
+      view: 'price/patient',
       showOverlay: false,
       subscription: true,
-      preset: 1,
     },
     PageDown: {
       view: 'summary',
