@@ -70,11 +70,11 @@ import {
   breakdownColorsPrice2,
 } from './config'
 
-// console.log(
-//   navSteps.map(({ name }) => {
-//     console.log(name)
-//   })
-// )
+console.log(
+  navSteps.map(({ name }) => {
+    console.log(name)
+  })
+)
 
 const breakdownColorsTime = [
   colorScales.jmi[3],

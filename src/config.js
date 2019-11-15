@@ -17,6 +17,7 @@ export const navSteps = [
     PageDown: {
       view: 'price/patient',
       preset: 1,
+      subscription: false,
     },
   },
   {
@@ -26,69 +27,84 @@ export const navSteps = [
     },
     PageDown: {
       preset: 2,
+      subscription: false,
     },
   },
   {
     name: 'price/patient-2',
     PageUp: {
       preset: 1,
+      subscription: false,
     },
     PageDown: {
       preset: 3,
+      subscription: false,
     },
   },
   {
     name: 'price/patient-3',
     PageUp: {
       preset: 2,
+      subscription: false,
     },
     PageDown: {
       preset: 4,
+      subscription: false,
     },
   },
   {
     name: 'price/patient-4',
     PageUp: {
       preset: 3,
+      subscription: false,
     },
     PageDown: {
       preset: 5,
+      subscription: false,
     },
   },
   {
     name: 'price/patient-5',
     PageUp: {
       preset: 4,
+      subscription: false,
     },
     PageDown: {
       preset: 6,
+      subscription: false,
     },
   },
   {
     name: 'price/patient-6',
     PageUp: {
       preset: 5,
+      subscription: false,
     },
     PageDown: {
       preset: 7,
+      subscription: false,
     },
   },
   {
     name: 'price/patient-7',
     PageUp: {
       preset: 6,
+      subscription: false,
     },
     PageDown: {
       preset: 8,
+      subscription: false,
     },
   },
   {
     name: 'price/patient-8',
     PageUp: {
       preset: 7,
+      subscription: false,
     },
     PageDown: {
       view: 'seg/time',
+      subscription: false,
     },
   },
   {
@@ -96,6 +112,7 @@ export const navSteps = [
     PageUp: {
       view: 'price/patient',
       preset: 8,
+      subscription: false,
     },
     PageDown: {
       view: 'price/time',
