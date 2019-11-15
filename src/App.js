@@ -119,6 +119,27 @@ function toSf(val, num = 2) {
   return ~~(val * Math.pow(10, num)) / Math.pow(10, num)
 }
 
+function calculateBreakdown2WithoutUntreated({
+  data,
+  bounds,
+  x,
+  y,
+  totalArea,
+}) {
+  const percDrug = y / bounds.maxYInput
+
+  const res = {
+    total: totalArea,
+    bars: [
+      { ratio: percDrug, area: totalArea * percDrug, key: 'Drug' },
+      { ratio: 0, area: 0, key: 'Hospital' },
+      { ratio: 1 - percDrug, area: totalArea * (1 - percDrug), key: 'Saving' },
+    ],
+  }
+
+  return res
+}
+
 function calculateBreakdown1({ data, x, y, totalArea }) {
   // get everything in the blue rect
 
@@ -631,15 +652,27 @@ export default function App() {
           : 0
       const x1 = x0 + xVal * 0.01 * (bounds.maxX - x0)
 
-      const newBreakdown2 = calculateBreakdown2({
-        additionalRegionBounds: { x0, x1 },
-        data: patientData,
-        bounds,
-        x: xVal,
-        y: yVal1 * 1000,
-        totalArea,
-        breakdown1: newBreakdown1,
-      })
+      let newBreakdown2
+
+      if (subscriptionEnabled) {
+        newBreakdown2 = calculateBreakdown2WithoutUntreated({
+          data: patientData,
+          bounds,
+          y: yVal1 * 1000,
+          totalArea,
+        })
+      } else {
+        newBreakdown2 = calculateBreakdown2({
+          additionalRegionBounds: { x0, x1 },
+          data: patientData,
+          bounds,
+          x: xVal,
+          y: yVal1 * 1000,
+          totalArea,
+          breakdown1: newBreakdown1,
+        })
+      }
+
       setBreakdown2(newBreakdown2)
       setTotalCostAsPerc(_.sumBy(newBreakdown2.bars, d => d.ratio))
     }
@@ -727,8 +760,14 @@ export default function App() {
     }
   }, [])
 
-  const highlightedPriceAreaData =
+  let highlightedPriceAreaData =
     view === 'price/patient' ? getHighlightedArea(yVal1) : []
+
+  // show green the whole way across for progressive pricing
+  // blue overlay will be a verticall scaled version of this
+  if (view === 'price/patient' && subscriptionEnabled) {
+    highlightedPriceAreaData = getHighlightedArea(0)
+  }
 
   const lastHighlightedVal =
     view === 'price/patient' &&
@@ -1044,18 +1083,23 @@ export default function App() {
         )
       case 'price/patient': {
         const margin = { top: 10, left: 80, right: 30, bottom: 120 }
-        // console.log('pp width', width)
+
+        // when subscription is enabled, we want to move the y slider thumb down
+        // by a custom amount - requested by JMI
+        const sliderHeightMultiplier = subscriptionEnabled ? 0.4 : 1
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
-                thumbLabelType={0}
+                thumbLabelType={`pp-${subscriptionEnabled ? '1' : '0'}`}
                 min={sliderBounds.pricePatient.y.min}
                 max={sliderBounds.pricePatient.y.max}
                 step={sliderBounds.pricePatient.y.step}
                 bounds={bounds}
                 height={
-                  ((height - (margin.top + margin.bottom)) * bounds.maxYInput) /
+                  ((height - (margin.top + margin.bottom)) *
+                    bounds.maxYInput *
+                    sliderHeightMultiplier) /
                   bounds.maxY
                 }
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
@@ -1104,11 +1148,17 @@ export default function App() {
             </HorizontalControls>
             <ChartWrap>
               <PricePatientChart
+                pricingModel={
+                  subscriptionEnabled ? 'progressive' : 'traditional'
+                }
                 areaColors={areaColors}
                 view={view}
                 bounds={bounds}
                 patientData={patientData}
-                highlightValues={{ x: xVal, y: yVal1 }}
+                highlightValues={{
+                  x: subscriptionEnabled ? 100 : xVal,
+                  y: yVal1,
+                }}
                 highlightedPriceAreaData={highlightedPriceAreaData}
                 width={width}
                 height={height}
@@ -1156,7 +1206,7 @@ export default function App() {
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
-                thumbLabelType={1}
+                thumbLabelType="pt"
                 min={sliderBounds.priceTime.y.min}
                 max={sliderBounds.priceTime.y.max}
                 step={sliderBounds.priceTime.y.step}
@@ -1321,7 +1371,7 @@ export default function App() {
                   setNewActiveNavStep(0)
                   break
                 case 'summary':
-                  setNewActiveNavStep(16)
+                  setNewActiveNavStep(17)
                   break
               }
             }}
@@ -1368,7 +1418,10 @@ export default function App() {
               summary
             </ToggleButton>
           </ToggleButtonGroup>
-          <SwitchWrap active={view === 'price/time'} on={subscriptionEnabled}>
+          <SwitchWrap
+            active={view === 'price/time' || view === 'price/patient'}
+            on={subscriptionEnabled}
+          >
             <label htmlFor="subscription">Product Per Patient</label>
             <Switch
               id="subscription"
@@ -1380,11 +1433,13 @@ export default function App() {
                 setSubscriptionEnabled(checked)
 
                 // try to keep keyboard nav state in sync with manual interactions
-                // if (checked) {
-                //   setNewActiveNavStep(8)
-                // } else {
-                //   setNewActiveNavStep(11)
-                // }
+                if (view === 'price/time') {
+                  if (checked) {
+                    setNewActiveNavStep(8)
+                  } else {
+                    setNewActiveNavStep(11)
+                  }
+                }
               }}
               value="enabled"
               color="primary"
