@@ -49,7 +49,8 @@ function VerticalThumbComponentPT(props) {
   )
 }
 
-function VerticalThumbComponentPP(props) {
+// show label above thumb line
+function VerticalThumbComponentPP0(props) {
   const { innerWidth } = useWindowSize()
   let left = 265
   if (innerWidth < 1500) {
@@ -66,6 +67,29 @@ function VerticalThumbComponentPP(props) {
       <LineLabel style={{ left, top: -32 }}>Price</LineLabel>
     </VerticalThumbWrap>
   )
+}
+
+// subscription enabled, no text above thumb line
+function VerticalThumbComponentPP1(props) {
+  return (
+    <VerticalThumbWrap {...props}>
+      <span />
+      <em>{props.children}</em>
+    </VerticalThumbWrap>
+  )
+}
+
+function getThumbComponent(type) {
+  switch (type) {
+    case 'pt':
+      return VerticalThumbComponentPT
+    case 'pp-0':
+      return VerticalThumbComponentPP0
+    case 'pp-1':
+      return VerticalThumbComponentPP1
+    default:
+      return <div />
+  }
 }
 
 const useStyles = makeStyles(theme =>
@@ -124,9 +148,7 @@ export default function VerticalSlider({
       step={step}
       value={value}
       defaultValue={defaultValue}
-      ThumbComponent={
-        thumbLabelType ? VerticalThumbComponentPT : VerticalThumbComponentPP
-      }
+      ThumbComponent={getThumbComponent(thumbLabelType)}
       style={{
         height: `${height}px`,
         margin,

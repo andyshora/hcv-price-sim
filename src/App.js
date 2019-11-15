@@ -1083,18 +1083,23 @@ export default function App() {
         )
       case 'price/patient': {
         const margin = { top: 10, left: 80, right: 30, bottom: 120 }
-        // console.log('pp width', width)
+
+        // when subscription is enabled, we want to move the y slider thumb down
+        // by a custom amount - requested by JMI
+        const sliderHeightMultiplier = subscriptionEnabled ? 0.4 : 1
         return (
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
-                thumbLabelType={0}
+                thumbLabelType={`pp-${subscriptionEnabled ? '1' : '0'}`}
                 min={sliderBounds.pricePatient.y.min}
                 max={sliderBounds.pricePatient.y.max}
                 step={sliderBounds.pricePatient.y.step}
                 bounds={bounds}
                 height={
-                  ((height - (margin.top + margin.bottom)) * bounds.maxYInput) /
+                  ((height - (margin.top + margin.bottom)) *
+                    bounds.maxYInput *
+                    sliderHeightMultiplier) /
                   bounds.maxY
                 }
                 margin={`auto 0 ${-50 + margin.bottom}px 0`}
@@ -1201,7 +1206,7 @@ export default function App() {
           <DynamicChartViewWrap>
             <VerticalControls>
               <VerticalSlider
-                thumbLabelType={1}
+                thumbLabelType="pt"
                 min={sliderBounds.priceTime.y.min}
                 max={sliderBounds.priceTime.y.max}
                 step={sliderBounds.priceTime.y.step}
