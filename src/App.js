@@ -1422,7 +1422,9 @@ export default function App() {
             active={view === 'price/time' || view === 'price/patient'}
             on={subscriptionEnabled}
           >
-            <label htmlFor="subscription">Product Per Patient</label>
+            <label htmlFor="subscription" title="Product Per Patient">
+              Prod / Patient
+            </label>
             <Switch
               id="subscription"
               checked={subscriptionEnabled}
@@ -1445,6 +1447,7 @@ export default function App() {
               color="primary"
             />
             <label
+              title="Subscription Per Population"
               htmlFor="subscription"
               style={{
                 color: subscriptionEnabled
@@ -1452,7 +1455,7 @@ export default function App() {
                   : theme.palette.text.primary,
               }}
             >
-              Subscription Per Population
+              Subscr / Pop
             </label>
           </SwitchWrap>
         </LayoutNav>

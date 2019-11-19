@@ -66,7 +66,7 @@ export default function SegPatientChart({
   return (
     <ChartWrap>
       <XYPlot
-        width={700}
+        width={600}
         height={height}
         yDomain={[0, bounds.maxY / 1000]}
         xDomain={[0, bounds.maxX / 1000]}

@@ -1,13 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
-import {
-  FlexibleWidthXYPlot,
-  XAxis,
-  YAxis,
-  AreaSeries,
-  GradientDefs,
-} from 'react-vis'
+import { XYPlot, XAxis, YAxis, AreaSeries, GradientDefs } from 'react-vis'
 
 import { reactVizTheme } from '../../theme'
 
@@ -207,7 +201,8 @@ export default function PricePatientChart({
           margin={margin}
         />
       )}
-      <FlexibleWidthXYPlot
+      <XYPlot
+        width={600}
         height={height}
         yDomain={yDomain || [0, bounds.maxY / 1000]}
         xDomain={xDomain || [0, bounds.maxX / 1000]}
@@ -291,7 +286,7 @@ export default function PricePatientChart({
             id: `stripes-pp`,
           })}
         </GradientDefs>
-      </FlexibleWidthXYPlot>
+      </XYPlot>
       {pricingModel === 'traditional' && (
         <HighlightedPriceRegion
           offset={curedRegionOffset}

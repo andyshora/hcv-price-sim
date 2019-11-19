@@ -146,14 +146,14 @@ export const HorizontalControls = styled.div`
 `
 
 export const SwitchWrap = styled.div`
-  padding: 0 0 0 2rem;
+  padding: 0;
   transition: opacity 1s;
   opacity: ${props => (props.active ? 1 : 0)};
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-left: 2rem;
+  margin-left: 0.5rem;
 
   > label {
     &:first-child {
@@ -164,7 +164,7 @@ export const SwitchWrap = styled.div`
     user-select: none;
     cursor: pointer;
     margin: 0 0.5rem;
-    font-size: 1.6rem;
+    font-size: 1rem;
     transition: opacity 0.6s;
     opacity: ${props => (props.on ? 1 : 0.4)};
   }
