@@ -1075,7 +1075,7 @@ export default function App() {
                   }}
                   colors={breakdownColorsPrice}
                   align="center"
-                  title="Netflix Model"
+                  title="‘Netflix Model’"
                 />
               </div>
             </SummaryGrid>
