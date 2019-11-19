@@ -17,7 +17,7 @@ const typography = {
   h3: {
     fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
-    fontSize: '2rem',
+    fontSize: '1.8rem',
   },
   h4: {
     fontFamily: 'halis_r_regularregular',

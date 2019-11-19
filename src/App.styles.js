@@ -192,7 +192,7 @@ export const SummaryWrap = styled.div`
 export const SummaryGrid = styled.div`
   display: grid;
   grid-template-columns: 0.25fr 0.25fr 0.25fr 0.25fr;
-  grid-template-rows: 100px 200px 1fr;
+  grid-template-rows: 100px 160px 1fr;
   padding: 1rem 0;
   position: relative;
   height: 100%;
