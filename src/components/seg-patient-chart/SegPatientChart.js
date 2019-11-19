@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import _ from 'lodash'
 import currency from 'currency.js'
 import {
-  FlexibleWidthXYPlot,
+  XYPlot,
   XAxis,
   YAxis,
   AreaSeries,
@@ -59,14 +59,14 @@ function xTickFormat(val) {
 
 export default function SegPatientChart({
   bounds,
-  width = 800,
   height = 600,
-  margin = { top: 80, left: 80, right: 80, bottom: 80 },
+  margin = { top: 80, left: 0, right: 80, bottom: 80 },
   data = [],
 }) {
   return (
     <ChartWrap>
-      <FlexibleWidthXYPlot
+      <XYPlot
+        width={700}
         height={height}
         yDomain={[0, bounds.maxY / 1000]}
         xDomain={[0, bounds.maxX / 1000]}
@@ -110,7 +110,7 @@ export default function SegPatientChart({
           Patient
           <br />
         </YAxisLabel>
-      </FlexibleWidthXYPlot>
+      </XYPlot>
     </ChartWrap>
   )
 }

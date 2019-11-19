@@ -20,8 +20,8 @@ export const LayoutWrap = styled.div`
     'top   top'
     'main   side'
     'bottom bottom';
-  grid-template-columns: 1fr 420px;
-  grid-template-rows: 120px 0.9fr 60px;
+  grid-template-columns: 1fr 320px;
+  grid-template-rows: 100px 0.9fr 100px;
 `
 
 export const WideLayoutWrap = styled(LayoutWrap)`
@@ -185,11 +185,14 @@ export const SummaryWrap = styled.div`
   height: 100%;
   width: 100%;
   padding: 2rem 4rem 2rem;
+
+  h3 {
+  }
 `
 export const SummaryGrid = styled.div`
   display: grid;
   grid-template-columns: 0.25fr 0.25fr 0.25fr 0.25fr;
-  grid-template-rows: 120px 200px 1fr;
+  grid-template-rows: 100px 200px 1fr;
   padding: 1rem 0;
   position: relative;
   height: 100%;

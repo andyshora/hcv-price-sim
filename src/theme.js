@@ -7,28 +7,28 @@ const typography = {
   h1: {
     fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
-    fontSize: '2.4rem',
+    fontSize: '2rem',
   },
   h2: {
     fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
-    fontSize: '2.4rem',
+    fontSize: '2rem',
   },
   h3: {
     fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
-    fontSize: '2.4rem',
+    fontSize: '2rem',
   },
   h4: {
     fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
-    fontSize: '1.5rem',
+    fontSize: '1.3rem',
     textTransform: 'uppercase',
   },
   h5: {
     fontFamily: 'halis_r_regularregular',
     fontWeight: 'normal',
-    fontSize: '1.5rem',
+    fontSize: '1.3rem',
   },
   fontFamily: 'halis_r_regularregular',
   fontWeightRegular: 'normal',
