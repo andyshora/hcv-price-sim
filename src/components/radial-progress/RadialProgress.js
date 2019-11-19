@@ -41,8 +41,8 @@ const TitleLabel = styled.div`
   > h5 {
     margin: 0;
     position: relative;
-    top: -20px;
-    font-size: 1.8rem;
+    top: -10px;
+    font-size: 1.4rem;
   }
 `
 
@@ -81,8 +81,8 @@ function RadialProgress({
     seriesData.push({
       angle0,
       angle,
-      radius: width * 0.4,
-      radius0: width * 0.4 - 25,
+      radius: width * 0.45,
+      radius0: width * 0.45 - 15,
       color: colors[i],
     })
     angle0 += angle
@@ -102,8 +102,8 @@ function RadialProgress({
               {
                 angle0: 0,
                 angle: Math.PI * 2,
-                radius: width * 0.4 - 24.5,
-                radius0: width * 0.4 - 25,
+                radius: width * 0.45 - 14.5,
+                radius0: width * 0.45 - 15,
                 color: '#ffffff',
               },
             ]}

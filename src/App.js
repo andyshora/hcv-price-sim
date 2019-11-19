@@ -881,7 +881,7 @@ export default function App() {
     const { width, height } = dims
     switch (view) {
       case 'summary':
-        const radialWidth = 200
+        const radialWidth = 160
         return (
           <SummaryWrap>
             <SummaryGrid height={height}>
@@ -894,7 +894,7 @@ export default function App() {
                 </Typography>
               </div>
               <div style={{ gridArea: 'p1' }}>
-                <div style={{ width: 200, margin: '0 auto' }}>
+                <div style={{ width: 160, margin: '0 auto' }}>
                   <RadialProgress
                     values={[14]}
                     max={100}
@@ -908,7 +908,7 @@ export default function App() {
                 </div>
               </div>
               <div style={{ gridArea: 'p2' }}>
-                <div style={{ width: 200, margin: '0 auto' }}>
+                <div style={{ width: 160, margin: '0 auto' }}>
                   <RadialProgress
                     values={[100]}
                     max={100}
@@ -922,7 +922,7 @@ export default function App() {
                 </div>
               </div>
               <div style={{ gridArea: 'p3' }}>
-                <div style={{ width: 200, margin: '0 auto' }}>
+                <div style={{ width: 160, margin: '0 auto' }}>
                   <RadialProgress
                     values={[50]}
                     max={100}
@@ -936,7 +936,7 @@ export default function App() {
                 </div>
               </div>
               <div style={{ gridArea: 'p4', borderLeft: '2px solid white' }}>
-                <div style={{ width: 200, margin: '0 auto' }}>
+                <div style={{ width: 160, margin: '0 auto' }}>
                   <RadialProgress
                     values={[94]}
                     max={100}
@@ -1316,8 +1316,8 @@ export default function App() {
                   <RadialProgress
                     values={pie1}
                     max={100}
-                    width={250}
-                    height={250}
+                    width={160}
+                    height={160}
                     suffix={'%'}
                     title="Patients Cured"
                     colors={[areaColors[2], areaColors[3]]}
@@ -1328,8 +1328,8 @@ export default function App() {
                   <RadialProgress
                     values={subscriptionEnabled ? [94] : [50]}
                     max={100}
-                    width={250}
-                    height={250}
+                    width={160}
+                    height={160}
                     suffix={'%'}
                     title="Patients Cured"
                     colors={[areaColors[2]]}

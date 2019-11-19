@@ -73,7 +73,7 @@ export const CostBreakdownWrap = styled.div`
 
 export const LayoutDial = styled.div`
   position: absolute;
-  width: 250px;
+  width: 160px;
   height: 300px;
   top: -30px;
   left: -250px;
