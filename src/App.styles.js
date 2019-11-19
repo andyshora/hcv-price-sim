@@ -75,7 +75,7 @@ export const LayoutDial = styled.div`
   position: absolute;
   width: 250px;
   height: 300px;
-  top: -100px;
+  top: -30px;
   left: -250px;
   z-index: 10;
 

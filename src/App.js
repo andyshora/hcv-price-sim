@@ -1456,7 +1456,7 @@ export default function App() {
             </label>
           </SwitchWrap>
         </LayoutNav>
-        {view === 'price/patient' && (
+        {view === 'price/patient' && defaultKeyEventsEnabled && (
           <PresetsWrap>
             <Presets
               storageKey="presets"
