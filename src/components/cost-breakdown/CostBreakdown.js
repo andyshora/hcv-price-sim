@@ -198,7 +198,7 @@ export default function CostBreakdown({
                       text: labelText,
                       x: labelPosX,
                       style: {
-                        fontSize: '1.6rem',
+                        fontSize: '1.2rem',
                         fillOpacity: p.opacity,
                         textAnchor: align === 'left' ? 'start' : 'end',
                         fill: getAdjustedLabelColor(colors[i]),
