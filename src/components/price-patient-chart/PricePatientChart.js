@@ -141,7 +141,7 @@ export default function PricePatientChart({
   bounds,
   highlightValues = { x: 0, y: 0 },
   highlightedPriceAreaData = [],
-  width = 800,
+  width = 700,
   height = 600,
   margin = { top: 80, left: 80, right: 80, bottom: 80 },
   patientData = [],
@@ -162,7 +162,7 @@ export default function PricePatientChart({
         })
       : []
 
-  const chartAreaWidth = width - (margin.left + margin.right) - 100
+  const chartAreaWidth = 700 - (margin.left + margin.right) - 100
   const chartAreaHeight = height - (margin.top + margin.bottom)
 
   const xDivider =

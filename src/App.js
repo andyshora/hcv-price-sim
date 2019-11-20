@@ -41,6 +41,7 @@ import {
   LayoutFooter,
   LayoutNav,
   DynamicChartViewWrap,
+  FixedChartViewWrap,
   PresetsWrap,
   VerticalControls,
   HorizontalControls,
@@ -1088,7 +1089,7 @@ export default function App() {
         // by a custom amount - requested by JMI
         const sliderHeightMultiplier = subscriptionEnabled ? 0.4 : 1
         return (
-          <DynamicChartViewWrap>
+          <FixedChartViewWrap>
             <VerticalControls>
               <VerticalSlider
                 thumbLabelType={`pp-${subscriptionEnabled ? '1' : '0'}`}
@@ -1124,8 +1125,7 @@ export default function App() {
                 step={sliderBounds.pricePatient.x.step}
                 bounds={bounds}
                 width={
-                  (width - (100 + margin.left + margin.right)) *
-                  (1 - xPercOffset)
+                  (700 - (100 + margin.left + margin.right)) * (1 - xPercOffset)
                 }
                 margin={`0 ${margin.right}px 0 0`}
                 onChange={(e, val) => {
@@ -1165,7 +1165,7 @@ export default function App() {
                 margin={margin}
               />
             </ChartWrap>
-          </DynamicChartViewWrap>
+          </FixedChartViewWrap>
         )
       }
       case 'seg/patient':

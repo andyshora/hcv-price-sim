@@ -112,6 +112,11 @@ export const DynamicChartViewWrap = styled.div`
   grid-template-columns: 100px 1fr;
   grid-template-rows: 1fr 50px;
   overflow: hidden;
+  position: relative;
+`
+
+export const FixedChartViewWrap = styled(DynamicChartViewWrap)`
+  width: 700px;
 `
 
 export const ChartWrap = styled.div`
