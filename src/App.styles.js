@@ -49,9 +49,17 @@ export const Overlay = styled.div`
 
 export const LayoutHeader = styled.header`
   grid-area: top;
-  padding: 3rem 1rem 0 9.5rem;
+  padding: 2rem 1rem 0 11.5rem;
   user-select: none;
   ${debugBg}
+
+  > h1 {
+    margin-bottom: 0.3rem;
+  }
+
+  > p {
+    font-size: 1.2rem;
+  }
 `
 export const LayoutSidebar = styled.aside`
   grid-area: side;
@@ -76,7 +84,7 @@ export const LayoutDial = styled.div`
   width: 160px;
   height: 300px;
   top: -30px;
-  left: -250px;
+  left: -150px;
   z-index: 10;
 
   ${debugBg}

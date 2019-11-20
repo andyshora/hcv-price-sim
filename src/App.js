@@ -98,21 +98,44 @@ const SpanBracketSVG = ({ width, height }) => {
 }
 
 function getTitle({ view, subscriptionEnabled }) {
+  const parts = []
   switch (view) {
     case 'price/patient':
-      return 'Price per patient simulation'
+      parts.push('Price per patient simulation')
+      break
     case 'price/time':
       if (subscriptionEnabled) {
-        return 'Price per population, 10 year contract simulation'
+        parts.push('Price per population')
+        parts.push('10 year contract simulation')
       } else {
-        return 'Price per patient simulation over 10 years'
+        parts.push('Price per patient simulation over 10 years')
       }
+      break
 
     case 'seg/time':
-      return 'Hepatitis C health care cost per year for 100K patients'
+      parts.push('Hepatitis C health care cost per year')
+      parts.push('for 100K patients')
+      break
 
     default:
-      return 'Hepatitis C 10 year health care costs for 100K patients'
+      parts.push('Hepatitis C 10 year health care costs')
+      parts.push('for 100K patients')
+      break
+  }
+
+  if (parts.length === 1) {
+    return (
+      <Typography variant="h1" gutterBottom>
+        {parts[0]}
+      </Typography>
+    )
+  } else {
+    return (
+      <>
+        <Typography variant="h1">{parts[0]}</Typography>
+        <Typography>{parts[1]}</Typography>
+      </>
+    )
   }
 }
 
@@ -1259,11 +1282,7 @@ export default function App() {
     <LayoutComponent>
       {view !== 'summary' && (
         <>
-          <LayoutHeader>
-            <Typography variant="h1" gutterBottom>
-              {getTitle({ view, subscriptionEnabled })}
-            </Typography>
-          </LayoutHeader>
+          <LayoutHeader>{getTitle({ view, subscriptionEnabled })}</LayoutHeader>
           <LayoutSidebar>
             <ContainerDimensions>
               {({ width, height }) => {
